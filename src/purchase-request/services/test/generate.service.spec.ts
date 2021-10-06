@@ -5,8 +5,6 @@ import { mockGenerate } from './../../../../test/mocks/services/Generate.mocks';
 import { GenerateService } from '../generate.service';
 import { SampleCode } from './../../../../test/mocks/sample/Purchase-Request/sample.code.mock';
 import { ConfigModule } from '@nestjs/config';
-import { CodePRDto } from 'src/purchase-request/dto/CodePR.dto';
-import { IRGenerateCode } from 'src/purchase-request/interfaces/response/GenerateCode.interface';
 
 describe('GenerateService', () => {
   let service: GenerateService;
@@ -38,7 +36,7 @@ describe('GenerateService', () => {
 
   it('should be generate code failed ', async () => {
     mockGenerate.findOne.mockImplementation((_param) => {
-      return  { code: _param.code.$regex + '00001' };
+      return { code: _param.code.$regex + '00001' };
     });
 
     expect(
