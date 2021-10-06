@@ -1,30 +1,35 @@
-import { PurchaseRequestCreateDto } from 'src/purchase-request/dto/CreatePurchaseRequest.dto';
+import { PRCreateDto } from 'src/purchase-request/dto/CreatePR.dto';
+import { SampleBuyer } from '../Buyer/sample.buyer.mock';
 
-export const SampleCreate: PurchaseRequestCreateDto = {
-  id: expect.any(String),
-  buyer_id: expect.any(String),
-  user_id: expect.any(String),
+export const SampleCreate: PRCreateDto = {
+  code: expect.any(String),
+  buyerId: SampleBuyer.id,
   date: new Date('2021-10-10'),
-  products: [
+  items: [
     {
-      product_id: expect.any(String),
-      quantity: 12,
-      price: 12000,
+      productId: expect.any(String),
+      quantity: 14,
+      price: 10000,
     },
     {
-      product_id: expect.any(String),
+      productId: expect.any(String),
       quantity: 14,
       price: 10000,
     },
   ],
-  status: [
+  total: 0,
+  statuses: [
     {
       name: 'Open',
       timestamp: new Date('2021-10-10 20:00'),
     },
+  ],
+  history: [
     {
-      name: 'Save',
+      title: 'Created PR',
+      message: 'Message Created PR',
       timestamp: new Date('2021-10-10 20:00'),
+      userId: 'XXXX',
     },
   ],
 };

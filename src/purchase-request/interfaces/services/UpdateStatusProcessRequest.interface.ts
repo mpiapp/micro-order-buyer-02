@@ -1,6 +1,6 @@
-import { PurchaseRequestIdDto } from 'src/purchase-request/dto/IdPurchaseRequest.dto';
-import { Status } from 'src/purchase-request/dto/Status.dto';
+import { StatusDto } from 'src/purchase-request/dto/Status.dto';
+import { PRIdDto } from 'src/purchase-request/dto/_IdPR.dto';
 
 export interface IUpdateStatusPurchaseRequest {
-  addStatus(id: PurchaseRequestIdDto, params: Status): Promise<any>;
+  addStatus(id: PRIdDto, params: StatusDto): Promise<any>;
 }

@@ -1,6 +1,6 @@
-import { PurchaseRequestIdDto } from '../../dto/IdPurchaseRequest.dto';
+import { PRIdDto } from './../../dto/_IdPR.dto';
 import { PR } from '../../schemas/purchase-request.schema';
 
 export interface IDeletePurchaseRequest {
-  deletePurchaseRequest(id: PurchaseRequestIdDto): Promise<PR>;
+  deletePurchaseRequest(id: PRIdDto): Promise<PR>;
 }

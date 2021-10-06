@@ -1,9 +1,9 @@
-import { SampleItem } from '../sample/Items/sample.add.items.mock';
+import { sampleItem } from '../sample/Products/sample.item.mock';
 import { SampleCreate } from '../sample/Purchase-Request/sample.data.create.mock';
 
 export const mockControllerPurchaseRequest = {
   findByIdAndUpdate: jest.fn().mockImplementation(() => {
-    SampleCreate.products.push(SampleItem);
+    SampleCreate.items.push(sampleItem);
     return SampleCreate;
   }),
   updateOne: jest.fn().mockImplementation(() => {
@@ -12,5 +12,8 @@ export const mockControllerPurchaseRequest = {
       status: true,
       id: expect.any(String),
     };
+  }),
+  create: jest.fn().mockImplementation((SampleCreate) => {
+    return SampleCreate;
   }),
 };

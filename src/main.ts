@@ -1,11 +1,22 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { AppModule } from './app.module';
 import { ExceptionFilter } from './utils/rpc-exception.filter';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  app.enableCors();
+  const app = await NestFactory.createMicroservice<MicroserviceOptions>(
+    AppModule,
+    {
+      transport: Transport.KAFKA,
+      options: {
+        client: {
+          brokers: [process.env.KAFKA],
+        },
+      },
+    },
+  );
+
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
@@ -14,6 +25,6 @@ async function bootstrap() {
     }),
   );
   app.useGlobalFilters(new ExceptionFilter());
-  await app.listen(3000);
+  await app.listen();
 }
 bootstrap();

@@ -1,10 +1,7 @@
-import { PurchaseRequestIdDto } from '../../dto/IdPurchaseRequest.dto';
-import { PurchaseRequestUpdateDto } from '../../dto/UpdatePurchaseRequest.dto';
+import { PRUpdateDto } from './../../dto/UpdatePR.dto';
+import { PRIdDto } from './../../dto/_IdPR.dto';
 import { PR } from '../../schemas/purchase-request.schema';
 
 export interface IUpdatePurchaseRequest {
-  updatePurchaseRequest(
-    id: PurchaseRequestIdDto,
-    param: PurchaseRequestUpdateDto,
-  ): Promise<PR>;
+  updatePurchaseRequest(id: PRIdDto, param: PRUpdateDto): Promise<PR>;
 }

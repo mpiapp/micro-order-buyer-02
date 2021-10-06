@@ -38,7 +38,7 @@ describe('PurchaseRequestService', () => {
       };
     });
     expect(
-      await service.deletePurchaseRequest({ id: SampleCreate.id }),
+      await service.deletePurchaseRequest({ id: expect.any(String) }),
     ).toEqual({
       ...SampleCreate,
       isDeleted: true,

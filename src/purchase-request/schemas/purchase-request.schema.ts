@@ -3,39 +3,31 @@ import * as mongoose from 'mongoose';
 
 export type PRDocument = PR & mongoose.Document;
 
-@Schema()
+@Schema({ timestamps: true })
 export class PR {
   @Prop()
   id: string;
-  @Prop({ required: true })
-  user_id: string;
-  @Prop({ required: true })
-  buyer_id: string;
+  @Prop({ unique: true, required: true })
+  code: string;
   @Prop({ type: Date })
   date: Date;
+  @Prop({ type: mongoose.Schema.Types.ObjectId, required: true })
+  buyerId: string;
+  @Prop({ required: true })
+  items: string[];
+  @Prop({ min: 0, required: true })
+  total: number;
   @Prop({
-    type: [
-      {
-        quantity: { type: Number },
-        product_id: { type: String },
-        price: { type: Number },
-      },
-    ],
+    type: [{ name: { type: String }, timestamp: { type: Date } }],
   })
-  products: {
-    product_id: string;
-    quantity: number;
-    price: number;
-  }[];
-  @Prop({
-    type: [{ name: { type: String }, next: { type: [String] } }],
-  })
-  status: {
+  statuses: {
     name: string;
-    next: string[];
-  };
+    timestamp: Date;
+  }[];
   @Prop({ default: false })
   isDeleted: boolean;
+  @Prop({ required: true })
+  history: string[];
 }
 
 export const PRSchema = SchemaFactory.createForClass(PR);
