@@ -1,8 +1,9 @@
 import { PRCreateDto } from 'src/purchase-request/dto/CreatePR.dto';
 import { SampleBuyer } from '../Buyer/sample.buyer.mock';
+import { SampleCode } from './sample.code.mock';
 
 export const SampleCreate: PRCreateDto = {
-  code: expect.any(String),
+  code: SampleCode.code,
   buyerId: SampleBuyer.id,
   date: new Date('2021-10-10'),
   items: [

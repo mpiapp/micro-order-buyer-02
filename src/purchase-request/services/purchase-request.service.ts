@@ -16,7 +16,6 @@ export class PurchaseRequestService
   ) {}
 
   async createPurchaseRequest(param: PRCreateDto): Promise<PR> {
-    param.code = `${param.code}-${Math.random().toString(36).substr(2, 9)}`;
     return this.model.create(param);
   }
 

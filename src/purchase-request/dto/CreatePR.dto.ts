@@ -12,7 +12,7 @@ import { StatusDto } from './Status.dto';
 
 export class PRCreateDto {
   @IsNotEmpty()
-  @MaxLength(20)
+  @MaxLength(50)
   code: string;
   @IsDate()
   date: Date;
