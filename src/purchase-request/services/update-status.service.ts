@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { StatusDto } from '../dto/Status.dto';
 import { PRIdDto } from '../dto/_IdPR.dto';
-import { IUpdateStatusPurchaseRequest } from '../interfaces/services/UpdateStatusProcessRequest.interface';
+import { IUpdateStatusPurchaseRequest } from '../interfaces/services/UpdateStatusPurchaseRequest.interface';
 import { PR, PRDocument } from '../schemas/purchase-request.schema';
 
 @Injectable()

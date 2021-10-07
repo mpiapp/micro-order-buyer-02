@@ -7,17 +7,26 @@ import { PR } from './schemas/purchase-request.schema';
 import { PurchaseRequestService } from './services/purchase-request.service';
 import { GenerateService } from './services/generate.service';
 import { ConfigModule } from '@nestjs/config';
+import { UpdateItemsService } from './services/update-items.service';
+import { sampleItem } from './../../test/mocks/sample/Products/sample.item.mock';
+import { SampleUpdate } from './../../test/mocks/sample/Purchase-Request/sample.data.update.mock';
+import configuration from './../config/configuration';
 
 describe('PurchaseRequestController', () => {
   let controller: PurchaseRequestController;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [ConfigModule.forRoot()],
+      imports: [
+        ConfigModule.forRoot({
+          load: [configuration],
+        }),
+      ],
       controllers: [PurchaseRequestController],
       providers: [
         GenerateService,
         PurchaseRequestService,
+        UpdateItemsService,
         {
           provide: getModelToken(PR.name),
           useValue: mockControllerPurchaseRequest,
@@ -57,7 +66,7 @@ describe('PurchaseRequestController', () => {
     expect(await controller.PRCreate(SampleCreate)).toBe(SampleCreate);
   });
 
-  it('should create PR Wrong Total', async () => {
+  it('should create PR Failed Total', async () => {
     mockControllerPurchaseRequest.create.mockImplementation(() => {
       throw new Error('Sorry Total Price Wrong');
     });
@@ -65,6 +74,65 @@ describe('PurchaseRequestController', () => {
     try {
       SampleCreate.total = 0;
       await controller.PRCreate(SampleCreate);
+    } catch (error) {
+      expect(error).toBe(error);
+    }
+  });
+
+  it('should update add Item PR', async () => {
+    expect(
+      await controller.PRaddItem({ id: expect.any(String) }, sampleItem),
+    ).toEqual(SampleCreate);
+  });
+
+  it('should update change qty Item PR', async () => {
+    expect(
+      await controller.PRUpdateItem({ id: expect.any(String) }, sampleItem),
+    ).toEqual(SampleCreate);
+  });
+
+  it('should update remove Item PR', async () => {
+    expect(
+      await controller.PRRemoveItem({ id: expect.any(String) }, sampleItem),
+    ).toEqual(SampleCreate);
+  });
+
+  it('should update PR Success', async () => {
+    mockControllerPurchaseRequest.findByIdAndUpdate.mockImplementation(() => {
+      return {
+        ...SampleCreate,
+        ...SampleUpdate,
+      };
+    });
+    expect(
+      await controller.PRUpdate({ id: expect.any(String) }, SampleUpdate),
+    ).toEqual({
+      ...SampleCreate,
+      ...SampleUpdate,
+    });
+  });
+
+  it('should soft delete PR', async () => {
+    mockControllerPurchaseRequest.findByIdAndUpdate.mockImplementation(() => {
+      return {
+        ...SampleCreate,
+        isDelete: true,
+      };
+    });
+    expect(await controller.PRDelete({ id: expect.any(String) })).toEqual({
+      ...SampleCreate,
+      isDelete: true,
+    });
+  });
+
+  it('should update PR Failed', async () => {
+    mockControllerPurchaseRequest.findByIdAndUpdate.mockImplementation(() => {
+      throw new Error('Sorry Total Price Wrong');
+    });
+
+    try {
+      SampleUpdate.total = 0;
+      await controller.PRUpdate({ id: expect.any(String) }, SampleUpdate);
     } catch (error) {
       expect(error).toBe(error);
     }

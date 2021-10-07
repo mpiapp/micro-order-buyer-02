@@ -19,4 +19,5 @@ export const mockControllerPurchaseRequest = {
   findOne: jest.fn().mockImplementation(() => {
     return false;
   }),
+  findById: jest.fn().mockReturnValue(SampleCreate),
 };

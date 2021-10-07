@@ -7,7 +7,7 @@ export type PRDocument = PR & mongoose.Document;
 export class PR {
   @Prop()
   id: string;
-  @Prop({ unique: true, required: true })
+  @Prop({ unique: true, required: true, index: true })
   code: string;
   @Prop({ type: Date })
   date: Date;

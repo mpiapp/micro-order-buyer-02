@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ItemDto } from '../dto/Items.dto';
 import { PRIdDto } from '../dto/_IdPR.dto';
-import { IUpdateItemPurchaseRequest } from '../interfaces/services/UpdateProductProcessRequest.interface';
+import { IUpdateItemPurchaseRequest } from '../interfaces/services/UpdateProductPurchaseRequest.interface';
 import { PR, PRDocument } from '../schemas/purchase-request.schema';
 
 @Injectable()

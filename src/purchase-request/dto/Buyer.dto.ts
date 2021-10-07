@@ -1,10 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
-import { ISearch } from '../interfaces/type/ISearch.interface';
+import { IBuyer } from '../interfaces/type/IBuyer.interface';
 
-export class SearchDto implements ISearch {
+export class BuyerDto implements IBuyer {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  search: string;
+  buyerId: string;
 }
