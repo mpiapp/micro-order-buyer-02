@@ -1,30 +1,28 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { AppModule } from './app.module';
-import { ExceptionFilter } from './utils/rpc-exception.filter';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 async function bootstrap() {
-  const app = await NestFactory.createMicroservice<MicroserviceOptions>(
-    AppModule,
-    {
-      transport: Transport.KAFKA,
-      options: {
-        client: {
-          brokers: [process.env.KAFKA],
-        },
-      },
-    },
-  );
+  const app = await NestFactory.create(AppModule);
+
+  const config = new DocumentBuilder()
+    .setTitle('Order Service')
+    .setDescription('The Order Service API description')
+    .setVersion('0.0.1')
+    .addTag('Service')
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
 
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
-      // disableErrorMessages: true,
+      disableErrorMessages: true,
       forbidUnknownValues: true,
     }),
   );
-  app.useGlobalFilters(new ExceptionFilter());
-  await app.listen();
+
+  await app.listen(process.env.PORT);
 }
 bootstrap();

@@ -71,7 +71,7 @@ describe('Create History Dto', () => {
     classes.userId = null;
 
     validate(classes).then((errors) => {
-      expect(errors.length).toEqual(0);
+      expect(errors.length).toEqual(4);
     });
   });
 });
@@ -88,7 +88,7 @@ describe('Create Items Dto', () => {
     classes.price = null;
 
     validate(classes).then((errors) => {
-      expect(errors.length).toEqual(0);
+      expect(errors.length).toEqual(3);
     });
   });
 });
