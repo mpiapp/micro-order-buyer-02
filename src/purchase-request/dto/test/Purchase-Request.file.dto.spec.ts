@@ -18,11 +18,11 @@ describe('Create PR Dto', () => {
 
   it('validate element PR DTO', async () => {
     classes.id = null;
-    classes.user_id = null;
-    classes.buyer_id = null;
+    classes.createdBy = null;
+    classes.buyerId = null;
     classes.date = 'date';
-    classes.status = 'is array status';
-    classes.products = 'is array product';
+    classes.statuses = 'is array status';
+    classes.items = 'is array product';
 
     validate(classes).then((errors) => {
       expect(errors.length).toEqual(7);

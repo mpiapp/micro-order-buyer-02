@@ -26,8 +26,8 @@ export class PR {
   }[];
   @Prop({ default: false })
   isDeleted: boolean;
-  @Prop({ required: true })
-  history: string[];
+  @Prop({ type: mongoose.Schema.Types.ObjectId, required: true })
+  createdBy: string;
 }
 
 export const PRSchema = SchemaFactory.createForClass(PR);

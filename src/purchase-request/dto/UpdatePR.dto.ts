@@ -6,7 +6,6 @@ import {
   IsOptional,
   Min,
 } from 'class-validator';
-import { HistoryDto } from './History.dto';
 import { ItemDto } from './Items.dto';
 import { StatusDto } from './Status.dto';
 
@@ -25,8 +24,4 @@ export class PRUpdateDto {
   @IsArray()
   @IsOptional()
   statuses?: StatusDto[];
-  @ApiProperty()
-  @IsArray()
-  @IsNotEmpty()
-  history?: HistoryDto[];
 }
