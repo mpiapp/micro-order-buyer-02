@@ -1,3 +1,4 @@
+import { classToPlain } from 'class-transformer';
 import { validate } from 'class-validator';
 import { BuyerDto } from '../Buyer.dto';
 import { CodePRDto } from '../CodePR.dto';
@@ -27,6 +28,14 @@ describe('Create PR Dto', () => {
       expect(errors.length).toEqual(7);
     });
   });
+
+  it('validate Date PR DTO', async () => {
+    const date = new Date();
+    classes.date = date;
+
+    const plainClass = classToPlain(classes);
+    expect(plainClass).toEqual(classes);
+  });
 });
 
 describe('Create Status Dto', () => {
@@ -42,6 +51,14 @@ describe('Create Status Dto', () => {
     validate(classes).then((errors) => {
       expect(errors.length).toEqual(2);
     });
+  });
+
+  it('validate Date History DTO', async () => {
+    const date = new Date();
+    classes.timestamp = date;
+
+    const plainClass = classToPlain(classes);
+    expect(plainClass).toEqual(classes);
   });
 });
 
@@ -75,6 +92,14 @@ describe('Create History Dto', () => {
     validate(classes).then((errors) => {
       expect(errors.length).toEqual(4);
     });
+  });
+
+  it('validate Date History DTO', async () => {
+    const date = new Date();
+    classes.timestamp = date;
+
+    const plainClass = classToPlain(classes);
+    expect(plainClass).toEqual(classes);
   });
 });
 
