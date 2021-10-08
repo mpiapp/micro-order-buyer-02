@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsArray,
   IsDate,
@@ -18,10 +19,10 @@ export class PRCreateDto {
   code: string;
   @ApiProperty()
   @IsDate()
+  @Type(() => Date)
   date: Date;
   @ApiProperty()
   @IsNotEmpty()
-  @IsArray()
   buyerId: string;
   @ApiProperty()
   @IsArray()

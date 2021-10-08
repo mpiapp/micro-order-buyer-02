@@ -11,6 +11,7 @@ import { UpdateItemsService } from './services/update-items.service';
 import { sampleItem } from './../../test/mocks/sample/Products/sample.item.mock';
 import { SampleUpdate } from './../../test/mocks/sample/Purchase-Request/sample.data.update.mock';
 import configuration from './../config/configuration';
+import { SampleCode } from './../../test/mocks/sample/Purchase-Request/sample.code.mock';
 
 describe('PurchaseRequestController', () => {
   let controller: PurchaseRequestController;
@@ -79,19 +80,19 @@ describe('PurchaseRequestController', () => {
     }
   });
 
-  it('should update add Item PR', async () => {
+  it('should update add Item PR Success', async () => {
     expect(
       await controller.PRaddItem({ id: expect.any(String) }, sampleItem),
     ).toEqual(SampleCreate);
   });
 
-  it('should update change qty Item PR', async () => {
+  it('should update change qty Item PR Success', async () => {
     expect(
       await controller.PRUpdateItem({ id: expect.any(String) }, sampleItem),
     ).toEqual(SampleCreate);
   });
 
-  it('should update remove Item PR', async () => {
+  it('should update remove Item PR Success', async () => {
     expect(
       await controller.PRRemoveItem({ id: expect.any(String) }, sampleItem),
     ).toEqual(SampleCreate);
@@ -135,6 +136,73 @@ describe('PurchaseRequestController', () => {
       await controller.PRUpdate({ id: expect.any(String) }, SampleUpdate);
     } catch (error) {
       expect(error).toBe(error);
+    }
+  });
+
+  it('should get list PR Success', async () => {
+    expect(await controller.PRList({ buyerId: expect.any(String) })).toEqual([
+      SampleCreate,
+    ]);
+  });
+
+  it('should get list PR Failed', async () => {
+    try {
+      await controller.PRList({ buyerId: expect.any(String) });
+    } catch (error) {
+      expect(error).toBe(error);
+    }
+  });
+
+  it('should get PR By Id Success', async () => {
+    expect(await controller.PRById({ id: expect.any(String) })).toEqual(
+      SampleCreate,
+    );
+  });
+
+  it('should get PR By Id Failed', async () => {
+    try {
+      await controller.PRById({ id: expect.any(String) });
+    } catch (error) {
+      expect(error).toBe(error);
+    }
+  });
+
+  it('should Search PR Success', async () => {
+    expect(await controller.PRSearch(SampleCode)).toEqual([SampleCreate]);
+  });
+
+  it('should Search PR Failed', async () => {
+    try {
+      await controller.PRSearch(SampleCode);
+    } catch (error) {
+      expect(error).toBe(error);
+    }
+  });
+
+  it('should update add Item PR Failed', async () => {
+    mockControllerPurchaseRequest.updateOne.mockImplementation(() => {
+      throw new Error('Sorry Total Price Wrong');
+    });
+    try {
+      await controller.PRaddItem({ id: expect.any(String) }, sampleItem);
+    } catch (error) {
+      expect(error).toEqual(error);
+    }
+  });
+
+  it('should update change qty Item PR Failed', async () => {
+    try {
+      await controller.PRUpdateItem({ id: expect.any(String) }, sampleItem);
+    } catch (error) {
+      expect(error).toEqual(error);
+    }
+  });
+
+  it('should update remove Item PR Failed', async () => {
+    try {
+      await controller.PRRemoveItem({ id: expect.any(String) }, sampleItem);
+    } catch (error) {
+      expect(error).toEqual(error);
     }
   });
 });

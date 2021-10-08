@@ -1,7 +1,24 @@
-import { Body, Controller, Param, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { MessagePattern } from '@nestjs/microservices';
-import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
+import { BuyerDto } from './dto/Buyer.dto';
+import { CodePRDto } from './dto/CodePR.dto';
 import { PRCreateDto } from './dto/CreatePR.dto';
 import { ItemDto } from './dto/Items.dto';
 import { PRUpdateDto } from './dto/UpdatePR.dto';
@@ -50,7 +67,7 @@ export class PurchaseRequestController {
 
   @Post()
   @ApiBody({ type: PRCreateDto })
-  @ApiOperation({ summary: 'Create PR' })
+  @ApiOperation({ summary: 'Create Master PR' })
   @MessagePattern('Purchase-Request-Create')
   async PRCreate(@Body() param: PRCreateDto): Promise<PR> {
     const generateCodePR = await this.Generate.generateCode({
@@ -61,27 +78,75 @@ export class PurchaseRequestController {
     return this.PRMaster.createPurchaseRequest(param);
   }
 
+  @Put()
+  @ApiQuery({ name: 'id', type: PRIdDto })
+  @ApiBody({ type: PRUpdateDto })
+  @ApiOperation({ summary: 'Update Master PR' })
+  @MessagePattern('Purchase-Request-Update')
   async PRUpdate(@Query('id') id: PRIdDto, param: PRUpdateDto): Promise<PR> {
     this.sumValidate(param);
     return this.PRMaster.updatePurchaseRequest(id, param);
   }
 
+  @Delete(':id')
+  @ApiParam({ name: 'id', type: PRIdDto })
+  @ApiOperation({ summary: 'Delete Master PR' })
+  @MessagePattern('Purchase-Request-Delete')
   async PRDelete(@Param('id') id: PRIdDto): Promise<PR> {
     return this.PRMaster.deletePurchaseRequest(id);
   }
 
+  @Put('addItem')
+  @ApiQuery({ name: 'id', type: PRIdDto })
+  @ApiBody({ type: ItemDto })
+  @ApiOperation({ summary: 'Add Item Master PR' })
+  @MessagePattern('Purchase-Request-Add-Item')
   async PRaddItem(@Query('id') id: PRIdDto, product: ItemDto): Promise<PR> {
-    this.Items.addItemPurchaseRequest(id, product);
+    await this.Items.addItemPurchaseRequest(id, product);
     return this.reCalculate(id);
   }
 
+  @Put('updateItem')
+  @ApiQuery({ name: 'id', type: PRIdDto })
+  @ApiBody({ type: ItemDto })
+  @ApiOperation({ summary: 'Update Item Master PR' })
+  @MessagePattern('Purchase-Request-Update-Item')
   async PRUpdateItem(@Query('id') id: PRIdDto, product: ItemDto): Promise<PR> {
-    this.Items.updateQtyItemPurchaseRequest(id, product);
+    await this.Items.updateQtyItemPurchaseRequest(id, product);
     return this.reCalculate(id);
   }
 
+  @Put('deleteItem')
+  @ApiQuery({ name: 'id', type: PRIdDto })
+  @ApiBody({ type: ItemDto })
+  @ApiOperation({ summary: 'Update Item Master PR' })
+  @MessagePattern('Purchase-Request-Remove-Item')
   async PRRemoveItem(@Query('id') id: PRIdDto, product: ItemDto): Promise<PR> {
-    this.Items.removeItemPurchaseRequest(id, product);
+    await this.Items.removeItemPurchaseRequest(id, product);
     return this.reCalculate(id);
+  }
+
+  @Get('list')
+  @ApiQuery({ name: 'id', type: BuyerDto })
+  @ApiOperation({ summary: 'List Master PR' })
+  @MessagePattern('Purchase-Request-List-Data')
+  async PRList(@Query('id') id: BuyerDto): Promise<PR[]> {
+    return this.PRMaster.listPurchaseRequest(id);
+  }
+
+  @Get('byId')
+  @ApiQuery({ name: 'id', type: PRIdDto })
+  @ApiOperation({ summary: 'Get Master PR By Id' })
+  @MessagePattern('Purchase-Request-Get-Data-By-Id')
+  async PRById(@Query('id') id: PRIdDto): Promise<PR> {
+    return this.PRMaster.byIdPurchaseRequest(id);
+  }
+
+  @Get('search')
+  @ApiQuery({ name: 'search', type: CodePRDto })
+  @ApiOperation({ summary: 'Search Master PR' })
+  @MessagePattern('Purchase-Request-Search-Data')
+  async PRSearch(@Query('search') search: CodePRDto): Promise<PR[]> {
+    return this.PRMaster.searchPurchaseRequest(search);
   }
 }

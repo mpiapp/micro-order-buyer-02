@@ -6,6 +6,7 @@ import { PR, PRSchema } from './schemas/purchase-request.schema';
 import { GenerateService } from './services/generate.service';
 import { ConfigModule } from '@nestjs/config';
 import configuration from './../config/configuration';
+import { UpdateItemsService } from './services/update-items.service';
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import configuration from './../config/configuration';
       load: [configuration],
     }),
   ],
-  providers: [PurchaseRequestService, GenerateService],
+  providers: [PurchaseRequestService, GenerateService, UpdateItemsService],
   controllers: [PurchaseRequestController],
 })
 export class PurchaseRequestModule {}

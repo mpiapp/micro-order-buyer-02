@@ -20,4 +20,5 @@ export const mockControllerPurchaseRequest = {
     return false;
   }),
   findById: jest.fn().mockReturnValue(SampleCreate),
+  find: jest.fn().mockReturnValue([SampleCreate]),
 };
