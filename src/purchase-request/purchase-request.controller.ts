@@ -21,12 +21,14 @@ import { BuyerDto } from './dto/Buyer.dto';
 import { CodePRDto } from './dto/CodePR.dto';
 import { PRCreateDto } from './dto/CreatePR.dto';
 import { ItemDto } from './dto/Items.dto';
+import { StatusDto } from './dto/Status.dto';
 import { PRUpdateDto } from './dto/UpdatePR.dto';
 import { PRIdDto } from './dto/_IdPR.dto';
 import { PR } from './schemas/purchase-request.schema';
 import { GenerateService } from './services/generate.service';
 import { PurchaseRequestService } from './services/purchase-request.service';
 import { UpdateItemsService } from './services/update-items.service';
+import { UpdateStatusService } from './services/update-status.service';
 
 @ApiTags('Purchase Request')
 @Controller('PurchaseRequest')
@@ -35,6 +37,7 @@ export class PurchaseRequestController {
     private readonly PRMaster: PurchaseRequestService,
     private readonly Generate: GenerateService,
     private readonly Items: UpdateItemsService,
+    private readonly Status: UpdateStatusService,
     private readonly Config: ConfigService,
   ) {}
 
@@ -83,7 +86,7 @@ export class PurchaseRequestController {
   @ApiBody({ type: PRUpdateDto })
   @ApiOperation({ summary: 'Update Master PR' })
   @MessagePattern('Purchase-Request-Update')
-  async PRUpdate(@Query('id') id: PRIdDto, param: PRUpdateDto): Promise<PR> {
+  async PRUpdate(@Query() id: PRIdDto, param: PRUpdateDto): Promise<PR> {
     this.sumValidate(param);
     return this.PRMaster.updatePurchaseRequest(id, param);
   }
@@ -92,7 +95,7 @@ export class PurchaseRequestController {
   @ApiParam({ name: 'id', type: PRIdDto })
   @ApiOperation({ summary: 'Delete Master PR' })
   @MessagePattern('Purchase-Request-Delete')
-  async PRDelete(@Param('id') id: PRIdDto): Promise<PR> {
+  async PRDelete(@Param() id: PRIdDto): Promise<PR> {
     return this.PRMaster.deletePurchaseRequest(id);
   }
 
@@ -101,7 +104,7 @@ export class PurchaseRequestController {
   @ApiBody({ type: ItemDto })
   @ApiOperation({ summary: 'Add Item Master PR' })
   @MessagePattern('Purchase-Request-Add-Item')
-  async PRaddItem(@Query('id') id: PRIdDto, product: ItemDto): Promise<PR> {
+  async PRaddItem(@Query() id: PRIdDto, product: ItemDto): Promise<PR> {
     await this.Items.addItemPurchaseRequest(id, product);
     return this.reCalculate(id);
   }
@@ -111,7 +114,7 @@ export class PurchaseRequestController {
   @ApiBody({ type: ItemDto })
   @ApiOperation({ summary: 'Update Item Master PR' })
   @MessagePattern('Purchase-Request-Update-Item')
-  async PRUpdateItem(@Query('id') id: PRIdDto, product: ItemDto): Promise<PR> {
+  async PRUpdateItem(@Query() id: PRIdDto, product: ItemDto): Promise<PR> {
     await this.Items.updateQtyItemPurchaseRequest(id, product);
     return this.reCalculate(id);
   }
@@ -121,24 +124,24 @@ export class PurchaseRequestController {
   @ApiBody({ type: ItemDto })
   @ApiOperation({ summary: 'Update Item Master PR' })
   @MessagePattern('Purchase-Request-Remove-Item')
-  async PRRemoveItem(@Query('id') id: PRIdDto, product: ItemDto): Promise<PR> {
+  async PRRemoveItem(@Query() id: PRIdDto, product: ItemDto): Promise<PR> {
     await this.Items.removeItemPurchaseRequest(id, product);
     return this.reCalculate(id);
   }
 
   @Get('list')
-  @ApiQuery({ name: 'id', type: BuyerDto })
+  @ApiQuery({ name: 'buyer', type: BuyerDto })
   @ApiOperation({ summary: 'List Master PR' })
   @MessagePattern('Purchase-Request-List-Data')
-  async PRList(@Query('id') id: BuyerDto): Promise<PR[]> {
-    return this.PRMaster.listPurchaseRequest(id);
+  async PRList(@Query() buyer: BuyerDto): Promise<PR[]> {
+    return this.PRMaster.listPurchaseRequest(buyer);
   }
 
   @Get('byId')
   @ApiQuery({ name: 'id', type: PRIdDto })
   @ApiOperation({ summary: 'Get Master PR By Id' })
   @MessagePattern('Purchase-Request-Get-Data-By-Id')
-  async PRById(@Query('id') id: PRIdDto): Promise<PR> {
+  async PRById(@Query() id: PRIdDto): Promise<PR> {
     return this.PRMaster.byIdPurchaseRequest(id);
   }
 
@@ -146,7 +149,16 @@ export class PurchaseRequestController {
   @ApiQuery({ name: 'search', type: CodePRDto })
   @ApiOperation({ summary: 'Search Master PR' })
   @MessagePattern('Purchase-Request-Search-Data')
-  async PRSearch(@Query('search') search: CodePRDto): Promise<PR[]> {
+  async PRSearch(@Query() search: CodePRDto): Promise<PR[]> {
     return this.PRMaster.searchPurchaseRequest(search);
+  }
+
+  @Put('addStatus')
+  @ApiQuery({ name: 'id', type: PRIdDto })
+  @ApiBody({ type: StatusDto })
+  @ApiOperation({ summary: 'Add Status Master PR' })
+  @MessagePattern('Purchase-Request-Add-Status-PR')
+  async PRaddStatus(@Query() id: PRIdDto, status: StatusDto): Promise<PR> {
+    return this.Status.addStatus(id, status);
   }
 }

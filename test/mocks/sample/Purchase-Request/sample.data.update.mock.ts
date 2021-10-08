@@ -25,12 +25,4 @@ export const SampleUpdate: PRUpdateDto = {
       timestamp: new Date('2021-10-10 20:00'),
     },
   ],
-  history: [
-    {
-      title: 'Created PR',
-      message: 'Message Created PR',
-      timestamp: new Date('2021-10-10 20:00'),
-      userId: 'XXXX',
-    },
-  ],
 };

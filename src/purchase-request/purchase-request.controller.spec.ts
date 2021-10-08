@@ -12,6 +12,8 @@ import { sampleItem } from './../../test/mocks/sample/Products/sample.item.mock'
 import { SampleUpdate } from './../../test/mocks/sample/Purchase-Request/sample.data.update.mock';
 import configuration from './../config/configuration';
 import { SampleCode } from './../../test/mocks/sample/Purchase-Request/sample.code.mock';
+import { sampleStatus } from './../../test/mocks/sample/Status/sample.data.mocks';
+import { UpdateStatusService } from './services/update-status.service';
 
 describe('PurchaseRequestController', () => {
   let controller: PurchaseRequestController;
@@ -28,6 +30,7 @@ describe('PurchaseRequestController', () => {
         GenerateService,
         PurchaseRequestService,
         UpdateItemsService,
+        UpdateStatusService,
         {
           provide: getModelToken(PR.name),
           useValue: mockControllerPurchaseRequest,
@@ -204,5 +207,15 @@ describe('PurchaseRequestController', () => {
     } catch (error) {
       expect(error).toEqual(error);
     }
+  });
+
+  it('should add Status Master PR', async () => {
+    SampleCreate.statuses.push(sampleStatus);
+    mockControllerPurchaseRequest.findByIdAndUpdate.mockImplementation(() => {
+      return SampleCreate;
+    });
+    expect(
+      await controller.PRaddStatus({ id: expect.any(String) }, sampleStatus),
+    ).toEqual(SampleCreate);
   });
 });

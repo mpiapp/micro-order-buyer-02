@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsDate, IsNotEmpty, IsString } from 'class-validator';
+import { IsDate, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { IStatus } from '../interfaces/type/IStatus.interface';
 
 export class StatusDto implements IStatus {
@@ -12,4 +12,12 @@ export class StatusDto implements IStatus {
   @IsDate()
   @Type(() => Date)
   timestamp: Date;
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  message?: string;
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  userId?: string;
 }

@@ -129,11 +129,10 @@ describe('Create UpdatePR Dto', () => {
   it('validate element UpdatePR DTO', async () => {
     classes.statuses = null;
     classes.total = null;
-    classes.history = null;
     classes.items = null;
 
     validate(classes).then((errors) => {
-      expect(errors.length).toEqual(1);
+      expect(errors.length).toEqual(0);
     });
   });
 });
@@ -168,7 +167,7 @@ describe('Buyer PR Dto', () => {
   });
 });
 
-describe('Buyer PR Dto', () => {
+describe('Search PR Dto', () => {
   let classes;
   beforeEach(() => {
     classes = new SearchDto();

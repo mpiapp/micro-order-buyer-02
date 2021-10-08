@@ -7,6 +7,7 @@ import { GenerateService } from './services/generate.service';
 import { ConfigModule } from '@nestjs/config';
 import configuration from './../config/configuration';
 import { UpdateItemsService } from './services/update-items.service';
+import { UpdateStatusService } from './services/update-status.service';
 
 @Module({
   imports: [
@@ -15,7 +16,12 @@ import { UpdateItemsService } from './services/update-items.service';
       load: [configuration],
     }),
   ],
-  providers: [PurchaseRequestService, GenerateService, UpdateItemsService],
+  providers: [
+    PurchaseRequestService,
+    GenerateService,
+    UpdateItemsService,
+    UpdateStatusService,
+  ],
   controllers: [PurchaseRequestController],
 })
 export class PurchaseRequestModule {}

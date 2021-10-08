@@ -4,6 +4,6 @@ import { ApprovalController } from './approval.controller';
 
 @Module({
   providers: [ApprovalService],
-  controllers: [ApprovalController]
+  controllers: [ApprovalController],
 })
 export class ApprovalModule {}

@@ -37,12 +37,15 @@ export class PurchaseRequestService
   }
 
   async searchPurchaseRequest(search: CodePRDto): Promise<PR[]> {
-    return this.model.find({ $text: { $search: search.code } });
+    const { code } = search;
+    return this.model.find({ code: { $regex: code } });
   }
-  async listPurchaseRequest(id: BuyerDto): Promise<PR[]> {
-    return this.model.find({ buyerId: { $regex: id.buyerId } });
+  async listPurchaseRequest(buyer: BuyerDto): Promise<PR[]> {
+    const { buyerId } = buyer;
+    return this.model.find({ buyerId: buyerId });
   }
-  async byIdPurchaseRequest(id: PRIdDto): Promise<PR> {
+  async byIdPurchaseRequest(_id: PRIdDto): Promise<PR> {
+    const { id } = _id;
     return this.model.findById(id);
   }
 }
