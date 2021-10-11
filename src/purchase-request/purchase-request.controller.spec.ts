@@ -14,6 +14,7 @@ import configuration from './../config/configuration';
 import { SampleCode } from './../../test/mocks/sample/Purchase-Request/sample.code.mock';
 import { sampleStatus } from './../../test/mocks/sample/Status/sample.data.mocks';
 import { UpdateStatusService } from './services/update-status.service';
+import { Helper } from './../utils/helper.utils';
 
 describe('PurchaseRequestController', () => {
   let controller: PurchaseRequestController;
@@ -31,6 +32,7 @@ describe('PurchaseRequestController', () => {
         PurchaseRequestService,
         UpdateItemsService,
         UpdateStatusService,
+        Helper,
         {
           provide: getModelToken(PR.name),
           useValue: mockControllerPurchaseRequest,

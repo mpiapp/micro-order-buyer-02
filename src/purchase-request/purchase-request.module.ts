@@ -8,6 +8,7 @@ import { ConfigModule } from '@nestjs/config';
 import configuration from './../config/configuration';
 import { UpdateItemsService } from './services/update-items.service';
 import { UpdateStatusService } from './services/update-status.service';
+import { Helper } from './../utils/helper.utils';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { UpdateStatusService } from './services/update-status.service';
     GenerateService,
     UpdateItemsService,
     UpdateStatusService,
+    Helper,
   ],
   controllers: [PurchaseRequestController],
 })

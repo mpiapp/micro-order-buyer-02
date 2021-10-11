@@ -17,6 +17,7 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
+import { Helper } from './../utils/helper.utils';
 import { BuyerDto } from './dto/Buyer.dto';
 import { CodePRDto } from './dto/CodePR.dto';
 import { PRCreateDto } from './dto/CreatePR.dto';
@@ -38,33 +39,13 @@ export class PurchaseRequestController {
     private readonly Generate: GenerateService,
     private readonly Items: UpdateItemsService,
     private readonly Status: UpdateStatusService,
-    private readonly Config: ConfigService,
+    private readonly HelperService: Helper,
   ) {}
-
-  private sumValidate(param) {
-    const sum: number = this.SUM(param);
-    if (sum !== param.total) {
-      throw new Error(this.Config.get<string>('error.total'));
-    }
-  }
-
-  private SUM(param): number {
-    const initialValue = 0;
-    const calculate: number = param.items.reduce(function (
-      total,
-      currentValue,
-    ) {
-      // eslint-disable-next-line prettier/prettier
-      return (currentValue.price * currentValue.quantity) + total;
-    },
-    initialValue);
-    return calculate;
-  }
 
   private async reCalculate(id) {
     const getPRbyId = await this.PRMaster.byIdPurchaseRequest(id);
     return this.PRMaster.updatePurchaseRequest(id, {
-      total: this.SUM(getPRbyId),
+      total: this.HelperService.SUM(getPRbyId),
     });
   }
 
@@ -77,7 +58,7 @@ export class PurchaseRequestController {
       code: param.code,
     });
     param.code = generateCodePR.code;
-    this.sumValidate(param);
+    this.HelperService.sumValidate(param);
     return this.PRMaster.createPurchaseRequest(param);
   }
 
@@ -87,7 +68,7 @@ export class PurchaseRequestController {
   @ApiOperation({ summary: 'Update Master PR' })
   @MessagePattern('Purchase-Request-Update')
   async PRUpdate(@Query() id: PRIdDto, param: PRUpdateDto): Promise<PR> {
-    this.sumValidate(param);
+    this.HelperService.sumValidate(param);
     return this.PRMaster.updatePurchaseRequest(id, param);
   }
 
