@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { Helper } from './../../utils/helper.utils';
 import { CodePRDto } from '../dto/CodePR.dto';
 import { IRGenerateCode } from '../interfaces/response/GenerateCode.interface';
 import { IGenerateCode } from '../interfaces/services/GenerateCode.interface';
@@ -11,6 +12,7 @@ import { PR, PRDocument } from '../schemas/purchase-request.schema';
 export class GenerateService implements IGenerateCode {
   constructor(
     @InjectModel(PR.name) private readonly model: Model<PRDocument>,
+    private readonly HelperService: Helper,
     private config: ConfigService,
   ) {}
 
@@ -27,9 +29,7 @@ export class GenerateService implements IGenerateCode {
 
     if (!docs) {
       return {
-        code: `${_param.code}-${
-          initNumber.substring(0, initNumber.length - 1) + 1
-        }`,
+        code: this.HelperService.GenerateNumber(_param.code, initNumber),
       };
     }
 
@@ -38,12 +38,9 @@ export class GenerateService implements IGenerateCode {
       code.length - initNumber.length,
       code.length,
     );
-    const iNumber: number = parseInt(numberCode) + 1;
+
     return {
-      code: `${_param.code}-${
-        initNumber.substring(0, initNumber.length - iNumber.toString().length) +
-        iNumber
-      }`,
+      code: this.HelperService.GenerateNumber(_param.code, numberCode),
     };
   }
 }

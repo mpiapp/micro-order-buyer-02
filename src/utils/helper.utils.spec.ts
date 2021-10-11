@@ -4,6 +4,7 @@ import configuration from './../config/configuration';
 import { Helper } from './helper.utils';
 
 const sampleDataHelper = {
+  code: 'KPJ-01-01',
   items: [
     {
       productId: expect.any(String),
@@ -63,5 +64,11 @@ describe('Helper Service', () => {
     } catch (error) {
       expect(error).toBe(error);
     }
+  });
+
+  it('should generate number', () => {
+    expect(services.GenerateNumber(sampleDataHelper.code, '00000')).toEqual(
+      `${sampleDataHelper.code}-00001`,
+    );
   });
 });

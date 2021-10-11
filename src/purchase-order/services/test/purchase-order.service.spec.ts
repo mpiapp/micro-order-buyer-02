@@ -1,11 +1,7 @@
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
-import { PO } from './../purchase-order/schemas/purchase-order.schema';
-import { PR } from './../purchase-request/schemas/purchase-request.schema';
-import { mockPurchaseRequest } from './../../test/mocks/services/PR.mocks';
-import { PurchaseOrderService } from './../purchase-order/services/purchase-order.service';
-import { PurchaseRequestService } from './../purchase-request/services/purchase-request.service';
-import { ApprovalController } from './approval.controller';
+import { PO } from './../../schemas/purchase-order.schema';
+import { PurchaseOrderService } from '../purchase-order.service';
 
 const mockPurchaseOrder = {
   create: jest.fn().mockImplementation((dto) => {
@@ -13,7 +9,7 @@ const mockPurchaseOrder = {
   }),
 };
 
-const sampleDataPR = {
+const sampleDataCreatePO = {
   id: '615fc7256dce435b915538ec',
   code: 'KPJ-12-10-00001',
   buyerId: '617364617364617364617344',
@@ -46,36 +42,30 @@ const sampleDataPR = {
   createdBy: '615fc7256dce435b915538ec',
 };
 
-describe('ApprovalController', () => {
-  let controller: ApprovalController;
+describe('PurchaseOrderService', () => {
+  let service: PurchaseOrderService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [ApprovalController],
       providers: [
         PurchaseOrderService,
         {
           provide: getModelToken(PO.name),
           useValue: mockPurchaseOrder,
         },
-        PurchaseRequestService,
-        {
-          provide: getModelToken(PR.name),
-          useValue: mockPurchaseRequest,
-        },
       ],
     }).compile();
 
-    controller = module.get<ApprovalController>(ApprovalController);
+    service = module.get<PurchaseOrderService>(PurchaseOrderService);
   });
 
   it('should be defined', () => {
-    expect(controller).toBeDefined();
+    expect(service).toBeDefined();
   });
 
-  it('should approvals', async () => {
-    expect(await controller.approved(sampleDataPR)).toBe(
-      'Success Submit PR to PO',
+  it('should be create master PO', async () => {
+    expect(await service.createPurchaseOrder(sampleDataCreatePO)).toEqual(
+      sampleDataCreatePO,
     );
   });
 });

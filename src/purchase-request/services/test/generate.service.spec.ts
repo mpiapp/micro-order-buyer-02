@@ -5,6 +5,7 @@ import { mockGenerate } from './../../../../test/mocks/services/Generate.mocks';
 import { GenerateService } from '../generate.service';
 import { SampleCode } from './../../../../test/mocks/sample/Purchase-Request/sample.code.mock';
 import { ConfigModule } from '@nestjs/config';
+import { Helper } from './../../../utils/helper.utils';
 
 describe('GenerateService', () => {
   let service: GenerateService;
@@ -14,6 +15,7 @@ describe('GenerateService', () => {
       imports: [ConfigModule.forRoot()],
       providers: [
         GenerateService,
+        Helper,
         {
           provide: getModelToken(PR.name),
           useValue: mockGenerate,

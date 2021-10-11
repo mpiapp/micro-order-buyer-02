@@ -31,4 +31,14 @@ export class Helper {
     initialValue);
     return calculate;
   }
+
+  GenerateNumber(code: string, initialNumber): string {
+    const iNumber: number = parseInt(initialNumber) + 1;
+    return `${code}-${
+      initialNumber.substring(
+        0,
+        initialNumber.length - iNumber.toString().length,
+      ) + iNumber
+    }`;
+  }
 }

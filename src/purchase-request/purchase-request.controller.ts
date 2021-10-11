@@ -8,7 +8,6 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { MessagePattern } from '@nestjs/microservices';
 import {
   ApiBody,

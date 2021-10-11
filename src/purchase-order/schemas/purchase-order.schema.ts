@@ -1,0 +1,35 @@
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import * as mongoose from 'mongoose';
+
+export type PODocument = PO & mongoose.Document;
+
+@Schema({ timestamps: true })
+export class PO {
+  @Prop()
+  id: string;
+  @Prop({ unique: true, required: true, index: true })
+  code: string;
+  @Prop({ type: Date })
+  date: Date;
+  @Prop({ type: mongoose.Schema.Types.ObjectId, required: true })
+  buyerId: string;
+  @Prop({ type: mongoose.Schema.Types.ObjectId, required: true })
+  AddressId: string;
+  @Prop({ required: true })
+  items: string[];
+  @Prop({ min: 0, required: true })
+  total: number;
+  @Prop({
+    type: [{ name: { type: String }, timestamp: { type: Date } }],
+  })
+  statuses: {
+    name: string;
+    timestamp: Date;
+  }[];
+  @Prop({ default: false })
+  isDeleted: boolean;
+  @Prop({ type: mongoose.Schema.Types.ObjectId, required: true })
+  createdBy: string;
+}
+
+export const POSchema = SchemaFactory.createForClass(PO);
