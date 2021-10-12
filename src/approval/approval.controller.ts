@@ -5,26 +5,21 @@ import { PurchaseRequestService } from 'src/purchase-request/services/purchase-r
 
 @Controller('approval')
 export class ApprovalController {
-  constructor(
-    private readonly PRMaster: PurchaseRequestService,
-    private readonly POMaster: PurchaseOrderService,
-  ) {}
+  constructor() {}
 
-  async approved(id: PRIdDto): Promise<any> {
-    const getPR = await this.PRMaster.byIdPurchaseRequest(id);
-    if (!getPR) {
-      throw new Error('Sorry PR not Found');
-    }
-      
-      
+  // async approved(id: PRIdDto): Promise<any> {
+  //   const getPR = await this.PRMaster.byIdPurchaseRequest(id);
+  //   if (!getPR) {
+  //     throw new Error('Sorry PR not Found');
+  //   }
 
-    const submited = await this.POMaster.createPurchaseOrder(getPR);
-    if (!submited) {
-      throw new Error('Sorry PR not Found');
-    }
+  //   const submited = await this.POMaster.createPurchaseOrder(getPR);
+  //   if (!submited) {
+  //     throw new Error('Sorry PR not Found');
+  //   }
 
-    await this.PRMaster.deletePurchaseRequest(id);
+  //   await this.PRMaster.deletePurchaseRequest(id);
 
-    return 'success submit';
-  }
+  //   return 'success submit';
+  // }
 }

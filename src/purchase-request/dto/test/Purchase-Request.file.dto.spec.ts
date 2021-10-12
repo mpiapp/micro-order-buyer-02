@@ -4,7 +4,7 @@ import { BuyerDto } from '../Buyer.dto';
 import { CodePRDto } from '../CodePR.dto';
 import { PRCreateDto } from '../CreatePR.dto';
 import { HistoryDto } from '../History.dto';
-import { ItemDto } from '../Items.dto';
+import { ItemPRDto } from '../Items.dto';
 import { SearchDto } from '../SearchPR.dto';
 import { StatusDto } from '../Status.dto';
 import { PRUpdateDto } from '../UpdatePR.dto';
@@ -106,7 +106,7 @@ describe('Create History Dto', () => {
 describe('Create Items Dto', () => {
   let classes;
   beforeEach(() => {
-    classes = new ItemDto();
+    classes = new ItemPRDto();
   });
 
   it('validate element Items DTO', async () => {

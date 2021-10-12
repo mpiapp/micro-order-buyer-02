@@ -15,7 +15,7 @@ export class PurchaseOrderItemDto implements IPurchaseOrderItem {
   productId: string;
   @ApiProperty()
   @IsOptional()
-  payment_terms?: IPaymentTerm;
+  payment_terms?: string;
   @ApiProperty()
   @IsNotEmpty()
   @IsString()

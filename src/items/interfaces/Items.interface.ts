@@ -1,5 +1,4 @@
-export interface IItem {
+export interface ItemsInterface {
   productId: string;
   quantity: number;
-  price: number;
 }

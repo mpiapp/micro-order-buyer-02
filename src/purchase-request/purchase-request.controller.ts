@@ -20,7 +20,7 @@ import { Helper } from './../utils/helper.utils';
 import { BuyerDto } from './dto/Buyer.dto';
 import { CodePRDto } from './dto/CodePR.dto';
 import { PRCreateDto } from './dto/CreatePR.dto';
-import { ItemDto } from './dto/Items.dto';
+import { ItemPRDto } from './dto/Items.dto';
 import { StatusDto } from './dto/Status.dto';
 import { PRUpdateDto } from './dto/UpdatePR.dto';
 import { PRIdDto } from './dto/_IdPR.dto';
@@ -42,7 +42,7 @@ export class PurchaseRequestController {
   ) {}
 
   private async reCalculate(id) {
-    const getPRbyId = await this.PRMaster.byIdPurchaseRequest(id);
+    const getPRbyId = await this.PRMaster.byIdPurchaseRequest({ id: id });
     return this.PRMaster.updatePurchaseRequest(id, {
       total: this.HelperService.SUM(getPRbyId),
     });
@@ -66,7 +66,10 @@ export class PurchaseRequestController {
   @ApiBody({ type: PRUpdateDto })
   @ApiOperation({ summary: 'Update Master PR' })
   @MessagePattern('Purchase-Request-Update')
-  async PRUpdate(@Query() id: PRIdDto, param: PRUpdateDto): Promise<PR> {
+  async PRUpdate(
+    @Query() id: PRIdDto,
+    @Body() param: PRUpdateDto,
+  ): Promise<PR> {
     this.HelperService.sumValidate(param);
     return this.PRMaster.updatePurchaseRequest(id, param);
   }
@@ -81,40 +84,61 @@ export class PurchaseRequestController {
 
   @Put('addItem')
   @ApiQuery({ name: 'id', type: PRIdDto })
-  @ApiBody({ type: ItemDto })
+  @ApiBody({ type: ItemPRDto })
   @ApiOperation({ summary: 'Add Item Master PR' })
   @MessagePattern('Purchase-Request-Add-Item')
-  async PRaddItem(@Query() id: PRIdDto, product: ItemDto): Promise<PR> {
-    await this.Items.addItemPurchaseRequest(id, product);
+  async PRaddItem(
+    @Query('id') id: string,
+    @Body() product: ItemPRDto,
+  ): Promise<PR> {
+    const addQty = await this.Items.addItem(
+      { $and: [{ _id: id, 'items.productId': product.productId }] },
+      { $inc: { 'items.$.quantity': product.quantity } },
+    );
+    if (!addQty) {
+      await this.Items.addItem({ _id: id }, { $push: { items: product } });
+    }
     return this.reCalculate(id);
   }
 
   @Put('updateItem')
   @ApiQuery({ name: 'id', type: PRIdDto })
-  @ApiBody({ type: ItemDto })
+  @ApiBody({ type: ItemPRDto })
   @ApiOperation({ summary: 'Update Item Master PR' })
   @MessagePattern('Purchase-Request-Update-Item')
-  async PRUpdateItem(@Query() id: PRIdDto, product: ItemDto): Promise<PR> {
-    await this.Items.updateQtyItemPurchaseRequest(id, product);
+  async PRUpdateItem(
+    @Query('id') id: string,
+    @Body() product: ItemPRDto,
+  ): Promise<PR> {
+    await this.Items.addItem(
+      { $and: [{ _id: id, 'items.productId': product.productId }] },
+      { $inc: { 'items.$.quantity': product.quantity } },
+    );
     return this.reCalculate(id);
   }
 
   @Put('deleteItem')
   @ApiQuery({ name: 'id', type: PRIdDto })
-  @ApiBody({ type: ItemDto })
+  @ApiBody({ type: ItemPRDto })
   @ApiOperation({ summary: 'Update Item Master PR' })
   @MessagePattern('Purchase-Request-Remove-Item')
-  async PRRemoveItem(@Query() id: PRIdDto, product: ItemDto): Promise<PR> {
-    await this.Items.removeItemPurchaseRequest(id, product);
+  async PRRemoveItem(
+    @Query('id') id: string,
+    @Body() product: ItemPRDto,
+  ): Promise<PR> {
+    await this.Items.removeItem(
+      { _id: id },
+      { $pull: { items: { productId: product.productId } } },
+    );
     return this.reCalculate(id);
   }
 
   @Get('list')
-  @ApiQuery({ name: 'buyer', type: BuyerDto })
+  @ApiQuery({ name: 'id', type: BuyerDto })
   @ApiOperation({ summary: 'List Master PR' })
   @MessagePattern('Purchase-Request-List-Data')
-  async PRList(@Query() buyer: BuyerDto): Promise<PR[]> {
-    return this.PRMaster.listPurchaseRequest(buyer);
+  async PRList(@Query() id: BuyerDto): Promise<PR[]> {
+    return this.PRMaster.listPurchaseRequest(id);
   }
 
   @Get('byId')
@@ -138,7 +162,10 @@ export class PurchaseRequestController {
   @ApiBody({ type: StatusDto })
   @ApiOperation({ summary: 'Add Status Master PR' })
   @MessagePattern('Purchase-Request-Add-Status-PR')
-  async PRaddStatus(@Query() id: PRIdDto, status: StatusDto): Promise<PR> {
+  async PRaddStatus(
+    @Query() id: PRIdDto,
+    @Body() status: StatusDto,
+  ): Promise<PR> {
     return this.Status.addStatus(id, status);
   }
 }

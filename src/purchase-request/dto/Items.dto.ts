@@ -1,15 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsString, Min } from 'class-validator';
-import { IItem } from '../interfaces/type/IItem.interface';
+import { IsNumber, Min } from 'class-validator';
+import { Items } from './../../items/dto/Items.dto';
 
-export class ItemDto implements IItem {
-  @ApiProperty()
-  @IsString()
-  productId: string;
-  @ApiProperty()
-  @IsNumber()
-  @Min(0)
-  quantity: number;
+export class ItemPRDto extends Items {
   @ApiProperty()
   @IsNumber()
   @Min(0)

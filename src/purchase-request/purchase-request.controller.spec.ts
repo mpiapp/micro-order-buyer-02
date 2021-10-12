@@ -86,20 +86,20 @@ describe('PurchaseRequestController', () => {
   });
 
   it('should update add Item PR Success', async () => {
-    expect(
-      await controller.PRaddItem({ id: expect.any(String) }, sampleItem),
-    ).toEqual(SampleCreate);
+    expect(await controller.PRaddItem(expect.any(String), sampleItem)).toEqual(
+      SampleCreate,
+    );
   });
 
   it('should update change qty Item PR Success', async () => {
     expect(
-      await controller.PRUpdateItem({ id: expect.any(String) }, sampleItem),
+      await controller.PRUpdateItem(expect.any(String), sampleItem),
     ).toEqual(SampleCreate);
   });
 
   it('should update remove Item PR Success', async () => {
     expect(
-      await controller.PRRemoveItem({ id: expect.any(String) }, sampleItem),
+      await controller.PRRemoveItem(expect.any(String), sampleItem),
     ).toEqual(SampleCreate);
   });
 
@@ -186,10 +186,21 @@ describe('PurchaseRequestController', () => {
 
   it('should update add Item PR Failed', async () => {
     mockControllerPurchaseRequest.updateOne.mockImplementation(() => {
+      return false;
+    });
+    try {
+      await controller.PRaddItem(expect.any(String), sampleItem);
+    } catch (error) {
+      expect(error).toEqual(error);
+    }
+  });
+
+  it('should update add Item PR Failed', async () => {
+    mockControllerPurchaseRequest.updateOne.mockImplementation(() => {
       throw new Error('Sorry Total Price Wrong');
     });
     try {
-      await controller.PRaddItem({ id: expect.any(String) }, sampleItem);
+      await controller.PRaddItem(expect.any(String), sampleItem);
     } catch (error) {
       expect(error).toEqual(error);
     }
@@ -197,7 +208,7 @@ describe('PurchaseRequestController', () => {
 
   it('should update change qty Item PR Failed', async () => {
     try {
-      await controller.PRUpdateItem({ id: expect.any(String) }, sampleItem);
+      await controller.PRUpdateItem(expect.any(String), sampleItem);
     } catch (error) {
       expect(error).toEqual(error);
     }
@@ -205,7 +216,7 @@ describe('PurchaseRequestController', () => {
 
   it('should update remove Item PR Failed', async () => {
     try {
-      await controller.PRRemoveItem({ id: expect.any(String) }, sampleItem);
+      await controller.PRRemoveItem(expect.any(String), sampleItem);
     } catch (error) {
       expect(error).toEqual(error);
     }

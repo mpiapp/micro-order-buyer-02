@@ -6,7 +6,7 @@ import {
   IsOptional,
   Min,
 } from 'class-validator';
-import { ItemDto } from './Items.dto';
+import { ItemPRDto } from './Items.dto';
 import { StatusDto } from './Status.dto';
 
 export class PRUpdateDto {
@@ -14,7 +14,7 @@ export class PRUpdateDto {
   @IsArray()
   @IsNotEmpty()
   @IsOptional()
-  items?: ItemDto[];
+  items?: ItemPRDto[];
   @ApiProperty()
   @IsNumber()
   @Min(0)

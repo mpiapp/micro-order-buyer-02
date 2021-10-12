@@ -8,7 +8,7 @@ import {
   MaxLength,
   Min,
 } from 'class-validator';
-import { ItemDto } from './Items.dto';
+import { ItemPRDto } from './Items.dto';
 import { StatusDto } from './Status.dto';
 
 export class PRCreateDto {
@@ -26,7 +26,7 @@ export class PRCreateDto {
   @ApiProperty()
   @IsArray()
   @IsNotEmpty()
-  items: ItemDto[];
+  items: ItemPRDto[];
   @ApiProperty()
   @IsNumber()
   @Min(0)

@@ -52,18 +52,7 @@ describe('ApprovalController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [ApprovalController],
-      providers: [
-        PurchaseOrderService,
-        {
-          provide: getModelToken(PO.name),
-          useValue: mockPurchaseOrder,
-        },
-        PurchaseRequestService,
-        {
-          provide: getModelToken(PR.name),
-          useValue: mockPurchaseRequest,
-        },
-      ],
+      providers: [],
     }).compile();
 
     controller = module.get<ApprovalController>(ApprovalController);

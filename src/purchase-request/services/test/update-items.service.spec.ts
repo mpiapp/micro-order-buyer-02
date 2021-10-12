@@ -30,18 +30,9 @@ describe('UpdateItemsService', () => {
   it('should be add items', async () => {
     SampleCreate.items.push(sampleItem);
     expect(
-      await service.addItemPurchaseRequest(
-        { id: expect.any(String) },
-        sampleItem,
-      ),
-    ).toEqual(SampleCreate);
-  });
-
-  it('should be update qty', async () => {
-    expect(
-      await service.updateQtyItemPurchaseRequest(
-        { id: expect.any(String) },
-        { ...sampleItem, quantity: 12 },
+      await service.addItem(
+        { _id: 'At126abasvt125' },
+        { $push: { items: sampleItem } },
       ),
     ).toEqual({
       message: 'Update Success',
@@ -59,9 +50,9 @@ describe('UpdateItemsService', () => {
       };
     });
     expect(
-      await service.removeItemPurchaseRequest(
-        { id: expect.any(String) },
-        sampleItem,
+      await service.removeItem(
+        { _id: expect.any(String) },
+        { $pull: { productId: sampleItem.productId } },
       ),
     ).toEqual({
       message: 'Remove Success',
@@ -76,20 +67,9 @@ describe('UpdateItemsService', () => {
     });
 
     try {
-      await service.removeItemPurchaseRequest(
-        { id: expect.any(String) },
-        sampleItem,
-      );
-    } catch (error) {
-      expect(error);
-    }
-  });
-
-  it('should catch error update qty', async () => {
-    try {
-      await service.updateQtyItemPurchaseRequest(
-        { id: expect.any(String) },
-        { ...sampleItem, quantity: 12 },
+      await service.removeItem(
+        { _id: expect.any(String) },
+        { $pull: { productId: sampleItem.productId } },
       );
     } catch (error) {
       expect(error);
