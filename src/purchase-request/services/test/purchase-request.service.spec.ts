@@ -41,10 +41,7 @@ describe('PurchaseRequestService', () => {
     });
 
     expect(
-      await service.updatePurchaseRequest(
-        { id: expect.any(String) },
-        SampleUpdate,
-      ),
+      await service.updatePurchaseRequest(expect.any(String), SampleUpdate),
     ).toEqual({ ...SampleCreate, ...SampleUpdate });
   });
   it('should be delete purchase request', async () => {
@@ -54,9 +51,7 @@ describe('PurchaseRequestService', () => {
         isDeleted: true,
       };
     });
-    expect(
-      await service.deletePurchaseRequest({ id: expect.any(String) }),
-    ).toEqual({
+    expect(await service.deletePurchaseRequest(expect.any(String))).toEqual({
       ...SampleCreate,
       isDeleted: true,
     });
@@ -75,8 +70,8 @@ describe('PurchaseRequestService', () => {
   });
 
   it('should be get by Id purchase request', async () => {
-    expect(
-      await service.byIdPurchaseRequest({ id: expect.any(String) }),
-    ).toEqual(SampleCreate);
+    expect(await service.byIdPurchaseRequest(expect.any(String))).toEqual(
+      SampleCreate,
+    );
   });
 });

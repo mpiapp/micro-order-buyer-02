@@ -8,7 +8,6 @@ import { ItemPRDto } from '../Items.dto';
 import { SearchDto } from '../SearchPR.dto';
 import { StatusDto } from '../Status.dto';
 import { PRUpdateDto } from '../UpdatePR.dto';
-import { PRIdDto } from '../_IdPR.dto';
 
 describe('Create PR Dto', () => {
   let classes;
@@ -59,21 +58,6 @@ describe('Create Status Dto', () => {
 
     const plainClass = classToPlain(classes);
     expect(plainClass).toEqual(classes);
-  });
-});
-
-describe('Create Id PR Dto', () => {
-  let classes;
-  beforeEach(() => {
-    classes = new PRIdDto();
-  });
-
-  it('validate element Id DTO', async () => {
-    classes.id = null;
-
-    validate(classes).then((errors) => {
-      expect(errors.length).toEqual(1);
-    });
   });
 });
 

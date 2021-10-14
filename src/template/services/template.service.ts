@@ -1,13 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { ItemPRDto } from './../../purchase-request/dto/Items.dto';
-import { TemplateIdDto } from '../dto/IdTemplate.dto';
 import { Template, TemplateDocument } from '../schemas/template.schema';
 import { TemplateCreateDto } from '../dto/CreateTemplate.dto';
+import { ICreateTemplate } from '../interfaces/services/CreateTemplate.interface';
+import { IDeleteTemplate } from '../interfaces/services/DeleteTemplate.interface';
+import moment = require('moment');
 
 @Injectable()
-export class TemplateService {
+export class TemplateService implements ICreateTemplate, IDeleteTemplate {
   constructor(
     @InjectModel(Template.name) private readonly model: Model<TemplateDocument>,
   ) {}
@@ -16,47 +17,24 @@ export class TemplateService {
     return this.model.create(param);
   }
 
-  async deleteTemplate(id: TemplateIdDto): Promise<Template> {
+  async deleteTemplate(id: string): Promise<Template> {
     return this.model.findByIdAndUpdate(id, { isDeleted: true }, { new: true });
   }
 
-  async addItemTemplate(
-    id: TemplateIdDto,
-    product: ItemPRDto,
-  ): Promise<Template> {
-    return this.model.findByIdAndUpdate(
-      id,
-      { $push: { products: product } },
-      { new: true },
-    );
+  async listTemplate(idBuyer: string): Promise<Template[]> {
+    return this.model.find({ buyerId: idBuyer });
   }
 
-  async removeItemTemplate(
-    id: TemplateIdDto,
-    product: ItemPRDto,
-  ): Promise<any> {
-    try {
-      return await this.model.updateOne(
-        { _id: id },
-        { $pullAll: { product_id: product.productId } },
-      );
-    } catch (error) {
-      throw new Error(error);
-    }
+  async getByIdTemplate(id: string): Promise<Template> {
+    return this.model.findById(id);
   }
 
-  async updateQtyItemTemplate(
-    id: TemplateIdDto,
-    product: ItemPRDto,
-  ): Promise<any> {
-    try {
-      return await this.model.updateOne(
-        { _id: id },
-        { $inc: { 'items.$[elem].quantity': product.quantity } },
-        { arrayFilters: [{ 'elem.product_id': product.productId }] },
-      );
-    } catch (error) {
-      throw new Error(error);
-    }
+  async searchTemplate(search: string): Promise<Template[]> {
+    return this.model.find({
+      createdAt: {
+        $gte: moment(new Date(search)).startOf('day').toDate(),
+        $lte: moment(new Date(search)).endOf('day').toDate(),
+      },
+    });
   }
 }

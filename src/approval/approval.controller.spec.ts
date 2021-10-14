@@ -62,9 +62,9 @@ describe('ApprovalController', () => {
     expect(controller).toBeDefined();
   });
 
-  it('should approvals', async () => {
-    expect(await controller.approved(sampleDataPR)).toBe(
-      'Success Submit PR to PO',
-    );
-  });
+  // it('should approvals', async () => {
+  //   expect(await controller.approved(sampleDataPR)).toBe(
+  //     'Success Submit PR to PO',
+  //   );
+  // });
 });

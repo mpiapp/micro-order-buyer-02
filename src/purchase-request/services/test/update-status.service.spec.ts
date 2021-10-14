@@ -30,11 +30,12 @@ describe('UpdateStatusServiceService', () => {
     mockPurchaseRequest.findByIdAndUpdate.mockImplementation((id, param) => {
       return {
         ...param.$push.Status,
-        ...id,
+        id: id,
       };
     });
-    expect(
-      await service.addStatus({ id: expect.any(String) }, sampleStatus),
-    ).toEqual({ ...sampleStatus, id: expect.any(String) });
+    expect(await service.addStatus(expect.any(String), sampleStatus)).toEqual({
+      ...sampleStatus,
+      id: expect.any(String),
+    });
   });
 });

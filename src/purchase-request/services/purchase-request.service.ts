@@ -5,7 +5,6 @@ import { BuyerDto } from '../dto/Buyer.dto';
 import { CodePRDto } from '../dto/CodePR.dto';
 import { PRCreateDto } from '../dto/CreatePR.dto';
 import { PRUpdateDto } from '../dto/UpdatePR.dto';
-import { PRIdDto } from '../dto/_IdPR.dto';
 import { ICreatePurchaseRequest } from '../interfaces/services/CreatePurchaseRequest.intreface';
 import { IDeletePurchaseRequest } from '../interfaces/services/isDeletePurchaseRequest.interface';
 import { ISearchPurchaseRequest } from '../interfaces/services/SearchPurchaseRequest.interface';
@@ -24,15 +23,15 @@ export class PurchaseRequestService
     @InjectModel(PR.name) private readonly model: Model<PRDocument>,
   ) {}
 
-  async createPurchaseRequest(param: PRCreateDto): Promise<PR> {
-    return this.model.create(param);
+  async createPurchaseRequest(params: PRCreateDto): Promise<PR> {
+    return this.model.create(params);
   }
 
-  async updatePurchaseRequest(id: PRIdDto, param: PRUpdateDto) {
-    return this.model.findByIdAndUpdate(id, { $set: param }, { new: true });
+  async updatePurchaseRequest(id: string, params: PRUpdateDto) {
+    return this.model.findByIdAndUpdate(id, { $set: params }, { new: true });
   }
 
-  async deletePurchaseRequest(id: PRIdDto): Promise<PR> {
+  async deletePurchaseRequest(id: string): Promise<PR> {
     return this.model.findByIdAndUpdate(id, { isDeleted: true }, { new: true });
   }
 
@@ -40,12 +39,13 @@ export class PurchaseRequestService
     const { code } = search;
     return this.model.find({ code: { $regex: code } });
   }
+
   async listPurchaseRequest(buyer: BuyerDto): Promise<PR[]> {
     const { buyerId } = buyer;
     return this.model.find({ buyerId: buyerId });
   }
-  async byIdPurchaseRequest(_id: PRIdDto): Promise<PR> {
-    const { id } = _id;
+
+  async byIdPurchaseRequest(id: string): Promise<PR> {
     return this.model.findById(id);
   }
 }

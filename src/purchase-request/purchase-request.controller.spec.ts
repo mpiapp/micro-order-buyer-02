@@ -103,6 +103,30 @@ describe('PurchaseRequestController', () => {
     ).toEqual(SampleCreate);
   });
 
+  it('should update add Item PR Success If Item existing', async () => {
+    mockControllerPurchaseRequest.updateOne.mockImplementation(() => {
+      return {
+        matchedCount: 0,
+      };
+    });
+
+    expect(await controller.PRaddItem(expect.any(String), sampleItem)).toEqual(
+      SampleCreate,
+    );
+  });
+
+  it('should update add Item PR Success If Not Item existing', async () => {
+    mockControllerPurchaseRequest.updateOne.mockImplementation(() => {
+      return {
+        matchedCount: 1,
+      };
+    });
+
+    expect(await controller.PRaddItem(expect.any(String), sampleItem)).toEqual(
+      SampleCreate,
+    );
+  });
+
   it('should update PR Success', async () => {
     mockControllerPurchaseRequest.findByIdAndUpdate.mockImplementation(() => {
       return {
@@ -110,12 +134,12 @@ describe('PurchaseRequestController', () => {
         ...SampleUpdate,
       };
     });
-    expect(
-      await controller.PRUpdate({ id: expect.any(String) }, SampleUpdate),
-    ).toEqual({
-      ...SampleCreate,
-      ...SampleUpdate,
-    });
+    expect(await controller.PRUpdate(expect.any(String), SampleUpdate)).toEqual(
+      {
+        ...SampleCreate,
+        ...SampleUpdate,
+      },
+    );
   });
 
   it('should soft delete PR', async () => {
@@ -125,7 +149,7 @@ describe('PurchaseRequestController', () => {
         isDelete: true,
       };
     });
-    expect(await controller.PRDelete({ id: expect.any(String) })).toEqual({
+    expect(await controller.PRDelete(expect.any(String))).toEqual({
       ...SampleCreate,
       isDelete: true,
     });
@@ -138,7 +162,7 @@ describe('PurchaseRequestController', () => {
 
     try {
       SampleUpdate.total = 0;
-      await controller.PRUpdate({ id: expect.any(String) }, SampleUpdate);
+      await controller.PRUpdate(expect.any(String), SampleUpdate);
     } catch (error) {
       expect(error).toBe(error);
     }
@@ -159,14 +183,12 @@ describe('PurchaseRequestController', () => {
   });
 
   it('should get PR By Id Success', async () => {
-    expect(await controller.PRById({ id: expect.any(String) })).toEqual(
-      SampleCreate,
-    );
+    expect(await controller.PRById(expect.any(String))).toEqual(SampleCreate);
   });
 
   it('should get PR By Id Failed', async () => {
     try {
-      await controller.PRById({ id: expect.any(String) });
+      await controller.PRById(expect.any(String));
     } catch (error) {
       expect(error).toBe(error);
     }
@@ -228,7 +250,7 @@ describe('PurchaseRequestController', () => {
       return SampleCreate;
     });
     expect(
-      await controller.PRaddStatus({ id: expect.any(String) }, sampleStatus),
+      await controller.PRaddStatus(expect.any(String), sampleStatus),
     ).toEqual(SampleCreate);
   });
 });

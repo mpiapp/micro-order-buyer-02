@@ -1,6 +1,5 @@
 import { Controller } from '@nestjs/common';
 import { PurchaseOrderService } from 'src/purchase-order/services/purchase-order.service';
-import { PRIdDto } from 'src/purchase-request/dto/_IdPR.dto';
 import { PurchaseRequestService } from 'src/purchase-request/services/purchase-request.service';
 
 @Controller('approval')
