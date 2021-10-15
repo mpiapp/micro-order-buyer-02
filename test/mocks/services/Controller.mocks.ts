@@ -1,9 +1,11 @@
-import { SampleItem } from '../sample/Items/sample.add.items.mock';
+import { sampleItem } from '../sample/Products/sample.item.mock';
+import { sampleDataCreatePO } from '../sample/Purchase-Order/sample.data.search.mock';
 import { SampleCreate } from '../sample/Purchase-Request/sample.data.create.mock';
+import { SampleTemplateCreate } from '../sample/Template/Sample.mocks';
 
 export const mockControllerPurchaseRequest = {
   findByIdAndUpdate: jest.fn().mockImplementation(() => {
-    SampleCreate.products.push(SampleItem);
+    SampleCreate.items.push(sampleItem);
     return SampleCreate;
   }),
   updateOne: jest.fn().mockImplementation(() => {
@@ -13,4 +15,38 @@ export const mockControllerPurchaseRequest = {
       id: expect.any(String),
     };
   }),
+  create: jest.fn().mockImplementation((SampleCreate) => {
+    return SampleCreate;
+  }),
+  findOne: jest.fn().mockImplementation(() => {
+    return false;
+  }),
+  findById: jest.fn().mockReturnValue(SampleCreate),
+  find: jest.fn().mockReturnValue([SampleCreate]),
+};
+
+export const mockControllerTemplate = {
+  create: jest.fn().mockImplementation((dto) => {
+    return dto;
+  }),
+  findByIdAndUpdate: jest.fn().mockImplementation(() => {
+    return true;
+  }),
+  updateOne: jest.fn().mockImplementation(() => {
+    return true;
+  }),
+  find: jest.fn().mockReturnValue([SampleTemplateCreate]),
+  findById: jest.fn().mockReturnValue(SampleTemplateCreate),
+};
+
+export const mockControllerPurchaseOrder = {
+  create: jest.fn().mockImplementation(() => {
+    return sampleDataCreatePO;
+  }),
+  findByIdAndUpdate: jest.fn().mockImplementation(() => {
+    SampleCreate.items.push(sampleItem);
+    return SampleCreate;
+  }),
+  findById: jest.fn().mockReturnValue(sampleDataCreatePO),
+  find: jest.fn().mockReturnValue([sampleDataCreatePO]),
 };

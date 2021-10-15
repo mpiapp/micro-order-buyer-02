@@ -1,10 +1,10 @@
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PR } from '../../schemas/purchase-request.schema';
-import { SampleItem } from '../../../../test/mocks/sample/Items/sample.add.items.mock';
-import { SampleCreate } from '../../../../test/mocks/sample/Process-Request/sample.data.create.mock';
+import { SampleCreate } from '../../../../test/mocks/sample/Purchase-Request/sample.data.create.mock';
 import { UpdateItemsService } from '../update-items.service';
 import { mockItemPurchaseRequest } from '../../../../test/mocks/services/Item.mocks';
+import { sampleItem } from './../../../../test/mocks/sample/Products/sample.item.mock';
 
 describe('UpdateItemsService', () => {
   let service: UpdateItemsService;
@@ -28,20 +28,11 @@ describe('UpdateItemsService', () => {
   });
 
   it('should be add items', async () => {
-    SampleCreate.products.push(SampleItem);
+    SampleCreate.items.push(sampleItem);
     expect(
-      await service.addItemPurchaseRequest(
-        { id: expect.any(String) },
-        SampleItem,
-      ),
-    ).toEqual(SampleCreate);
-  });
-
-  it('should be update qty', async () => {
-    expect(
-      await service.updateQtyItemPurchaseRequest(
-        { id: expect.any(String) },
-        { ...SampleItem, quantity: 12 },
+      await service.addItem(
+        { _id: 'At126abasvt125' },
+        { $push: { items: sampleItem } },
       ),
     ).toEqual({
       message: 'Update Success',
@@ -59,9 +50,9 @@ describe('UpdateItemsService', () => {
       };
     });
     expect(
-      await service.removeItemPurchaseRequest(
-        { id: expect.any(String) },
-        SampleItem,
+      await service.removeItem(
+        { _id: expect.any(String) },
+        { $pull: { productId: sampleItem.productId } },
       ),
     ).toEqual({
       message: 'Remove Success',
@@ -76,20 +67,9 @@ describe('UpdateItemsService', () => {
     });
 
     try {
-      await service.removeItemPurchaseRequest(
-        { id: expect.any(String) },
-        SampleItem,
-      );
-    } catch (error) {
-      expect(error);
-    }
-  });
-
-  it('should catch error update qty', async () => {
-    try {
-      await service.updateQtyItemPurchaseRequest(
-        { id: expect.any(String) },
-        { ...SampleItem, quantity: 12 },
+      await service.removeItem(
+        { _id: expect.any(String) },
+        { $pull: { productId: sampleItem.productId } },
       );
     } catch (error) {
       expect(error);

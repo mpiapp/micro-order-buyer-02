@@ -23,18 +23,22 @@
   "dependencies": {
     "@bugsnag/js": "^7.11.0",
     "@nestjs/common": "^8.0.0",
-    "@nestjs/config": "^1.0.1",
+    "@nestjs/config": "^1.0.2",
     "@nestjs/core": "^8.0.0",
     "@nestjs/microservices": "^8.0.8",
     "@nestjs/mongoose": "^8.0.1",
     "@nestjs/platform-express": "^8.0.0",
+    "@nestjs/swagger": "^5.1.0",
     "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
+    "dotenv": "^10.0.0",
     "kafkajs": "^1.15.0",
+    "moment": "^2.29.1",
     "mongoose": "^6.0.7",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
-    "rxjs": "^7.2.0"
+    "rxjs": "^7.2.0",
+    "swagger-ui-express": "^4.1.6"
   },
   "devDependencies": {
     "@nestjs/cli": "^8.0.0",
@@ -79,7 +83,8 @@
     "coveragePathIgnorePatterns": [
       ".mock.ts",
       ".module.ts",
-      ".config.ts"
+      ".config.ts",
+      "main.ts"
     ]
   }
 }

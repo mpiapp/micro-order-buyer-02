@@ -3,11 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PR } from '../../schemas/purchase-request.schema';
 import { mockPurchaseRequest } from '../../../../test/mocks/services/PR.mocks';
 import { UpdateStatusService } from '../update-status.service';
-import { SampleCreate } from '../../../../test/mocks/sample/Process-Request/sample.data.create.mock';
-import {
-  SampleResultStatus,
-  SampleStatus,
-} from '../../../../test/mocks/sample/Status/sample.add.status.mock';
+import { sampleStatus } from './../../../../test/mocks/sample/Status/sample.data.mocks';
 
 describe('UpdateStatusServiceService', () => {
   let service: UpdateStatusService;
@@ -31,8 +27,15 @@ describe('UpdateStatusServiceService', () => {
   });
 
   it('should be add status', async () => {
-    expect(
-      await service.addStatus({ id: SampleCreate.id }, SampleStatus),
-    ).toEqual(SampleResultStatus);
+    mockPurchaseRequest.findByIdAndUpdate.mockImplementation((id, param) => {
+      return {
+        ...param.$push.Status,
+        id: id,
+      };
+    });
+    expect(await service.addStatus(expect.any(String), sampleStatus)).toEqual({
+      ...sampleStatus,
+      id: expect.any(String),
+    });
   });
 });

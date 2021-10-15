@@ -1,0 +1,31 @@
+export const SampleProduct = {
+  id: '615293b1e86020825a2efdd8',
+  name: 'Fraser Gallop Cabernet Merlot 2017',
+  slug: 'fraser-gallop-cabernet-merlot-2017',
+  permalink: 'https://luxofood.com/product/fraser-gallop-cabernet-merlot-2017/',
+  date_created: '2021-05-01T13:47:23',
+  date_created_gmt: '2021-05-01T06:47:23',
+  date_modified: '2021-08-24T03:01:06',
+  date_modified_gmt: '2021-08-23T20:01:06',
+  type: 'simple',
+  status: 'publish',
+  featured: false,
+  catalog_visibility: 'visible',
+  description:
+    '<p style="text-align: left;">Fraser Gallop winemakers’ goal is to capture and express the best of the estate and nuances of the property as a whole.</p>\n<p>Sourced solely from our vineyard and hand-crafted with minimal intervention in our estate winery, Fraser Gallop wines are a true expression of the here and now, altering only due to the vagaries of working with nature.</p>\n<p>The Fraser Gallop Estate suite of wines comprises Estate, Parterre and Palladian ranges available in both 750ml and large formats.</p>\n',
+  short_description:
+    '<p>This beautifully created and presented cabernet merlot blend is the product of outstanding vintage and clever understated winemaker. It has been left to the fruit do the talking. It&#8217;s firm and controlled, with grainy tannins cutting through the leafy blackcurrant cabernet. A little flash from merlot adds further plushness to the middle palate.</p>\n',
+  sku: '2112101011',
+  price: 647000,
+  regular_price: '647000',
+  sale_price: '',
+  date_on_sale_from: null,
+  date_on_sale_from_gmt: null,
+  date_on_sale_to: null,
+  date_on_sale_to_gmt: null,
+  price_html:
+    '<span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol">Rp</span>647,000</span>',
+  on_sale: false,
+  purchasable: true,
+  quantity: 10,
+};

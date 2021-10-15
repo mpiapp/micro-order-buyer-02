@@ -1,11 +1,12 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { PurchaseRequestModule } from './purchase-request/purchase-request.module';
 import { TemplateModule } from './template/template.module';
+import { ApprovalModule } from './approval/approval.module';
+import { PurchaseOrderModule } from './purchase-order/purchase-order.module';
 
+@Global()
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -16,8 +17,10 @@ import { TemplateModule } from './template/template.module';
       }),
     }),
     TemplateModule,
+    ApprovalModule,
+    PurchaseOrderModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
