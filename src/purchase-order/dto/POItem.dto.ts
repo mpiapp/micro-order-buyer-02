@@ -1,11 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  IsArray,
   IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
   Min,
 } from 'class-validator';
+import { StatusDto } from './../../purchase-request/dto/Status.dto';
 import { IPurchaseOrderItem } from '../interfaces/type/IPurchaseOrderItem.interface';
 
 export class PurchaseOrderItemDto implements IPurchaseOrderItem {
@@ -31,4 +33,11 @@ export class PurchaseOrderItemDto implements IPurchaseOrderItem {
   @IsNumber()
   @Min(0)
   price: number;
+  @ApiProperty()
+  @IsNumber()
+  @Min(0)
+  tax?: number;
+  @ApiProperty()
+  @IsArray()
+  statuses: StatusDto[];
 }

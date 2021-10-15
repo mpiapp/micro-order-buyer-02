@@ -2,45 +2,8 @@ import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PO } from './../../schemas/purchase-order.schema';
 import { PurchaseOrderService } from '../purchase-order.service';
-
-const mockPurchaseOrder = {
-  create: jest.fn().mockImplementation((dto) => {
-    return dto;
-  }),
-};
-
-const sampleDataCreatePO = {
-  id: '615fc7256dce435b915538ec',
-  code: 'KPJ-12-10-00001',
-  buyerId: '617364617364617364617344',
-  date: new Date('2021-10-10'),
-  items: [
-    {
-      productId: expect.any(String),
-      payment_terms: {
-        term: 'down_payment',
-        price: 5000,
-      },
-      code_po: 'KPJ-12-10-00001-001',
-      quantity: 14,
-      price: 10000,
-    },
-    {
-      productId: expect.any(String),
-      code_po: 'KPJ-12-10-00001-002',
-      quantity: 14,
-      price: 10000,
-    },
-  ],
-  total: 0,
-  statuses: [
-    {
-      name: 'Open',
-      timestamp: new Date('2021-10-10 20:00'),
-    },
-  ],
-  createdBy: '615fc7256dce435b915538ec',
-};
+import { mockPurchaseOrder } from './../../../../test/mocks/services/PO.mocks';
+import { sampleDataCreatePO } from './../../../../test/mocks/sample/Purchase-Order/sample.data.search.mock';
 
 describe('PurchaseOrderService', () => {
   let service: PurchaseOrderService;
@@ -65,6 +28,31 @@ describe('PurchaseOrderService', () => {
 
   it('should be create master PO', async () => {
     expect(await service.createPurchaseOrder(sampleDataCreatePO)).toEqual(
+      sampleDataCreatePO,
+    );
+  });
+
+  it('should be delete master PO', async () => {
+    expect(await service.deletePurchaseOrder(expect.any(String))).toEqual({
+      ...sampleDataCreatePO,
+      isDeleted: true,
+    });
+  });
+
+  it('should be search purchase order by code', async () => {
+    expect(await service.searchPurchaseOrder(expect.any(String))).toEqual([
+      sampleDataCreatePO,
+    ]);
+  });
+
+  it('should be get list purchase order', async () => {
+    expect(await service.listPurchaseOrder(expect.any(String))).toEqual([
+      sampleDataCreatePO,
+    ]);
+  });
+
+  it('should be get by Id purchase order', async () => {
+    expect(await service.byIdPurchaseOrder(expect.any(String))).toEqual(
       sampleDataCreatePO,
     );
   });

@@ -1,4 +1,5 @@
 import { sampleItem } from '../sample/Products/sample.item.mock';
+import { sampleDataCreatePO } from '../sample/Purchase-Order/sample.data.search.mock';
 import { SampleCreate } from '../sample/Purchase-Request/sample.data.create.mock';
 import { SampleTemplateCreate } from '../sample/Template/Sample.mocks';
 
@@ -36,4 +37,16 @@ export const mockControllerTemplate = {
   }),
   find: jest.fn().mockReturnValue([SampleTemplateCreate]),
   findById: jest.fn().mockReturnValue(SampleTemplateCreate),
+};
+
+export const mockControllerPurchaseOrder = {
+  create: jest.fn().mockImplementation(() => {
+    return sampleDataCreatePO;
+  }),
+  findByIdAndUpdate: jest.fn().mockImplementation(() => {
+    SampleCreate.items.push(sampleItem);
+    return SampleCreate;
+  }),
+  findById: jest.fn().mockReturnValue(sampleDataCreatePO),
+  find: jest.fn().mockReturnValue([sampleDataCreatePO]),
 };

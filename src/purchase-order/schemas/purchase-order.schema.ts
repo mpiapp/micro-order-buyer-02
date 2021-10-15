@@ -14,9 +14,55 @@ export class PO {
   @Prop({ type: mongoose.Schema.Types.ObjectId, required: true })
   buyerId: string;
   @Prop({ type: mongoose.Schema.Types.ObjectId, required: true })
-  AddressId: string;
-  @Prop({ required: true })
-  items: string[];
+  addressId: string;
+  @Prop({
+    type: [
+      {
+        code_po: { type: String },
+        vendorId: { type: String },
+        packages: {
+          type: [
+            {
+              code_package: { type: String },
+              items: {
+                type: [
+                  {
+                    productId: { type: String },
+                    quantity: { type: Number },
+                    price: { type: Number },
+                  },
+                ],
+              },
+              statuses: {
+                type: [{ name: { type: String }, timestamp: { type: Date } }],
+              },
+            },
+          ],
+        },
+        payment_terms: { type: [String] },
+        tax: { type: Number },
+        statuses: {
+          type: [{ name: { type: String }, timestamp: { type: Date } }],
+        },
+      },
+    ],
+  })
+  vendors: {
+    code_po: string;
+    vendorId: string;
+    items: {
+      package?: string;
+      productId: string;
+      quantity: number;
+      price: number;
+    }[];
+    payment_terms?: string[];
+    tax?: number;
+    statuses: {
+      name: string;
+      timestamp: Date;
+    }[];
+  }[];
   @Prop({ min: 0, required: true })
   total: number;
   @Prop({
