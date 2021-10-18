@@ -8,6 +8,7 @@ import {
 } from './../purchase-order/schemas/purchase-order.schema';
 import { ConfigModule } from '@nestjs/config';
 import configuration from './../config/configuration';
+import { GenerateCoderService } from './../purchase-order/services/purchase-order-generate-code.service';
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import configuration from './../config/configuration';
       load: [configuration],
     }),
   ],
-  providers: [PackageService],
+  providers: [PackageService, GenerateCoderService],
   controllers: [PackageController],
 })
 export class PackageModule {}
