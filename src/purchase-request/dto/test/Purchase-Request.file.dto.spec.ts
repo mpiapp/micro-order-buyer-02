@@ -3,7 +3,6 @@ import { validate } from 'class-validator';
 import { BuyerDto } from '../Buyer.dto';
 import { CodePRDto } from '../CodePR.dto';
 import { PRCreateDto } from '../CreatePR.dto';
-import { HistoryDto } from '../History.dto';
 import { ItemPRDto } from '../Items.dto';
 import { SearchDto } from '../SearchPR.dto';
 import { StatusDto } from '../Status.dto';
@@ -53,33 +52,7 @@ describe('Create Status Dto', () => {
     });
   });
 
-  it('validate Date History DTO', async () => {
-    const date = new Date();
-    classes.timestamp = date;
-
-    const plainClass = classToPlain(classes);
-    expect(plainClass).toEqual(classes);
-  });
-});
-
-describe('Create History Dto', () => {
-  let classes;
-  beforeEach(() => {
-    classes = new HistoryDto();
-  });
-
-  it('validate element History DTO', async () => {
-    classes.title = null;
-    classes.message = null;
-    classes.timestamp = null;
-    classes.userId = null;
-
-    validate(classes).then((errors) => {
-      expect(errors.length).toEqual(4);
-    });
-  });
-
-  it('validate Date History DTO', async () => {
+  it('validate Date Status DTO', async () => {
     const date = new Date();
     classes.timestamp = date;
 
