@@ -1,20 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import {
-  IsArray,
-  IsDate,
-  IsNotEmpty,
-  IsNumber,
-  MaxLength,
-  Min,
-} from 'class-validator';
-import { ItemPRDto } from './Items.dto';
-import { StatusDto } from './Status.dto';
+import { IsArray, IsDate, IsNotEmpty, IsNumber, Min } from 'class-validator';
+import { ItemPRDto } from './../../purchase-request/dto/Items.dto';
+import { StatusDto } from './../../purchase-request/dto/Status.dto';
 
-export class PRCreateDto {
+export class PRMoveDto {
   @ApiProperty()
   @IsNotEmpty()
-  @MaxLength(50)
   code: string;
   @ApiProperty()
   @IsDate()
@@ -28,8 +20,7 @@ export class PRCreateDto {
   addressId: string;
   @ApiProperty()
   @IsArray()
-  @IsNotEmpty()
-  items: ItemPRDto[];
+  items?: ItemPRDto[];
   @ApiProperty()
   @IsNumber()
   @Min(0)

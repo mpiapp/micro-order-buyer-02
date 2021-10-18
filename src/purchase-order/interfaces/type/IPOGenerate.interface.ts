@@ -1,4 +1,5 @@
-export interface IPOGenerate {
+export interface IGenerateCode {
   code: string;
-  cNumber: number;
+  count: number;
+  digits: number;
 }

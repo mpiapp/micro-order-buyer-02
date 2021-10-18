@@ -41,6 +41,7 @@ export class PO {
         },
         payment_terms: { type: [String] },
         tax: { type: Number },
+        total: { type: Number },
         statuses: {
           type: [{ name: { type: String }, timestamp: { type: Date } }],
         },
@@ -58,6 +59,7 @@ export class PO {
     }[];
     payment_terms?: string[];
     tax?: number;
+    total: number;
     statuses: {
       name: string;
       timestamp: Date;

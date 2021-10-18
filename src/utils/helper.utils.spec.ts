@@ -76,7 +76,7 @@ describe('Helper Service', () => {
     expect(services.padNumber('9', 4, '0')).toEqual(`0009`);
   });
 
-  it('should pad number > width', () => {
+  it('should pad number > width ', () => {
     expect(services.padNumber('19', 1, '0')).toEqual(`19`);
   });
 });

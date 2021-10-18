@@ -7,7 +7,7 @@ export const sampleDataCreatePO = {
     {
       code_po: 'KPJ-12-10-00001-001',
       vendorId: expect.any(String),
-      package: [
+      packages: [
         {
           code_package: 'KPJ-12-10-00001-001-001',
           items: [

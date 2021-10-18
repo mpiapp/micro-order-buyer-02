@@ -1,12 +1,12 @@
 import { IStatus } from './../../../purchase-request/interfaces/type/IStatus.interface';
-import { IPurchaseOrderVendors } from './IPOVendor.interface';
+import { IPRItem } from './IPRItem.interface';
 
-export interface IPurchaseOrder {
+export interface IPRMove {
   code: string;
-  buyerId: string;
   date: Date;
+  buyerId: string;
   addressId: string;
-  vendors?: IPurchaseOrderVendors[];
+  items?: IPRItem[];
   total: number;
   statuses: IStatus[];
   createdBy: string;

@@ -19,12 +19,13 @@ describe('Create PR Dto', () => {
     classes.id = null;
     classes.createdBy = null;
     classes.buyerId = null;
+    classes.addressId = null;
     classes.date = 'date';
     classes.statuses = 'is array status';
     classes.items = 'is array product';
 
     validate(classes).then((errors) => {
-      expect(errors.length).toEqual(7);
+      expect(errors.length).toEqual(8);
     });
   });
 
