@@ -1,4 +1,6 @@
-export const splitPackageSample = [
+import { IPackage } from './../../../../src/purchase-order/interfaces/type/IPOPackage.interface';
+
+export const splitPackageSample: IPackage[] = [
   {
     code_package: '001',
     items: [

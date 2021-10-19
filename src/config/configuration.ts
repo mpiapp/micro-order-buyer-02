@@ -14,6 +14,28 @@ export default () => ({
       Success: 'Update Qty Item Success',
       Failed: 'Update Qty Item Failed',
     },
+    Package: {
+      All: {
+        Success: 'Get All Order Success',
+        Failed: 'Get All Order Failed',
+      },
+      One: {
+        Success: 'Get One Order Success',
+        Failed: 'Get One Order Failed',
+      },
+      save: {
+        Success: 'Save Package Success',
+        Failed: 'Save Package Failed',
+      },
+      update: {
+        Success: 'Update Package Success',
+        Failed: 'Update Package Failed',
+      },
+      delete: {
+        Success: 'Delete Package Success',
+        Failed: 'Delete Package Failed',
+      },
+    },
     removeItem: {
       Success: 'Remove Item Success',
       Failed: 'Remove Item Failed',

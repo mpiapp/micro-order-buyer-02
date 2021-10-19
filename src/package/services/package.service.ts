@@ -44,7 +44,16 @@ export class PackageService {
       },
       {
         $replaceRoot: {
-          newRoot: '$vendors',
+          newRoot: {
+            $mergeObjects: [
+              {
+                buyerId: '$buyerId',
+                addressId: '$addressId',
+                date: '$date',
+              },
+              '$vendors',
+            ],
+          },
         },
       },
       {
@@ -56,13 +65,42 @@ export class PackageService {
   }
 
   async getOrder(vendorId: string, status: string): Promise<any[]> {
-    return this.model.find({
-      $and: [
-        {
-          'vendors.vendorId': new mongoose.Types.ObjectId(vendorId),
-          'vendors.statuses.0.name': status,
+    return this.model.aggregate([
+      {
+        $addFields: {
+          'vendors._id': '$_id',
         },
-      ],
-    });
+      },
+      {
+        $unwind: '$vendors',
+      },
+      {
+        $replaceRoot: {
+          newRoot: {
+            $mergeObjects: [
+              {
+                buyerId: '$buyerId',
+                addressId: '$addressId',
+                date: '$date',
+              },
+              '$vendors',
+            ],
+          },
+        },
+      },
+      {
+        $addFields: {
+          lastStatus: {
+            $last: '$statuses.name',
+          },
+        },
+      },
+      {
+        $match: {
+          vendorId: new mongoose.Types.ObjectId(vendorId),
+          lastStatus: status,
+        },
+      },
+    ]);
   }
 }
