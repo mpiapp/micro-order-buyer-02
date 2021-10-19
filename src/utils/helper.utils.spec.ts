@@ -57,7 +57,7 @@ describe('Helper Service', () => {
     }
   });
 
-  it('should SUM Validate Success ', () => {
+  it('should SUM Validate Success', () => {
     try {
       sampleDataHelper.total = 30000;
       services.sumValidate(sampleDataHelper);

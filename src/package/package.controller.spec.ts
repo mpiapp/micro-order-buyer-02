@@ -11,6 +11,7 @@ import configuration from './../config/configuration';
 import { sampleFullPackage } from './../../test/mocks/sample/Package/sample.full.data.mock';
 import { splitPackageSample } from './../../test/mocks/sample/Package/sample.full.split.mock';
 import { sampleMoveItem } from './../../test/mocks/sample/Package/sample.move.item.mock';
+import { PaginatePackageService } from './services/paginate-package.service';
 
 const mockControllerPackage = {
   find: jest.fn().mockReturnValue(sampleAfterSplitPackage),
@@ -32,6 +33,7 @@ describe('PackageController', () => {
         GenerateCoderService,
         PackageService,
         Helper,
+        PaginatePackageService,
         {
           provide: getModelToken(PO.name),
           useValue: mockControllerPackage,
@@ -168,5 +170,63 @@ describe('PackageController', () => {
         message: 'Update Package Failed',
       });
     }
+  });
+
+  it('should be getOrderPaginate', async () => {
+    mockControllerPackage.aggregate.mockReturnValue([
+      { data: [sampleFullPackage], metadata: [{ total: 1 }] },
+    ]);
+
+    expect(
+      await controller.getOrderPaginate({
+        vendorId: expect.any(String),
+        status: 'NEW',
+        skip: 0,
+        limit: 10,
+      }),
+    ).toEqual({
+      count: 1,
+      page: 0,
+      limit: 10,
+      data: [sampleFullPackage],
+    });
+  });
+
+  it('should be getOrderPaginate Metadata Null', async () => {
+    mockControllerPackage.aggregate.mockReturnValue([
+      { data: [sampleFullPackage], metadata: [] },
+    ]);
+
+    expect(
+      await controller.getOrderPaginate({
+        vendorId: expect.any(String),
+        status: 'NEW',
+        skip: 0,
+        limit: 10,
+      }),
+    ).toEqual({
+      count: 0,
+      page: 0,
+      limit: 10,
+      data: [sampleFullPackage],
+    });
+  });
+
+  it('should be getOrderPaginate failed', async () => {
+    mockControllerPackage.aggregate.mockReturnValue(false);
+
+    expect(
+      await controller.getOrderPaginate({
+        vendorId: expect.any(String),
+        status: 'NEW',
+        skip: 0,
+        limit: 10,
+      }),
+    ).toEqual({
+      count: 0,
+      page: 0,
+      limit: 10,
+      data: null,
+    });
   });
 });

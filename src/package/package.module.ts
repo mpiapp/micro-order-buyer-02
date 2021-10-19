@@ -9,6 +9,8 @@ import {
 import { ConfigModule } from '@nestjs/config';
 import configuration from './../config/configuration';
 import { GenerateCoderService } from './../purchase-order/services/purchase-order-generate-code.service';
+import { PaginatePackageService } from './services/paginate-package.service';
+import { Helper } from './../utils/helper.utils';
 
 @Module({
   imports: [
@@ -17,7 +19,12 @@ import { GenerateCoderService } from './../purchase-order/services/purchase-orde
       load: [configuration],
     }),
   ],
-  providers: [PackageService, GenerateCoderService],
+  providers: [
+    PackageService,
+    GenerateCoderService,
+    PaginatePackageService,
+    Helper,
+  ],
   controllers: [PackageController],
 })
 export class PackageModule {}

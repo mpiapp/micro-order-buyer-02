@@ -121,6 +121,13 @@ export class PackageService {
         },
       },
       {
+        $addFields: {
+          lastStatus: {
+            $last: '$statuses.name',
+          },
+        },
+      },
+      {
         $match: {
           _id: new mongoose.Types.ObjectId(id),
         },
@@ -161,7 +168,7 @@ export class PackageService {
       },
       {
         $match: {
-          vendorId: new mongoose.Types.ObjectId(vendorId),
+          vendorId: vendorId,
           lastStatus: status,
         },
       },
