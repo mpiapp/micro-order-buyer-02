@@ -10,6 +10,7 @@ import { ConfigModule } from '@nestjs/config';
 import configuration from './../config/configuration';
 import { sampleFullPackage } from './../../test/mocks/sample/Package/sample.full.data.mock';
 import { splitPackageSample } from './../../test/mocks/sample/Package/sample.full.split.mock';
+import { sampleMoveItem } from './../../test/mocks/sample/Package/sample.move.item.mock';
 
 const mockControllerPackage = {
   find: jest.fn().mockReturnValue(sampleAfterSplitPackage),
@@ -59,10 +60,18 @@ describe('PackageController', () => {
     });
   });
 
-  it('should be split package failed', async () => {
-    mockControllerPackage.updateOne.mockImplementation(() => {
-      throw new Error();
+  it('should be update package', async () => {
+    expect(
+      await controller.updatePackage(expect.any(String), sampleMoveItem),
+    ).toEqual({
+      errors: null,
+      status: 200,
+      message: 'Update Package Success',
     });
+  });
+
+  it('should be split package failed', async () => {
+    mockControllerPackage.updateOne.mockRejectedValue(new Error());
 
     try {
       await controller.splitPackage(
@@ -104,9 +113,7 @@ describe('PackageController', () => {
   });
 
   it('should be getOrder By Id failed', async () => {
-    mockControllerPackage.aggregate.mockImplementation(() => {
-      throw new Error();
-    });
+    mockControllerPackage.aggregate.mockRejectedValue(new Error());
 
     try {
       await controller.getOrderById(expect.any(String));
@@ -120,10 +127,6 @@ describe('PackageController', () => {
   });
 
   it('should be getOrder failed', async () => {
-    mockControllerPackage.aggregate.mockImplementation(() => {
-      throw new Error();
-    });
-
     try {
       await controller.getOrder(expect.any(String), 'NEW');
     } catch (error) {
@@ -153,5 +156,17 @@ describe('PackageController', () => {
     expect(
       await controller.getIdPackage({ id: expect.any(String), count: 4 }),
     ).toEqual('KPJ-12-10-00001-001-002');
+  });
+
+  it('should be update package Failed', async () => {
+    try {
+      await controller.updatePackage(expect.any(String), sampleMoveItem);
+    } catch (error) {
+      expect(error).toEqual({
+        errors: error.errors,
+        status: 400,
+        message: 'Update Package Failed',
+      });
+    }
   });
 });

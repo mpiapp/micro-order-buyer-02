@@ -62,4 +62,32 @@ describe('PackageService', () => {
       id: expect.any(String),
     });
   });
+
+  it('should be push Package', async () => {
+    expect(
+      await service.pushPackage(
+        expect.any(String),
+        expect.any(String),
+        splitPackageSample,
+      ),
+    ).toEqual({
+      message: 'Update Success',
+      status: true,
+      id: expect.any(String),
+    });
+  });
+
+  it('should be pull Package', async () => {
+    expect(
+      await service.pullPackage(
+        expect.any(String),
+        expect.any(String),
+        expect.any(String),
+      ),
+    ).toEqual({
+      message: 'Update Success',
+      status: true,
+      id: expect.any(String),
+    });
+  });
 });

@@ -5,6 +5,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Put,
   Query,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -13,6 +14,7 @@ import { ApiBody, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { BaseResponse } from 'src/config/interfaces/response.base.interface';
 import { GenerateCoderService } from './../purchase-order/services/purchase-order-generate-code.service';
 import { IdPackage } from './dto/IdPackage.dto';
+import { MoveItemPackageDto } from './dto/MovePackage.dto';
 import { PackageDto } from './dto/Package.dto';
 import { IPackagesResponse } from './interfaces/response/Many.interface';
 import { IPackageResponse } from './interfaces/response/Single.interface';
@@ -94,6 +96,8 @@ export class PackageController {
   }
 
   @Post()
+  @ApiQuery({ name: 'id', type: 'string' })
+  @ApiQuery({ name: 'vendorId', type: 'string' })
   @ApiBody({ type: PackageDto })
   @ApiOperation({ summary: 'Save Split Package' })
   @MessagePattern('Save-Split-Package')
@@ -115,6 +119,39 @@ export class PackageController {
         message: this.Config.get<string>('messageBase.Package.save.Failed'),
         errors: error,
       };
+    }
+  }
+
+  @Put()
+  @ApiQuery({ name: 'id', type: 'string' })
+  @ApiBody({ type: MoveItemPackageDto })
+  @ApiOperation({ summary: 'Move Items Package' })
+  @MessagePattern('Move-Items-Package')
+  async updatePackage(
+    @Param('id') id: string,
+    @Body() params: MoveItemPackageDto,
+  ): Promise<BaseResponse> {
+    try {
+      const { from_package, to_package, items } = params;
+      this.removeArray(from_package, items);
+      await this.packageService.pushItemPackage(to_package, items);
+      return {
+        status: HttpStatus.OK,
+        message: this.Config.get<string>('messageBase.Package.update.Success'),
+        errors: null,
+      };
+    } catch (error) {
+      return {
+        status: HttpStatus.PRECONDITION_FAILED,
+        message: this.Config.get<string>('messageBase.Package.update.Failed'),
+        errors: error,
+      };
+    }
+  }
+
+  private removeArray(id, items) {
+    for (const rows of items) {
+      this.packageService.pullItemPackage(id, rows.ProductId);
     }
   }
 }
