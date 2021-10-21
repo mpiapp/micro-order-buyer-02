@@ -1,6 +1,8 @@
+import { classToPlain } from 'class-transformer';
 import { validate } from 'class-validator';
 import { POCreateDto } from '../POCreate.dto';
 import { PurchaseOrderItemDto } from '../POItem.dto';
+import { PRMoveDto } from '../PRMove.dto';
 describe('PO Item Dto', () => {
   let classes;
   beforeEach(() => {
@@ -39,7 +41,37 @@ describe('PO Item Dto', () => {
     classes.createdBy = null;
 
     validate(classes).then((errors) => {
-      expect(errors.length).toEqual(7);
+      expect(errors.length).toEqual(8);
     });
+  });
+});
+
+describe('PO PR Move Dto', () => {
+  let classes;
+  beforeEach(() => {
+    classes = new PRMoveDto();
+  });
+
+  it('validate element PR Move DTO', async () => {
+    classes.code = null;
+    classes.date = null;
+    classes.buyerId = null;
+    classes.addressId = null;
+    classes.items = null;
+    classes.total = null;
+    classes.statuses = null;
+    classes.createdBy = null;
+
+    validate(classes).then((errors) => {
+      expect(errors.length).toEqual(8);
+    });
+  });
+
+  it('validate Date DTO', async () => {
+    const date = new Date();
+    classes.date = date;
+
+    const plainClass = classToPlain(classes);
+    expect(plainClass).toEqual(classes);
   });
 });

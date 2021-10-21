@@ -1,5 +1,5 @@
-import { IPOGenerate } from '../type/IPOGenerate.interface';
+import { IGenerateCode } from '../type/IPOGenerate.interface';
 
 export interface IGenerateCodePurchaseOrder {
-  generateCodePurchaseOrder(params: IPOGenerate): Promise<any>;
+  generateCode(params: IGenerateCode): string;
 }

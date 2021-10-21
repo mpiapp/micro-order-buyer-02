@@ -6,7 +6,7 @@ export interface IPurchaseOrder {
   buyerId: string;
   date: Date;
   addressId: string;
-  vendors: IPurchaseOrderVendors[];
+  vendors?: IPurchaseOrderVendors[];
   total: number;
   statuses: IStatus[];
   createdBy: string;

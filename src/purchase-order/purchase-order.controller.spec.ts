@@ -6,7 +6,7 @@ import { sampleDataCreatePO } from './../../test/mocks/sample/Purchase-Order/sam
 import { mockControllerPurchaseOrder } from './../../test/mocks/services/Controller.mocks';
 import { PurchaseOrderController } from './purchase-order.controller';
 import { PO } from './schemas/purchase-order.schema';
-import { GenerateCodePurchaseOrderService } from './services/purchase-order-generate-code.service';
+import { GenerateCoderService } from './services/purchase-order-generate-code.service';
 import { PurchaseOrderService } from './services/purchase-order.service';
 import { sampleDataCreatePR } from './../../test/mocks/sample/Purchase-Order/sample.data.pr.mock';
 
@@ -19,7 +19,7 @@ describe('PurchaseOrderController', () => {
       controllers: [PurchaseOrderController],
       providers: [
         PurchaseOrderService,
-        GenerateCodePurchaseOrderService,
+        GenerateCoderService,
         Helper,
         {
           provide: getModelToken(PO.name),

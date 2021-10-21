@@ -24,6 +24,9 @@ export class PRCreateDto {
   @IsNotEmpty()
   buyerId: string;
   @ApiProperty()
+  @IsNotEmpty()
+  addressId: string;
+  @ApiProperty()
   @IsArray()
   @IsNotEmpty()
   items: ItemPRDto[];

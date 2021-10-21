@@ -4,6 +4,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { PurchaseRequestModule } from './purchase-request/purchase-request.module';
 import { TemplateModule } from './template/template.module';
 import { PurchaseOrderModule } from './purchase-order/purchase-order.module';
+import { PackageModule } from './package/package.module';
+import { OrdersModule } from './orders/orders.module';
 
 @Global()
 @Module({
@@ -17,6 +19,8 @@ import { PurchaseOrderModule } from './purchase-order/purchase-order.module';
     }),
     TemplateModule,
     PurchaseOrderModule,
+    PackageModule,
+    OrdersModule,
   ],
   controllers: [],
   providers: [],

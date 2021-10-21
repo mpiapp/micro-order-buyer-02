@@ -13,6 +13,8 @@ export class PR {
   date: Date;
   @Prop({ type: mongoose.Schema.Types.ObjectId, required: true })
   buyerId: string;
+  @Prop({ type: mongoose.Schema.Types.ObjectId, required: true })
+  addressId: string;
   @Prop({
     type: [
       {

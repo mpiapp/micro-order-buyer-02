@@ -3,7 +3,6 @@ import { validate } from 'class-validator';
 import { BuyerDto } from '../Buyer.dto';
 import { CodePRDto } from '../CodePR.dto';
 import { PRCreateDto } from '../CreatePR.dto';
-import { HistoryDto } from '../History.dto';
 import { ItemPRDto } from '../Items.dto';
 import { SearchDto } from '../SearchPR.dto';
 import { StatusDto } from '../Status.dto';
@@ -19,12 +18,13 @@ describe('Create PR Dto', () => {
     classes.id = null;
     classes.createdBy = null;
     classes.buyerId = null;
+    classes.addressId = null;
     classes.date = 'date';
     classes.statuses = 'is array status';
     classes.items = 'is array product';
 
     validate(classes).then((errors) => {
-      expect(errors.length).toEqual(7);
+      expect(errors.length).toEqual(8);
     });
   });
 
@@ -52,33 +52,7 @@ describe('Create Status Dto', () => {
     });
   });
 
-  it('validate Date History DTO', async () => {
-    const date = new Date();
-    classes.timestamp = date;
-
-    const plainClass = classToPlain(classes);
-    expect(plainClass).toEqual(classes);
-  });
-});
-
-describe('Create History Dto', () => {
-  let classes;
-  beforeEach(() => {
-    classes = new HistoryDto();
-  });
-
-  it('validate element History DTO', async () => {
-    classes.title = null;
-    classes.message = null;
-    classes.timestamp = null;
-    classes.userId = null;
-
-    validate(classes).then((errors) => {
-      expect(errors.length).toEqual(4);
-    });
-  });
-
-  it('validate Date History DTO', async () => {
+  it('validate Date Status DTO', async () => {
     const date = new Date();
     classes.timestamp = date;
 

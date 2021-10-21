@@ -4,10 +4,7 @@ export interface IPurchaseOrderVendors {
   code_po: string;
   vendorId: string;
   payment_terms?: string;
-  package: IPackage[];
+  packages: IPackage[];
   tax?: number;
-  statuses: {
-    name: string;
-    timestamp: Date;
-  }[];
+  statuses: any[];
 }

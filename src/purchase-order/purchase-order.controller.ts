@@ -1,8 +1,26 @@
-import { Body, Controller, Delete, Get, Param, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Query,
+} from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { MessagePattern } from '@nestjs/microservices';
-import { ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
+import { Helper } from './../utils/helper.utils';
+import { PRMoveDto } from './dto/PRMove.dto';
+import { IPRMove } from './interfaces/type/IPRMove.interface';
 import { PO } from './schemas/purchase-order.schema';
-import { GenerateCodePurchaseOrderService } from './services/purchase-order-generate-code.service';
+import { GenerateCoderService } from './services/purchase-order-generate-code.service';
 import { PurchaseOrderService } from './services/purchase-order.service';
 
 @ApiTags('Purchase Orders')
@@ -10,10 +28,12 @@ import { PurchaseOrderService } from './services/purchase-order.service';
 export class PurchaseOrderController {
   constructor(
     private readonly POMaster: PurchaseOrderService,
-    private readonly Generate: GenerateCodePurchaseOrderService,
+    private readonly Generate: GenerateCoderService,
+    private readonly Config: ConfigService,
+    private readonly HelperService: Helper,
   ) {}
 
-  private spliteItems(code, items) {
+  private async spliteItems(code, items) {
     const hash = items.reduce(
       (previousValue, currentValue) => (
         previousValue[currentValue.vendorId]
@@ -24,22 +44,24 @@ export class PurchaseOrderController {
       {},
     );
 
-    const groupData = Object.keys(hash).map((key) => ({
+    const groupData = Object.keys(hash).map((key, value) => ({
       vendorId: key,
-      code_po: null,
-      package: {
-        code_package: null,
-        items: hash[key],
-      },
+      code_po: this.Generate.generateCode({
+        code: code,
+        count: value + 1,
+        digits: this.Config.get('DIGITS_NUMBER_PO'),
+      }),
+      packages: [
+        {
+          code_package: null,
+          items: hash[key],
+          statuses: [],
+        },
+      ],
+      total: this.HelperService.SUM({ items: hash[key] }),
+      statuses: [],
     }));
 
-    const countNumber = 0;
-    for (const row of groupData) {
-      row.code_po = this.Generate.generateCodePurchaseOrder({
-        code: code,
-        cNumber: countNumber + 1,
-      });
-    }
     return groupData;
   }
 
@@ -67,9 +89,13 @@ export class PurchaseOrderController {
     return this.POMaster.searchPurchaseOrder(search);
   }
 
-  async POCreate(@Body() params): Promise<PO> {
+  @Post()
+  @ApiBody({ type: PRMoveDto })
+  @ApiOperation({ summary: 'Create Master PO' })
+  @MessagePattern('Purchase-Order-Create')
+  async POCreate(@Body() params: IPRMove): Promise<any> {
     const { code, items } = params;
-    params['vendors'] = this.spliteItems(code, items);
+    params['vendors'] = await this.spliteItems(code, items);
     delete params['items'];
     return this.POMaster.createPurchaseOrder(params);
   }
