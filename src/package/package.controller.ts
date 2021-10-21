@@ -11,23 +11,30 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { MessagePattern } from '@nestjs/microservices';
 import { ApiBody, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
-import { BaseResponse } from 'src/config/interfaces/response.base.interface';
+import { BaseResponse } from './../config/interfaces/response.base.interface';
+import { GenerateCoderService } from './../purchase-order/services/purchase-order-generate-code.service';
+import { Helper } from './../utils/helper.utils';
 import { MoveItemPackageDto } from './dto/MovePackage.dto';
 import { PackageDto } from './dto/Package.dto';
 import { PaginateDto } from './dto/Paginate.dto';
+import { PicknPackPackageDto } from './dto/PicknPack.dto';
 import { IPackagesResponse } from './interfaces/response/Many.interface';
 import { IPackagesPaginateResponse } from './interfaces/response/Paginate.interface';
 import { IPackageResponse } from './interfaces/response/Single.interface';
 import { PackageService } from './services/package.service';
 import { PaginatePackageService } from './services/paginate-package.service';
+import { PicknPackService } from './services/picknpack.service';
 
 @ApiTags('Package')
 @Controller('package')
 export class PackageController {
   constructor(
+    private readonly Generate: GenerateCoderService,
     private readonly packageService: PackageService,
     private readonly Config: ConfigService,
     private readonly paginateService: PaginatePackageService,
+    private readonly picknpackService: PicknPackService,
+    private readonly helpService: Helper,
   ) {}
 
   @Get('list')
@@ -127,6 +134,82 @@ export class PackageController {
       return {
         status: HttpStatus.PRECONDITION_FAILED,
         message: this.Config.get<string>('messageBase.Package.save.Failed'),
+        errors: error,
+      };
+    }
+  }
+
+  @Post()
+  @ApiQuery({ name: 'id', type: 'string' })
+  @ApiBody({ type: PicknPackPackageDto })
+  @ApiOperation({ summary: 'Pick Package' })
+  @MessagePattern('Pick-Package')
+  async pickPackage(
+    @Param('id') id: string,
+    @Body() params: PicknPackPackageDto,
+  ): Promise<BaseResponse> {
+    try {
+      const { code_po, items, statuses } = params;
+      const code = this.Generate.generateCode({
+        code: `PICK-${code_po.slice(-3)}`,
+        count: 1,
+        digits: this.Config.get('DIGITS_NUMBER_PICK'),
+      });
+      const total = this.helpService.SUM(params);
+      await this.picknpackService.pickPackage({
+        id: id,
+        code: code,
+        items: items,
+        total: total,
+        statuses: statuses,
+      });
+      return {
+        status: HttpStatus.CREATED,
+        message: this.Config.get<string>('messageBase.Package.pick.Success'),
+        errors: null,
+      };
+    } catch (error) {
+      return {
+        status: HttpStatus.PRECONDITION_FAILED,
+        message: this.Config.get<string>('messageBase.Package.pick.Failed'),
+        errors: error,
+      };
+    }
+  }
+
+  @Post()
+  @ApiQuery({ name: 'id', type: 'string' })
+  @ApiBody({ type: PicknPackPackageDto })
+  @ApiOperation({ summary: 'Pack Package' })
+  @MessagePattern('Pack-Package')
+  async packPackage(
+    @Param('id') id: string,
+    @Body() params: PicknPackPackageDto,
+  ): Promise<BaseResponse> {
+    try {
+      const { code_po, items, statuses } = params;
+      const code = this.Generate.generateCode({
+        code: `PACK-${code_po.slice(-3)}`,
+        count: 1,
+        digits: this.Config.get('DIGITS_NUMBER_PACK'),
+      });
+      const total = this.helpService.SUM(params);
+      await this.picknpackService.pickPackage({
+        id: id,
+        code: code,
+        items: items,
+        total: total,
+        statuses: statuses,
+      });
+      return {
+        status: HttpStatus.CREATED,
+        message: this.Config.get<string>('messageBase.Package.pack.Success'),
+        errors: null,
+      };
+    } catch (error) {
+      return {
+        status: HttpStatus.PRECONDITION_FAILED,
+        message: this.Config.get<string>('messageBase.Package.pack.Failed'),
         errors: error,
       };
     }

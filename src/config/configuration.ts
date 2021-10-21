@@ -45,6 +45,14 @@ export default () => ({
         Success: 'Delete Package Success',
         Failed: 'Delete Package Failed',
       },
+      pick: {
+        Success: 'Save Pick Package Success',
+        Failed: 'Save Pick Package Failed',
+      },
+      pack: {
+        Success: 'Save Pack Package Success',
+        Failed: 'Save Pack Package Failed',
+      },
     },
     removeItem: {
       Success: 'Remove Item Success',

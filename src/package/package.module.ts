@@ -10,6 +10,7 @@ import { ConfigModule } from '@nestjs/config';
 import configuration from './../config/configuration';
 import { PaginatePackageService } from './services/paginate-package.service';
 import { Helper } from './../utils/helper.utils';
+import { PicknPackService } from './services/picknpack.service';
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { Helper } from './../utils/helper.utils';
       load: [configuration],
     }),
   ],
-  providers: [PackageService, PaginatePackageService, Helper],
+  providers: [PackageService, PaginatePackageService, Helper, PicknPackService],
   controllers: [PackageController],
 })
 export class PackageModule {}

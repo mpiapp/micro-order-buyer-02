@@ -12,6 +12,8 @@ import { sampleFullPackage } from './../../test/mocks/sample/Package/sample.full
 import { splitPackageSample } from './../../test/mocks/sample/Package/sample.full.split.mock';
 import { sampleMoveItem } from './../../test/mocks/sample/Package/sample.move.item.mock';
 import { PaginatePackageService } from './services/paginate-package.service';
+import { PicknPackService } from './services/picknpack.service';
+import { samplePicknPackPackage } from './../../test/mocks/sample/Package/sample.pick.mock';
 
 const mockControllerPackage = {
   find: jest.fn().mockReturnValue(sampleAfterSplitPackage),
@@ -34,6 +36,7 @@ describe('PackageController', () => {
         PackageService,
         Helper,
         PaginatePackageService,
+        PicknPackService,
         {
           provide: getModelToken(PO.name),
           useValue: mockControllerPackage,
@@ -59,6 +62,26 @@ describe('PackageController', () => {
       errors: null,
       status: 201,
       message: 'Save Package Success',
+    });
+  });
+
+  it('should be create pick', async () => {
+    expect(
+      await controller.pickPackage(expect.any(String), samplePicknPackPackage),
+    ).toEqual({
+      errors: null,
+      status: 201,
+      message: 'Save Pick Package Success',
+    });
+  });
+
+  it('should be create pack', async () => {
+    expect(
+      await controller.packPackage(expect.any(String), samplePicknPackPackage),
+    ).toEqual({
+      errors: null,
+      status: 201,
+      message: 'Save Pack Package Success',
     });
   });
 
@@ -142,6 +165,30 @@ describe('PackageController', () => {
         errors: error.errors,
         status: 400,
         message: 'Update Package Failed',
+      });
+    }
+  });
+
+  it('should be create pick failed', async () => {
+    try {
+      await controller.pickPackage(expect.any(String), samplePicknPackPackage);
+    } catch (error) {
+      expect(error).toEqual({
+        errors: error.errors,
+        status: 400,
+        message: 'Update Pick Package Failed',
+      });
+    }
+  });
+
+  it('should be create pack failed', async () => {
+    try {
+      await controller.packPackage(expect.any(String), samplePicknPackPackage);
+    } catch (error) {
+      expect(error).toEqual({
+        errors: error.errors,
+        status: 400,
+        message: 'Update Pack Package Failed',
       });
     }
   });

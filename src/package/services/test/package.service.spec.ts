@@ -33,7 +33,7 @@ describe('PackageService', () => {
     service = module.get<PackageService>(PackageService);
   });
 
-  it('should be defined', () => {
+  it('should be defined ', () => {
     expect(service).toBeDefined();
   });
 
