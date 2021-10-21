@@ -14,6 +14,16 @@ export default () => ({
       Success: 'Update Qty Item Success',
       Failed: 'Update Qty Item Failed',
     },
+    Orders: {
+      All: {
+        Success: 'Get Orders Success',
+        Failed: 'Get Orders Failed',
+      },
+      One: {
+        Success: 'Get Order Success',
+        Failed: 'Get Order Failed',
+      },
+    },
     Package: {
       All: {
         Success: 'Get All Order Success',

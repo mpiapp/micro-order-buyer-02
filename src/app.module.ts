@@ -5,6 +5,7 @@ import { PurchaseRequestModule } from './purchase-request/purchase-request.modul
 import { TemplateModule } from './template/template.module';
 import { PurchaseOrderModule } from './purchase-order/purchase-order.module';
 import { PackageModule } from './package/package.module';
+import { OrdersModule } from './orders/orders.module';
 
 @Global()
 @Module({
@@ -19,6 +20,7 @@ import { PackageModule } from './package/package.module';
     TemplateModule,
     PurchaseOrderModule,
     PackageModule,
+    OrdersModule,
   ],
   controllers: [],
   providers: [],
