@@ -8,7 +8,6 @@ import {
 } from './../purchase-order/schemas/purchase-order.schema';
 import { ConfigModule } from '@nestjs/config';
 import configuration from './../config/configuration';
-import { GenerateCoderService } from './../purchase-order/services/purchase-order-generate-code.service';
 import { PaginatePackageService } from './services/paginate-package.service';
 import { Helper } from './../utils/helper.utils';
 
@@ -19,12 +18,7 @@ import { Helper } from './../utils/helper.utils';
       load: [configuration],
     }),
   ],
-  providers: [
-    PackageService,
-    GenerateCoderService,
-    PaginatePackageService,
-    Helper,
-  ],
+  providers: [PackageService, PaginatePackageService, Helper],
   controllers: [PackageController],
 })
 export class PackageModule {}

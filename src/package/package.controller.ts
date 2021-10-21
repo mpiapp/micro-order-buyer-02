@@ -12,8 +12,6 @@ import { ConfigService } from '@nestjs/config';
 import { MessagePattern } from '@nestjs/microservices';
 import { ApiBody, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { BaseResponse } from 'src/config/interfaces/response.base.interface';
-import { GenerateCoderService } from './../purchase-order/services/purchase-order-generate-code.service';
-import { IdPackage } from './dto/IdPackage.dto';
 import { MoveItemPackageDto } from './dto/MovePackage.dto';
 import { PackageDto } from './dto/Package.dto';
 import { PaginateDto } from './dto/Paginate.dto';
@@ -28,7 +26,6 @@ import { PaginatePackageService } from './services/paginate-package.service';
 export class PackageController {
   constructor(
     private readonly packageService: PackageService,
-    private readonly Generate: GenerateCoderService,
     private readonly Config: ConfigService,
     private readonly paginateService: PaginatePackageService,
   ) {}
@@ -36,14 +33,14 @@ export class PackageController {
   @Get('list')
   @ApiQuery({ name: 'id', type: 'string' })
   @ApiQuery({ name: 'status', type: 'string' })
-  @ApiOperation({ summary: 'List Order' })
-  @MessagePattern('Order-List-Data')
-  async getOrder(
+  @ApiOperation({ summary: 'List Package' })
+  @MessagePattern('Package-List-Data')
+  async getPackages(
     @Query('id') id: string,
     @Query('status') status: string,
   ): Promise<IPackagesResponse> {
     try {
-      const getAll = await this.packageService.getOrder(id, status);
+      const getAll = await this.packageService.getPackages(id, status);
       return {
         status: HttpStatus.OK,
         message: this.Config.get<string>('messageBase.Package.All.Success'),
@@ -60,29 +57,13 @@ export class PackageController {
     }
   }
 
-  @Get('getIdPackage')
-  @ApiBody({ type: IdPackage })
-  @ApiOperation({ summary: 'List Order' })
-  @MessagePattern('Order-Get-ID-Package')
-  async getIdPackage(@Body() params: IdPackage): Promise<string> {
-    const { id, count } = params;
-
-    const getOrder = await this.packageService.getOrderById(id);
-
-    return this.Generate.generateCode({
-      code: getOrder.code_po,
-      count: getOrder.packages.length > 1 ? getOrder.packages.length : count,
-      digits: this.Config.get('DIGITS_NUMBER_PACKAGE'),
-    });
-  }
-
   @Get('byId')
   @ApiQuery({ name: 'id', type: 'string' })
-  @ApiOperation({ summary: 'Get Order' })
-  @MessagePattern('Order-ById')
-  async getOrderById(@Query('id') id: string): Promise<IPackageResponse> {
+  @ApiOperation({ summary: 'Get Package' })
+  @MessagePattern('Package-ById')
+  async getPackageById(@Query('id') id: string): Promise<IPackageResponse> {
     try {
-      const getOne = await this.packageService.getOrderById(id);
+      const getOne = await this.packageService.getPackageById(id);
       return {
         status: HttpStatus.OK,
         message: this.Config.get<string>('messageBase.Package.One.Success'),
@@ -100,9 +81,9 @@ export class PackageController {
   }
 
   @Get('Paginate')
-  @ApiOperation({ summary: 'Get Order Paginate' })
-  @MessagePattern('Order-Paginate')
-  async getOrderPaginate(
+  @ApiOperation({ summary: 'Get Package Paginate' })
+  @MessagePattern('Package-Paginate')
+  async getPackagePaginate(
     @Query() params: PaginateDto,
   ): Promise<IPackagesPaginateResponse> {
     const { skip, limit } = params;

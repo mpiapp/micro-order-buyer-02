@@ -91,7 +91,7 @@ describe('PackageController', () => {
   });
 
   it('should be getOrder', async () => {
-    expect(await controller.getOrder(expect.any(String), 'NEW')).toEqual({
+    expect(await controller.getPackages(expect.any(String), 'NEW')).toEqual({
       errors: null,
       status: 200,
       message: 'Get All Order Success',
@@ -99,14 +99,8 @@ describe('PackageController', () => {
     });
   });
 
-  it('should be get Id Package', async () => {
-    expect(
-      await controller.getIdPackage({ id: expect.any(String), count: 4 }),
-    ).toEqual('KPJ-12-10-00001-001-004');
-  });
-
   it('should be getOrder By Id', async () => {
-    expect(await controller.getOrderById(expect.any(String))).toEqual({
+    expect(await controller.getPackageById(expect.any(String))).toEqual({
       errors: null,
       status: 200,
       message: 'Get One Order Success',
@@ -118,7 +112,7 @@ describe('PackageController', () => {
     mockControllerPackage.aggregate.mockRejectedValue(new Error());
 
     try {
-      await controller.getOrderById(expect.any(String));
+      await controller.getPackageById(expect.any(String));
     } catch (error) {
       expect(error).toEqual({
         errors: error.errors,
@@ -130,7 +124,7 @@ describe('PackageController', () => {
 
   it('should be getOrder failed', async () => {
     try {
-      await controller.getOrder(expect.any(String), 'NEW');
+      await controller.getPackages(expect.any(String), 'NEW');
     } catch (error) {
       expect(error).toEqual({
         errors: error.errors,
@@ -138,26 +132,6 @@ describe('PackageController', () => {
         message: 'Get All Order Failed',
       });
     }
-  });
-
-  it('should be get Id Package IF > count', async () => {
-    mockControllerPackage.aggregate.mockImplementation(() => {
-      return {
-        code_po: 'KPJ-12-10-00001-001',
-        packages: [
-          {
-            no: 1,
-          },
-          {
-            no: 2,
-          },
-        ],
-      };
-    });
-
-    expect(
-      await controller.getIdPackage({ id: expect.any(String), count: 4 }),
-    ).toEqual('KPJ-12-10-00001-001-002');
   });
 
   it('should be update package Failed', async () => {
@@ -172,13 +146,13 @@ describe('PackageController', () => {
     }
   });
 
-  it('should be getOrderPaginate', async () => {
+  it('should be getPackagePaginate', async () => {
     mockControllerPackage.aggregate.mockReturnValue([
       { data: [sampleFullPackage], metadata: [{ total: 1 }] },
     ]);
 
     expect(
-      await controller.getOrderPaginate({
+      await controller.getPackagePaginate({
         vendorId: expect.any(String),
         status: 'NEW',
         skip: 0,
@@ -192,13 +166,13 @@ describe('PackageController', () => {
     });
   });
 
-  it('should be getOrderPaginate Metadata Null', async () => {
+  it('should be getPackagePaginate Metadata Null', async () => {
     mockControllerPackage.aggregate.mockReturnValue([
       { data: [sampleFullPackage], metadata: [] },
     ]);
 
     expect(
-      await controller.getOrderPaginate({
+      await controller.getPackagePaginate({
         vendorId: expect.any(String),
         status: 'NEW',
         skip: 0,
@@ -212,11 +186,11 @@ describe('PackageController', () => {
     });
   });
 
-  it('should be getOrderPaginate failed', async () => {
+  it('should be getPackagePaginate failed', async () => {
     mockControllerPackage.aggregate.mockReturnValue(false);
 
     expect(
-      await controller.getOrderPaginate({
+      await controller.getPackagePaginate({
         vendorId: expect.any(String),
         status: 'NEW',
         skip: 0,

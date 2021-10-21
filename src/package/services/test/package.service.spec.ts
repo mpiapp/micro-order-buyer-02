@@ -38,13 +38,13 @@ describe('PackageService', () => {
   });
 
   it('should be get PO Vendor', async () => {
-    expect(await service.getOrder(expect.any(String), 'NEW')).toEqual(
+    expect(await service.getPackages(expect.any(String), 'NEW')).toEqual(
       sampleFullPackage,
     );
   });
 
   it('should be getById PO', async () => {
-    expect(await service.getOrderById(expect.any(String))).toEqual(
+    expect(await service.getPackageById(expect.any(String))).toEqual(
       sampleFullPackage,
     );
   });

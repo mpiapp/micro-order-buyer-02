@@ -25,7 +25,7 @@ const sampleDataHelper = {
   total: 20000,
 };
 
-describe('Helper Service', () => {
+describe('Helper Services', () => {
   let services: Helper;
 
   beforeEach(async () => {

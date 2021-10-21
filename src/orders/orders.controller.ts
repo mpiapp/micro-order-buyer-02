@@ -1,7 +1,9 @@
-import { Controller, Get, HttpStatus, Query } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Query } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { MessagePattern } from '@nestjs/microservices';
-import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { IdPackage } from './../package/dto/IdPackage.dto';
+import { GenerateCoderService } from './../purchase-order/services/purchase-order-generate-code.service';
 import { PaginateDto } from './../package/dto/Paginate.dto';
 import { IOrdersResponse } from './interfaces/response/Many.interface';
 import { IOrderPaginateResponse } from './interfaces/response/Paginate.interface';
@@ -16,6 +18,7 @@ export class OrdersController {
     private readonly ordersService: OrdersService,
     private readonly Config: ConfigService,
     private readonly paginateService: OrderPaginateService,
+    private readonly Generate: GenerateCoderService,
   ) {}
 
   @Get('list')
@@ -91,5 +94,21 @@ export class OrdersController {
       limit: limit,
       data: data,
     };
+  }
+
+  @Get('getIdPackage')
+  @ApiBody({ type: IdPackage })
+  @ApiOperation({ summary: 'Get Id Package' })
+  @MessagePattern('Get-ID-Package')
+  async getIdPackage(@Body() params: IdPackage): Promise<string> {
+    const { id, count } = params;
+
+    const getOrder = await this.ordersService.getOrderById(id);
+
+    return this.Generate.generateCode({
+      code: getOrder.code_po,
+      count: getOrder.packages.length > 1 ? getOrder.packages.length : count,
+      digits: this.Config.get('DIGITS_NUMBER_PACKAGE'),
+    });
   }
 }

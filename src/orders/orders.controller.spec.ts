@@ -8,6 +8,7 @@ import { OrdersService } from './services/orders.service';
 import { getModelToken } from '@nestjs/mongoose';
 import { PO } from './../purchase-order/schemas/purchase-order.schema';
 import { sampleFullPackage } from './../../test/mocks/sample/Package/sample.full.data.mock';
+import { GenerateCoderService } from './../purchase-order/services/purchase-order-generate-code.service';
 
 const mockControllerOrders = {
   aggregate: jest.fn().mockReturnValue(sampleFullPackage),
@@ -24,6 +25,7 @@ describe('OrdersController', () => {
       ],
       controllers: [OrdersController],
       providers: [
+        GenerateCoderService,
         OrdersService,
         Helper,
         OrderPaginateService,
@@ -57,6 +59,12 @@ describe('OrdersController', () => {
       message: 'Get Order Success',
       data: sampleFullPackage,
     });
+  });
+
+  it('should be get Id Package', async () => {
+    expect(
+      await controller.getIdPackage({ id: expect.any(String), count: 4 }),
+    ).toEqual('KPJ-12-10-00001-001-004');
   });
 
   it('should be getOrder By Id failed', async () => {
@@ -141,5 +149,25 @@ describe('OrdersController', () => {
       limit: 10,
       data: null,
     });
+  });
+
+  it('should be get Id Package IF > count', async () => {
+    mockControllerOrders.aggregate.mockImplementation(() => {
+      return {
+        code_po: 'KPJ-12-10-00001-001',
+        packages: [
+          {
+            no: 1,
+          },
+          {
+            no: 2,
+          },
+        ],
+      };
+    });
+
+    expect(
+      await controller.getIdPackage({ id: expect.any(String), count: 4 }),
+    ).toEqual('KPJ-12-10-00001-001-002');
   });
 });

@@ -1,6 +1,6 @@
-import { IOrderPackage } from '../type/OrderPackage.interface';
+import { IPackageType } from '../type/Package.interface';
 import { BasePaginateResponse } from './../../../config/interfaces/response.pagination.base.interface';
 
 export interface IPackagesPaginateResponse extends BasePaginateResponse {
-  data: IOrderPackage[] | null;
+  data: IPackageType[] | null;
 }

@@ -96,7 +96,7 @@ export class PackageService {
     );
   }
 
-  async getOrderById(id: string): Promise<any> {
+  async getPackageById(id: string): Promise<any> {
     return this.model.aggregate([
       {
         $addFields: {
@@ -116,6 +116,29 @@ export class PackageService {
                 date: '$date',
               },
               '$vendors',
+            ],
+          },
+        },
+      },
+      {
+        $addFields: {
+          'packages._id': '$_id',
+        },
+      },
+      {
+        $unwind: '$packages',
+      },
+      {
+        $replaceRoot: {
+          newRoot: {
+            $mergeObjects: [
+              {
+                buyerId: '$buyerId',
+                addressId: '$addressId',
+                vendorId: '$vendorId',
+                date: '$date',
+              },
+              '$packages',
             ],
           },
         },
@@ -135,7 +158,7 @@ export class PackageService {
     ]);
   }
 
-  async getOrder(vendorId: string, status: string): Promise<any[]> {
+  async getPackages(vendorId: string, status: string): Promise<any[]> {
     return this.model.aggregate([
       {
         $addFields: {
@@ -160,6 +183,34 @@ export class PackageService {
         },
       },
       {
+        $match: {
+          vendorId: vendorId,
+        },
+      },
+      {
+        $addFields: {
+          'packages._id': '$_id',
+        },
+      },
+      {
+        $unwind: '$packages',
+      },
+      {
+        $replaceRoot: {
+          newRoot: {
+            $mergeObjects: [
+              {
+                buyerId: '$buyerId',
+                addressId: '$addressId',
+                vendorId: '$vendorId',
+                date: '$date',
+              },
+              '$packages',
+            ],
+          },
+        },
+      },
+      {
         $addFields: {
           lastStatus: {
             $last: '$statuses.name',
@@ -168,7 +219,6 @@ export class PackageService {
       },
       {
         $match: {
-          vendorId: vendorId,
           lastStatus: status,
         },
       },
