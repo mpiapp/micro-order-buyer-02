@@ -8,6 +8,9 @@ import {
 } from './../purchase-order/schemas/purchase-order.schema';
 import { ConfigModule } from '@nestjs/config';
 import configuration from './../config/configuration';
+import { OrderPaginateService } from './services/order-paginate.service';
+import { GenerateCoderService } from 'src/purchase-order/services/purchase-order-generate-code.service';
+import { Helper } from 'src/utils/helper.utils';
 
 @Module({
   imports: [
@@ -16,7 +19,12 @@ import configuration from './../config/configuration';
       load: [configuration],
     }),
   ],
-  providers: [OrdersService],
+  providers: [
+    OrdersService,
+    OrderPaginateService,
+    GenerateCoderService,
+    Helper,
+  ],
   controllers: [OrdersController],
 })
 export class OrdersModule {}
