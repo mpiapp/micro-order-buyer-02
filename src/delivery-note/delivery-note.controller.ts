@@ -1,10 +1,20 @@
-import { Body, Controller, Get, HttpStatus, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { MessagePattern } from '@nestjs/microservices';
 import { ApiBody, ApiOperation, ApiQuery } from '@nestjs/swagger';
+import { uptime } from 'process';
 import { BaseResponse } from './../config/interfaces/response.base.interface';
 import { GenerateCoderService } from './../purchase-order/services/purchase-order-generate-code.service';
 import { DeliveryNoteCreateDto } from './dto/DeliveryNoteCreate.dto';
+import { DNUpdateDto } from './dto/DeliveryNoteUpdate.dto';
 import { DNPaginateDto } from './dto/Paginate.dto';
 import { IDeliveryNotesResponse } from './interfaces/response/Many.interface';
 import { IDeliveryNotesPaginateResponse } from './interfaces/response/Paginate.interface';
@@ -137,5 +147,36 @@ export class DeliveryNoteController {
       count: countingNumber + 1,
       digits: this.Config.get('DIGITS_NUMBER_PACK'),
     });
+  }
+
+  @Put()
+  @ApiQuery({ name: 'id', type: 'string' })
+  @ApiBody({ type: DNUpdateDto })
+  @ApiOperation({ summary: 'Update Delivery Note' })
+  @MessagePattern('Update-Delivery-Note')
+  async DeliveryNoteUpdate(
+    @Query('id') id: string,
+    @Body() params: DNUpdateDto,
+  ): Promise<IDeliveryNoteResponse> {
+    try {
+      const update = await this.dnService.update(id, params);
+      return {
+        status: HttpStatus.CREATED,
+        message: this.Config.get<string>(
+          'messageBase.DeliveryNote.save.Success',
+        ),
+        data: update,
+        errors: null,
+      };
+    } catch (error) {
+      return {
+        status: HttpStatus.PRECONDITION_FAILED,
+        message: this.Config.get<string>(
+          'messageBase.DeliveryNote.save.Failed',
+        ),
+        errors: error,
+        data: null,
+      };
+    }
   }
 }

@@ -3,13 +3,15 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ICreateDeliveryNote } from '../interfaces/services/CreateDeliveryNoteService.interface';
 import { IReadDeliveryNote } from '../interfaces/services/ReadDeliveryNoteService.interface';
+import { IUpdateDeliveryNote } from '../interfaces/services/UpdateDeliveryNoteService.interface';
 import { IDnCreate } from '../interfaces/type/dn-create.type';
 import { TPaginate } from '../interfaces/type/dn-paginate.type';
+import { IDnUpdate } from '../interfaces/type/dn-update.type';
 import { DN, DNDocument } from '../schemas/delivery-note.schema';
 
 @Injectable()
 export class DeliveryNoteService
-  implements ICreateDeliveryNote, IReadDeliveryNote
+  implements ICreateDeliveryNote, IReadDeliveryNote, IUpdateDeliveryNote
 {
   constructor(
     @InjectModel(DN.name) private readonly model: Model<DNDocument>,
@@ -60,5 +62,9 @@ export class DeliveryNoteService
         },
       },
     ]);
+  }
+
+  async update(id: string, params: IDnUpdate): Promise<DN> {
+    return this.model.findByIdAndUpdate(id, params);
   }
 }

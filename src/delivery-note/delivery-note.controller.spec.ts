@@ -173,4 +173,38 @@ describe('DeliveryNoteController', () => {
       });
     }
   });
+
+  it('should be update delivery note', async () => {
+    mockDeliveryNoteController.find.mockRejectedValue(new Error());
+
+    try {
+      await controller.DeliveryNoteUpdate(expect.any(String), {
+        awb: 'XXXXXXXX',
+      });
+    } catch (error) {
+      expect(error).toEqual({
+        errors: error,
+        status: 400,
+        data: null,
+        message: 'Update Delivery Notes Success',
+      });
+    }
+  });
+
+  it('should be update delivery note failed', async () => {
+    mockDeliveryNoteController.findByIdAndUpdate.mockRejectedValue(new Error());
+
+    try {
+      await controller.DeliveryNoteUpdate(expect.any(String), {
+        awb: 'XXXXXXXX',
+      });
+    } catch (error) {
+      expect(error).toEqual({
+        errors: error,
+        status: 400,
+        data: null,
+        message: 'Update Delivery Notes Failed',
+      });
+    }
+  });
 });

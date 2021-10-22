@@ -62,4 +62,10 @@ describe('DeliveryNoteService', () => {
     mockDeliveryNoteService.find.mockReturnValue(0);
     expect(await service.getCount('DN-001')).toEqual(0);
   });
+
+  it('should be update delivery note', async () => {
+    expect(
+      await service.update(expect.any(String), { awb: 'XXXXXXXXX' }),
+    ).toEqual(sampleDeliveryNote);
+  });
 });
