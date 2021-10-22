@@ -39,7 +39,7 @@ export class PO {
             },
           ],
         },
-        payment_terms: { type: [String] },
+        payment_terms: { type: String },
         tax: { type: Number },
         total: { type: Number },
         statuses: {
@@ -57,7 +57,7 @@ export class PO {
       quantity: number;
       price: number;
     }[];
-    payment_terms?: string[];
+    payment_terms?: string;
     tax?: number;
     total: number;
     statuses: {
