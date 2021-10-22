@@ -14,6 +14,28 @@ export default () => ({
       Success: 'Update Qty Item Success',
       Failed: 'Update Qty Item Failed',
     },
+    DeliveryNote: {
+      All: {
+        Success: 'Get Delivery Notes Success',
+        Failed: 'Get Delivery Notes Failed',
+      },
+      One: {
+        Success: 'Get One Delivery Note Success',
+        Failed: 'Get One Delivery Note Failed',
+      },
+      save: {
+        Success: 'Save Delivery Note Success',
+        Failed: 'Save Delivery Note Failed',
+      },
+      update: {
+        Success: 'Update Delivery Note Success',
+        Failed: 'Update Delivery Note Failed',
+      },
+      delete: {
+        Success: 'Delete Delivery Note Success',
+        Failed: 'Delete Delivery Note Failed',
+      },
+    },
     Orders: {
       All: {
         Success: 'Get Orders Success',

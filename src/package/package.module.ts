@@ -11,6 +11,7 @@ import configuration from './../config/configuration';
 import { PaginatePackageService } from './services/paginate-package.service';
 import { Helper } from './../utils/helper.utils';
 import { PicknPackService } from './services/picknpack.service';
+import { GenerateCoderService } from './../purchase-order/services/purchase-order-generate-code.service';
 
 @Module({
   imports: [
@@ -19,7 +20,13 @@ import { PicknPackService } from './services/picknpack.service';
       load: [configuration],
     }),
   ],
-  providers: [PackageService, PaginatePackageService, Helper, PicknPackService],
+  providers: [
+    PackageService,
+    PaginatePackageService,
+    Helper,
+    PicknPackService,
+    GenerateCoderService,
+  ],
   controllers: [PackageController],
 })
 export class PackageModule {}
