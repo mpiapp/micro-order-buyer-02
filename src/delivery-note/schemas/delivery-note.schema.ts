@@ -16,6 +16,8 @@ export class DN {
   @Prop({ type: mongoose.Schema.Types.ObjectId, required: true })
   addressId: string;
   @Prop({ type: mongoose.Schema.Types.ObjectId, required: true })
+  vendorId: string;
+  @Prop({ type: mongoose.Schema.Types.ObjectId, required: true })
   orderId: string;
   @Prop({ type: String })
   awb?: string;

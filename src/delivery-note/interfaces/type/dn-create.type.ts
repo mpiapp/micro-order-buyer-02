@@ -7,6 +7,7 @@ export type IDnCreate = {
   buyerId: string;
   addressId: string;
   orderId: string;
+  vendorId: string;
   items: IPurchaseOrderItem[];
   statuses: IStatus;
   createdBy: string;

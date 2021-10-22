@@ -6,4 +6,5 @@ export const mockDeliveryNoteService = {
   }),
   find: jest.fn().mockReturnValue([sampleDeliveryNote]),
   findById: jest.fn().mockReturnValue(sampleDeliveryNote),
+  aggregate: jest.fn().mockReturnValue([sampleDeliveryNote]),
 };

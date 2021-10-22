@@ -44,6 +44,16 @@ describe('DeliveryNoteService', () => {
     ]);
   });
 
+  it('should be get paginate delivery note ', async () => {
+    expect(
+      await service.getPaginate({
+        vendorId: expect.any(String),
+        skip: 0,
+        limit: 10,
+      }),
+    ).toEqual([sampleDeliveryNote]);
+  });
+
   it('should be count document', async () => {
     expect(await service.getCount('DN-001')).toEqual(1);
   });

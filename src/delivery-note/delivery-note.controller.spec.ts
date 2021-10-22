@@ -104,6 +104,61 @@ describe('DeliveryNoteController', () => {
     });
   });
 
+  it('should be get Paginate delivery note', async () => {
+    mockDeliveryNoteController.aggregate.mockReturnValue([
+      { data: [sampleDeliveryNote], metadata: [{ total: 1 }] },
+    ]);
+
+    expect(
+      await controller.DeliveryNotePaginate({
+        vendorId: expect.any(String),
+        skip: 0,
+        limit: 10,
+      }),
+    ).toEqual({
+      page: 0,
+      limit: 10,
+      data: [sampleDeliveryNote],
+      count: 1,
+    });
+  });
+
+  it('should be get Paginate delivery note Metadata Null', async () => {
+    mockDeliveryNoteController.aggregate.mockReturnValue([
+      { data: [sampleDeliveryNote], metadata: [] },
+    ]);
+
+    expect(
+      await controller.DeliveryNotePaginate({
+        vendorId: expect.any(String),
+        skip: 0,
+        limit: 10,
+      }),
+    ).toEqual({
+      count: 0,
+      page: 0,
+      limit: 10,
+      data: [sampleDeliveryNote],
+    });
+  });
+
+  it('should be get Paginate delivery failed', async () => {
+    mockDeliveryNoteController.aggregate.mockReturnValue(false);
+
+    expect(
+      await controller.DeliveryNotePaginate({
+        vendorId: expect.any(String),
+        skip: 0,
+        limit: 10,
+      }),
+    ).toEqual({
+      count: 0,
+      page: 0,
+      limit: 10,
+      data: null,
+    });
+  });
+
   it('should be getAll delivery note failed', async () => {
     mockDeliveryNoteController.find.mockRejectedValue(new Error());
 

@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { ICreateDeliveryNote } from '../interfaces/services/CreateDeliveryNoteService.interface';
 import { IReadDeliveryNote } from '../interfaces/services/ReadDeliveryNoteService.interface';
 import { IDnCreate } from '../interfaces/type/dn-create.type';
+import { TPaginate } from '../interfaces/type/dn-paginate.type';
 import { DN, DNDocument } from '../schemas/delivery-note.schema';
 
 @Injectable()
@@ -22,8 +23,8 @@ export class DeliveryNoteService
     return this.model.findById(id);
   }
 
-  async getAll(vendorId: string): Promise<DN[]> {
-    return this.model.find({ vendorId: vendorId });
+  async getAll(vendor: string): Promise<DN[]> {
+    return this.model.find({ vendorId: vendor });
   }
 
   async getCount(SearchCode: string): Promise<number> {
@@ -31,5 +32,33 @@ export class DeliveryNoteService
       code: { $regex: SearchCode, $options: 'i' },
     });
     return getDoc.length > 0 ? getDoc.length : 0;
+  }
+
+  async getPaginate(params: TPaginate): Promise<any> {
+    const { vendorId, skip, limit } = params;
+    return this.model.aggregate([
+      {
+        $match: {
+          vendorId: vendorId,
+        },
+      },
+      {
+        $facet: {
+          metadata: [
+            {
+              $count: 'total',
+            },
+          ],
+          data: [
+            {
+              $skip: skip,
+            },
+            {
+              $limit: limit,
+            },
+          ],
+        },
+      },
+    ]);
   }
 }

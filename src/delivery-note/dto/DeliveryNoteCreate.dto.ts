@@ -21,6 +21,10 @@ export class DeliveryNoteCreateDto implements IDnCreate {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
+  vendorId: string;
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
   orderId: string;
   @ApiProperty()
   @IsDate()

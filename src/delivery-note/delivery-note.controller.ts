@@ -5,7 +5,9 @@ import { ApiBody, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { BaseResponse } from './../config/interfaces/response.base.interface';
 import { GenerateCoderService } from './../purchase-order/services/purchase-order-generate-code.service';
 import { DeliveryNoteCreateDto } from './dto/DeliveryNoteCreate.dto';
+import { DNPaginateDto } from './dto/Paginate.dto';
 import { IDeliveryNotesResponse } from './interfaces/response/Many.interface';
+import { IDeliveryNotesPaginateResponse } from './interfaces/response/Paginate.interface';
 import { IDeliveryNoteResponse } from './interfaces/response/Single.interface';
 import { DeliveryNoteService } from './services/delivery-note.service';
 
@@ -71,6 +73,31 @@ export class DeliveryNoteController {
     }
   }
 
+  @Get('Paginate')
+  @ApiOperation({ summary: 'Get Delivery Note Paginate' })
+  @MessagePattern('Delivery-Note-Paginate')
+  async DeliveryNotePaginate(
+    @Query() params: DNPaginateDto,
+  ): Promise<IDeliveryNotesPaginateResponse> {
+    const { skip, limit } = params;
+    const getData = await this.dnService.getPaginate(params);
+    if (!getData) {
+      return {
+        count: 0,
+        page: skip,
+        limit: limit,
+        data: null,
+      };
+    }
+    const { data, metadata } = getData[0];
+    return {
+      count: metadata[0] ? metadata[0].total : 0,
+      page: skip,
+      limit: limit,
+      data: data,
+    };
+  }
+
   @Post()
   @ApiBody({ type: DeliveryNoteCreateDto })
   @ApiOperation({ summary: 'Save Delivery Note' })
@@ -98,7 +125,7 @@ export class DeliveryNoteController {
     }
   }
 
-  @Post()
+  @Post('GenerateCode')
   @ApiQuery({ name: 'po_number', type: String })
   @ApiOperation({ summary: 'Generate Code Delivery Note' })
   @MessagePattern('Generate-Code-Delivery-Note')
