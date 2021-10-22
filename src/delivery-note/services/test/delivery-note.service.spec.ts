@@ -68,4 +68,10 @@ describe('DeliveryNoteService', () => {
       await service.update(expect.any(String), { awb: 'XXXXXXXXX' }),
     ).toEqual(sampleDeliveryNote);
   });
+
+  it('should be delete delivery note', async () => {
+    expect(await service.delete(expect.any(String))).toEqual(
+      sampleDeliveryNote,
+    );
+  });
 });

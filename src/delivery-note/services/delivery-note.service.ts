@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ICreateDeliveryNote } from '../interfaces/services/CreateDeliveryNoteService.interface';
+import { IDeleteDeliveryNote } from '../interfaces/services/DeleteDeliveryNoteService.interface';
 import { IReadDeliveryNote } from '../interfaces/services/ReadDeliveryNoteService.interface';
 import { IUpdateDeliveryNote } from '../interfaces/services/UpdateDeliveryNoteService.interface';
 import { IDnCreate } from '../interfaces/type/dn-create.type';
@@ -11,7 +12,11 @@ import { DN, DNDocument } from '../schemas/delivery-note.schema';
 
 @Injectable()
 export class DeliveryNoteService
-  implements ICreateDeliveryNote, IReadDeliveryNote, IUpdateDeliveryNote
+  implements
+    ICreateDeliveryNote,
+    IReadDeliveryNote,
+    IUpdateDeliveryNote,
+    IDeleteDeliveryNote
 {
   constructor(
     @InjectModel(DN.name) private readonly model: Model<DNDocument>,
@@ -66,5 +71,9 @@ export class DeliveryNoteService
 
   async update(id: string, params: IDnUpdate): Promise<DN> {
     return this.model.findByIdAndUpdate(id, params);
+  }
+
+  async delete(id: string): Promise<DN> {
+    return this.model.findByIdAndUpdate(id, { isDeleted: true });
   }
 }

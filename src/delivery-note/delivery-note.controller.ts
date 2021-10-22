@@ -1,15 +1,17 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpStatus,
+  Param,
   Post,
   Put,
   Query,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { MessagePattern } from '@nestjs/microservices';
-import { ApiBody, ApiOperation, ApiQuery } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiParam, ApiQuery } from '@nestjs/swagger';
 import { BaseResponse } from './../config/interfaces/response.base.interface';
 import { GenerateCoderService } from './../purchase-order/services/purchase-order-generate-code.service';
 import { DeliveryNoteCreateDto } from './dto/DeliveryNoteCreate.dto';
@@ -160,9 +162,9 @@ export class DeliveryNoteController {
     try {
       const update = await this.dnService.update(id, params);
       return {
-        status: HttpStatus.CREATED,
+        status: HttpStatus.OK,
         message: this.Config.get<string>(
-          'messageBase.DeliveryNote.save.Success',
+          'messageBase.DeliveryNote.update.Success',
         ),
         data: update,
         errors: null,
@@ -171,10 +173,35 @@ export class DeliveryNoteController {
       return {
         status: HttpStatus.PRECONDITION_FAILED,
         message: this.Config.get<string>(
-          'messageBase.DeliveryNote.save.Failed',
+          'messageBase.DeliveryNote.update.Failed',
         ),
         errors: error,
         data: null,
+      };
+    }
+  }
+
+  @Delete(':id')
+  @ApiParam({ name: 'id', type: 'string' })
+  @ApiOperation({ summary: 'Delete Delivery Note' })
+  @MessagePattern('Delivery-Note-Delete')
+  async DeliveryNoteRemove(@Param('id') id: string): Promise<BaseResponse> {
+    try {
+      await this.dnService.delete(id);
+      return {
+        status: HttpStatus.OK,
+        message: this.Config.get<string>(
+          'messageBase.DeliveryNote.delete.Success',
+        ),
+        errors: null,
+      };
+    } catch (error) {
+      return {
+        status: HttpStatus.PRECONDITION_FAILED,
+        message: this.Config.get<string>(
+          'messageBase.DeliveryNote.delete.Failed',
+        ),
+        errors: error,
       };
     }
   }

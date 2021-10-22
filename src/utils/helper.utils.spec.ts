@@ -72,7 +72,7 @@ describe('Helper Services', () => {
     );
   });
 
-  it('should pad number ', () => {
+  it('should pad number', () => {
     expect(services.padNumber('9', 4, '0')).toEqual(`0009`);
   });
 

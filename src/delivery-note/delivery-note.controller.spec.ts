@@ -175,20 +175,24 @@ describe('DeliveryNoteController', () => {
   });
 
   it('should be update delivery note', async () => {
-    mockDeliveryNoteController.find.mockRejectedValue(new Error());
-
-    try {
+    expect(
       await controller.DeliveryNoteUpdate(expect.any(String), {
         awb: 'XXXXXXXX',
-      });
-    } catch (error) {
-      expect(error).toEqual({
-        errors: error,
-        status: 400,
-        data: null,
-        message: 'Update Delivery Notes Success',
-      });
-    }
+      }),
+    ).toEqual({
+      errors: null,
+      status: 200,
+      data: sampleDeliveryNote,
+      message: 'Update Delivery Note Success',
+    });
+  });
+
+  it('should be remove delivery note', async () => {
+    expect(await controller.DeliveryNoteRemove(expect.any(String))).toEqual({
+      errors: null,
+      status: 200,
+      message: 'Delete Delivery Note Success',
+    });
   });
 
   it('should be update delivery note failed', async () => {
@@ -203,7 +207,21 @@ describe('DeliveryNoteController', () => {
         errors: error,
         status: 400,
         data: null,
-        message: 'Update Delivery Notes Failed',
+        message: 'Update Delivery Note Failed',
+      });
+    }
+  });
+
+  it('should be remove delivery note failed', async () => {
+    mockDeliveryNoteController.findByIdAndUpdate.mockRejectedValue(new Error());
+
+    try {
+      await controller.DeliveryNoteRemove(expect.any(String));
+    } catch (error) {
+      expect(error).toEqual({
+        errors: error,
+        status: 400,
+        message: 'Remove Delivery Note Failed',
       });
     }
   });
