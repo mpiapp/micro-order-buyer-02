@@ -51,11 +51,7 @@ describe('PackageService', () => {
 
   it('should be split Package', async () => {
     expect(
-      await service.splitPackage(
-        expect.any(String),
-        expect.any(String),
-        splitPackageSample,
-      ),
+      await service.splitPackage(expect.any(String), splitPackageSample),
     ).toEqual({
       message: 'Update Success',
       status: true,
@@ -65,11 +61,7 @@ describe('PackageService', () => {
 
   it('should be push Package', async () => {
     expect(
-      await service.pushPackage(
-        expect.any(String),
-        expect.any(String),
-        splitPackageSample,
-      ),
+      await service.pushPackage(expect.any(String), splitPackageSample),
     ).toEqual({
       message: 'Update Success',
       status: true,
@@ -79,11 +71,7 @@ describe('PackageService', () => {
 
   it('should be pull Package', async () => {
     expect(
-      await service.pullPackage(
-        expect.any(String),
-        expect.any(String),
-        expect.any(String),
-      ),
+      await service.pullPackage(expect.any(String), expect.any(String)),
     ).toEqual({
       message: 'Update Success',
       status: true,

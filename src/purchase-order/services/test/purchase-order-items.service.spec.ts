@@ -1,10 +1,20 @@
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
-import { SampleCreate } from '../../../../test/mocks/sample/Purchase-Request/sample.data.create.mock';
-import { mockItemPurchaseRequest } from '../../../../test/mocks/services/Item.mocks';
-import { sampleItem } from './../../../../test/mocks/sample/Products/sample.item.mock';
 import { PurchaseOrderItemsService } from '../purchase-order-items.service';
 import { PO } from './../../schemas/purchase-order.schema';
+import { sampleItemBaseChange } from './../../../../test/mocks/sample/Items/sample.base.mock';
+
+const POItemMOck = {
+  findOneAndUpdate: jest.fn().mockReturnValue({
+    ...sampleItemBaseChange,
+    statuses: [
+      {
+        name: 'Rejected',
+        timestamp: new Date('2021-10-25'),
+      },
+    ],
+  }),
+};
 
 describe('PurchaseOrderItemsService', () => {
   let service: PurchaseOrderItemsService;
@@ -15,7 +25,7 @@ describe('PurchaseOrderItemsService', () => {
         PurchaseOrderItemsService,
         {
           provide: getModelToken(PO.name),
-          useValue: mockItemPurchaseRequest,
+          useValue: POItemMOck,
         },
       ],
     }).compile();
@@ -27,52 +37,57 @@ describe('PurchaseOrderItemsService', () => {
     expect(service).toBeDefined();
   });
 
-  it('should be add items', async () => {
-    SampleCreate.items.push(sampleItem);
-    expect(
-      await service.addItem(
-        { _id: 'At126abasvt125' },
-        { $push: { items: sampleItem } },
-      ),
-    ).toEqual({
-      message: 'Update Success',
-      status: true,
-      id: expect.any(String),
+  it('should be approved qty change items from vendor', async () => {
+    POItemMOck.findOneAndUpdate.mockReturnValue({
+      ...sampleItemBaseChange,
+      quantity: 10,
+    });
+    expect(await service.changeQty(expect.any(String), 10)).toEqual({
+      ...sampleItemBaseChange,
+      quantity: 10,
     });
   });
 
-  it('should be remove items', async () => {
-    mockItemPurchaseRequest.updateOne.mockImplementation(() => {
-      return {
-        message: 'Remove Success',
-        status: true,
-        id: expect.any(String),
-      };
+  it('should be approved price change items from vendor', async () => {
+    POItemMOck.findOneAndUpdate.mockReturnValue({
+      ...sampleItemBaseChange,
+      price: 10000,
     });
-    expect(
-      await service.removeItem(
-        { _id: expect.any(String) },
-        { $pull: { productId: sampleItem.productId } },
-      ),
-    ).toEqual({
-      message: 'Remove Success',
-      status: true,
-      id: expect.any(String),
+    expect(await service.changePrice(expect.any(String), 10000)).toEqual({
+      ...sampleItemBaseChange,
+      price: 10000,
     });
   });
 
-  it('should catch error remove items', async () => {
-    mockItemPurchaseRequest.updateOne.mockImplementation(() => {
-      throw new Error();
+  // it('should be approved product change items from vendor', async () => {
+  //   expect(
+  //     await service.changeProduct('At126abasvt125', sampleItemProductChange),
+  //   ).toEqual({
+  //     message: 'Update Success',
+  //     status: true,
+  //     id: expect.any(String),
+  //   });
+  // });
+
+  it('should be reject change items from vendor', async () => {
+    POItemMOck.findOneAndUpdate.mockReturnValue({
+      ...sampleItemBaseChange,
+      statuses: [
+        {
+          name: 'Rejected',
+          timestamp: new Date('2021-10-25'),
+        },
+      ],
     });
 
-    try {
-      await service.removeItem(
-        { _id: expect.any(String) },
-        { $pull: { productId: sampleItem.productId } },
-      );
-    } catch (error) {
-      expect(error);
-    }
+    expect(await service.changeRejected(expect.any(String))).toEqual({
+      ...sampleItemBaseChange,
+      statuses: [
+        {
+          name: 'Rejected',
+          timestamp: new Date('2021-10-25'),
+        },
+      ],
+    });
   });
 });

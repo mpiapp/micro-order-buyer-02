@@ -15,17 +15,12 @@ export class PackageService {
     @InjectModel(PO.name) private readonly model: Model<PODocument>,
   ) {}
 
-  async splitPackage(
-    id: string,
-    vendorId: string,
-    params: IPackage[],
-  ): Promise<any> {
+  async splitPackage(id: string, params: IPackage[]): Promise<any> {
     return this.model.updateOne(
       {
         $and: [
           {
-            _id: new mongoose.Types.ObjectId(id),
-            'vendors.vendorId': new mongoose.Types.ObjectId(vendorId),
+            'vendors._id': new mongoose.Types.ObjectId(id),
           },
         ],
       },
@@ -33,17 +28,12 @@ export class PackageService {
     );
   }
 
-  async pushPackage(
-    id: string,
-    vendorId: string,
-    params: IPackage[],
-  ): Promise<any> {
+  async pushPackage(id: string, params: IPackage[]): Promise<any> {
     return this.model.updateOne(
       {
         $and: [
           {
-            _id: new mongoose.Types.ObjectId(id),
-            'vendors.vendorId': new mongoose.Types.ObjectId(vendorId),
+            'vendors._id': new mongoose.Types.ObjectId(id),
           },
         ],
       },
@@ -51,17 +41,12 @@ export class PackageService {
     );
   }
 
-  async pullPackage(
-    id: string,
-    vendorId: string,
-    packageId: string,
-  ): Promise<any> {
+  async pullPackage(id: string, packageId: string): Promise<any> {
     return this.model.updateOne(
       {
         $and: [
           {
-            _id: new mongoose.Types.ObjectId(id),
-            'vendors.vendorId': new mongoose.Types.ObjectId(vendorId),
+            'vendors._id': new mongoose.Types.ObjectId(id),
           },
         ],
       },

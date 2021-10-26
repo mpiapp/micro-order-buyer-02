@@ -120,11 +120,10 @@ export class PackageController {
   @MessagePattern('Save-Split-Package')
   async splitPackage(
     @Param('id') id: string,
-    vendorId: string,
     @Body() params: PackageDto[],
   ): Promise<BaseResponse> {
     try {
-      await this.packageService.splitPackage(id, vendorId, params);
+      await this.packageService.splitPackage(id, params);
       return {
         status: HttpStatus.CREATED,
         message: this.Config.get<string>('messageBase.Package.save.Success'),
