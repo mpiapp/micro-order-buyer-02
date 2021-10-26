@@ -11,7 +11,13 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { MessagePattern } from '@nestjs/microservices';
-import { ApiBody, ApiOperation, ApiParam, ApiQuery } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { BaseResponse } from './../config/interfaces/response.base.interface';
 import { GenerateCoderService } from './../purchase-order/services/purchase-order-generate-code.service';
 import { DeliveryNoteCreateDto } from './dto/DeliveryNoteCreate.dto';
@@ -22,6 +28,7 @@ import { IDeliveryNotesPaginateResponse } from './interfaces/response/Paginate.i
 import { IDeliveryNoteResponse } from './interfaces/response/Single.interface';
 import { DeliveryNoteService } from './services/delivery-note.service';
 
+@ApiTags('Delivery-Note')
 @Controller('delivery-note')
 export class DeliveryNoteController {
   constructor(

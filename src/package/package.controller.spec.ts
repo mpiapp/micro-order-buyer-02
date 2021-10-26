@@ -53,11 +53,7 @@ describe('PackageController', () => {
 
   it('should be split package', async () => {
     expect(
-      await controller.splitPackage(
-        expect.any(String),
-        expect.any(String),
-        splitPackageSample,
-      ),
+      await controller.splitPackage(expect.any(String), splitPackageSample),
     ).toEqual({
       errors: null,
       status: 201,
@@ -99,11 +95,7 @@ describe('PackageController', () => {
     mockControllerPackage.updateOne.mockRejectedValue(new Error());
 
     try {
-      await controller.splitPackage(
-        expect.any(String),
-        expect.any(String),
-        splitPackageSample,
-      );
+      await controller.splitPackage(expect.any(String), splitPackageSample);
     } catch (error) {
       expect(error).toEqual({
         errors: error.errors,

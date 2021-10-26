@@ -16,6 +16,7 @@ export class PicknPackService {
 
   async pickPackage(params: IPicknPackPackage): Promise<any> {
     const { id, code, items, statuses } = params;
+
     return this.model.updateOne(
       {
         $and: [
