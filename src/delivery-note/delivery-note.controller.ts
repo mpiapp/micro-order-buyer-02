@@ -153,7 +153,7 @@ export class DeliveryNoteController {
     return this.generate.generateCode({
       code: searchCode,
       count: countingNumber + 1,
-      digits: this.Config.get('DIGITS_NUMBER_PACK'),
+      digits: this.Config.get('DIGITS_NUMBER_DELIVERY_NOTE'),
     });
   }
 
