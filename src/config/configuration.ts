@@ -35,6 +35,10 @@ export default () => ({
         Success: 'Delete Good Receive Note Success',
         Failed: 'Delete Good Receive Note Failed',
       },
+      reject: {
+        Success: 'Reject Good Receive Note Success',
+        Failed: 'Reject Good Receive Note Failed',
+      },
     },
     DeliveryNote: {
       All: {

@@ -7,6 +7,7 @@ import {
 } from './../../delivery-note/schemas/delivery-note.schema';
 import { TGrnPaginate } from '../interfaces/types/grn-paginate.type';
 import { TGrnUpdate } from '../interfaces/types/grn-update.type';
+import { IStatus } from './../../purchase-request/interfaces/type/IStatus.interface';
 
 @Injectable()
 export class GrnService {
@@ -61,5 +62,11 @@ export class GrnService {
       code: { $regex: SearchCode, $options: 'i' },
     });
     return getDoc.length > 0 ? getDoc.length : 0;
+  }
+
+  async rejectGRN(id: string, params: IStatus): Promise<DN> {
+    return this.grnModel.findByIdAndUpdate(id, {
+      $push: { statuses: params },
+    });
   }
 }

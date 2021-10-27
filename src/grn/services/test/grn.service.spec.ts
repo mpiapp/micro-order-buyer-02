@@ -52,4 +52,13 @@ describe('GrnService', () => {
     mockGRNService.find.mockReturnValue(0);
     expect(await service.getCount('DN-001')).toEqual(0);
   });
+
+  it('should be update status reject', async () => {
+    expect(
+      await service.rejectGRN(expect.any(String), {
+        name: 'Rejected',
+        timestamp: new Date(),
+      }),
+    ).toEqual(sampleGRN);
+  });
 });

@@ -10,6 +10,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { MessagePattern } from '@nestjs/microservices';
 import { ApiBody, ApiOperation, ApiQuery } from '@nestjs/swagger';
+import { StatusDto } from './../purchase-request/dto/Status.dto';
 import { IDeliveryNotesResponse } from './../delivery-note/interfaces/response/Many.interface';
 import { IDeliveryNotesPaginateResponse } from './../delivery-note/interfaces/response/Paginate.interface';
 import { IDeliveryNoteResponse } from './../delivery-note/interfaces/response/Single.interface';
@@ -132,6 +133,33 @@ export class GrnController {
       return {
         status: HttpStatus.PRECONDITION_FAILED,
         message: this.Config.get<string>('messageBase.GRN.save.Failed'),
+        data: null,
+        errors: error,
+      };
+    }
+  }
+
+  @Put('Rejected')
+  @ApiQuery({ name: 'id', type: String })
+  @ApiBody({ type: StatusDto })
+  @ApiOperation({ summary: 'Reject Good Receive Note' })
+  @MessagePattern('Reject-Good-Receive-Note')
+  async GRNRejected(
+    @Query('id') id: string,
+    @Body() params: StatusDto,
+  ): Promise<IDeliveryNoteResponse> {
+    try {
+      const save = await this.grnService.rejectGRN(id, params);
+      return {
+        status: HttpStatus.OK,
+        message: this.Config.get<string>('messageBase.GRN.reject.Success'),
+        data: save,
+        errors: null,
+      };
+    } catch (error) {
+      return {
+        status: HttpStatus.PRECONDITION_FAILED,
+        message: this.Config.get<string>('messageBase.GRN.reject.Failed'),
         data: null,
         errors: error,
       };

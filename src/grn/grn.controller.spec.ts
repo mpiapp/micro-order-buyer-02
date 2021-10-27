@@ -157,6 +157,20 @@ describe('GrnController', () => {
     });
   });
 
+  it('should be Reject Good Receive note', async () => {
+    expect(
+      await controller.GRNRejected(expect.any(String), {
+        name: 'Rejected',
+        timestamp: new Date(),
+      }),
+    ).toEqual({
+      errors: null,
+      status: 200,
+      data: sampleGRN,
+      message: 'Reject Good Receive Note Success',
+    });
+  });
+
   it('should be getAll Good Receive note failed', async () => {
     mockGrnController.findByIdAndUpdate.mockRejectedValue(new Error());
 
@@ -168,6 +182,24 @@ describe('GrnController', () => {
         status: 400,
         data: null,
         message: 'Save Good Receive Note Failed',
+      });
+    }
+  });
+
+  it('should be Reject Good Receive note failed', async () => {
+    mockGrnController.findByIdAndUpdate.mockRejectedValue(new Error());
+
+    try {
+      await controller.GRNRejected(expect.any(String), {
+        name: 'Rejected',
+        timestamp: new Date(),
+      });
+    } catch (error) {
+      expect(error).toEqual({
+        errors: error,
+        status: 400,
+        data: null,
+        message: 'Reject Good Receive Note Failed',
       });
     }
   });
