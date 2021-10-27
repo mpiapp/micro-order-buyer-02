@@ -14,6 +14,32 @@ export default () => ({
       Success: 'Update Qty Item Success',
       Failed: 'Update Qty Item Failed',
     },
+    GRN: {
+      All: {
+        Success: 'Get Good Receive Notes Success',
+        Failed: 'Get Good Receive Notes Failed',
+      },
+      One: {
+        Success: 'Get One Good Receive Note Success',
+        Failed: 'Get One Good Receive Note Failed',
+      },
+      save: {
+        Success: 'Save Good Receive Note Success',
+        Failed: 'Save Good Receive Note Failed',
+      },
+      update: {
+        Success: 'Update Good Receive Note Success',
+        Failed: 'Update Good Receive Note Failed',
+      },
+      delete: {
+        Success: 'Delete Good Receive Note Success',
+        Failed: 'Delete Good Receive Note Failed',
+      },
+      reject: {
+        Success: 'Reject Good Receive Note Success',
+        Failed: 'Reject Good Receive Note Failed',
+      },
+    },
     DeliveryNote: {
       All: {
         Success: 'Get Delivery Notes Success',

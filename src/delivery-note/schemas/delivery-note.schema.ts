@@ -7,11 +7,13 @@ export type DNDocument = DN & mongoose.Document;
 export class DN {
   @Prop()
   id: string;
-  @Prop({ unique: true, required: true, index: true })
+  @Prop({ unique: true, required: true, index: true, type: String })
   code: string;
+  @Prop({ type: String })
+  code_grn?: string;
   @Prop({ type: Date })
   date: Date;
-  @Prop({ type: mongoose.Schema.Types.ObjectId, required: true })
+  @Prop({ type: String, required: true })
   buyerId: string;
   @Prop({ type: mongoose.Schema.Types.ObjectId, required: true })
   addressId: string;
@@ -26,6 +28,7 @@ export class DN {
       {
         productId: { type: String },
         quantity: { type: Number },
+        received: { type: Number },
         price: { type: Number },
       },
     ],
@@ -33,6 +36,7 @@ export class DN {
   items: {
     productId: string;
     quantity: number;
+    received?: number;
     price: number;
   }[];
   @Prop({
@@ -46,6 +50,8 @@ export class DN {
   isDeleted: boolean;
   @Prop({ type: mongoose.Schema.Types.ObjectId, required: true })
   createdBy: string;
+  @Prop({ type: mongoose.Schema.Types.ObjectId })
+  receivedUserId?: string;
 }
 
 export const DNSchema = SchemaFactory.createForClass(DN);

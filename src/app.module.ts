@@ -7,6 +7,7 @@ import { PurchaseOrderModule } from './purchase-order/purchase-order.module';
 import { PackageModule } from './package/package.module';
 import { OrdersModule } from './orders/orders.module';
 import { DeliveryNoteModule } from './delivery-note/delivery-note.module';
+import { GrnModule } from './grn/grn.module';
 
 @Global()
 @Module({
@@ -23,6 +24,7 @@ import { DeliveryNoteModule } from './delivery-note/delivery-note.module';
     PackageModule,
     OrdersModule,
     DeliveryNoteModule,
+    GrnModule,
   ],
   controllers: [],
   providers: [],
