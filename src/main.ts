@@ -4,6 +4,7 @@ import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import Bugsnag from '@bugsnag/js';
 import BugsnagPluginExpress from '@bugsnag/plugin-express';
+import { Logger } from 'nestjs-pino';
 
 Bugsnag.start({
   apiKey: process.env.BUGSNAG,
@@ -38,6 +39,8 @@ async function bootstrap() {
   const bugsnagMiddleware = Bugsnag.getPlugin('express');
   app.use(bugsnagMiddleware.requestHandler);
   app.use(bugsnagMiddleware.errorHandler);
+
+  app.useLogger(app.get(Logger));
 
   await app.listen(process.env.PORT);
 }

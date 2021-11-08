@@ -1,4 +1,10 @@
-import { Global, Module } from '@nestjs/common';
+import {
+  CacheModule,
+  Global,
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+} from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { PurchaseRequestModule } from './purchase-request/purchase-request.module';
@@ -8,6 +14,8 @@ import { PackageModule } from './package/package.module';
 import { OrdersModule } from './orders/orders.module';
 import { DeliveryNoteModule } from './delivery-note/delivery-note.module';
 import { GrnModule } from './grn/grn.module';
+import { LoggerMiddleware } from './middleware/logs.middleware';
+import { LoggerModule } from 'nestjs-pino';
 
 @Global()
 @Module({
@@ -19,6 +27,10 @@ import { GrnModule } from './grn/grn.module';
         uri: process.env.MONGOS_URI,
       }),
     }),
+    CacheModule.register({
+      isGlobal: true,
+    }),
+    LoggerModule.forRoot(),
     TemplateModule,
     PurchaseOrderModule,
     PackageModule,
@@ -29,4 +41,8 @@ import { GrnModule } from './grn/grn.module';
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}

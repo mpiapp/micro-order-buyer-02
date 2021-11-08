@@ -1,12 +1,15 @@
 import {
   Body,
+  CacheInterceptor,
   Controller,
   Delete,
   Get,
+  Logger,
   Param,
   Post,
   Put,
   Query,
+  UseInterceptors,
 } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import {
@@ -151,6 +154,7 @@ export class PurchaseRequestController {
   }
 
   @Get('list')
+  @UseInterceptors(CacheInterceptor)
   @ApiOperation({ summary: 'List Master PR' })
   @MessagePattern('Purchase-Request-List-Data')
   async PRList(@Query() id: BuyerDto): Promise<PR[]> {
@@ -158,6 +162,7 @@ export class PurchaseRequestController {
   }
 
   @Get('byId')
+  @UseInterceptors(CacheInterceptor)
   @ApiQuery({ name: 'id', type: 'string' })
   @ApiOperation({ summary: 'Get Master PR By Id' })
   @MessagePattern('Purchase-Request-Get-Data-By-Id')
@@ -166,6 +171,7 @@ export class PurchaseRequestController {
   }
 
   @Get('search')
+  @UseInterceptors(CacheInterceptor)
   @ApiOperation({ summary: 'Search Master PR' })
   @MessagePattern('Purchase-Request-Search-Data')
   async PRSearch(@Query() search: CodePRDto): Promise<PR[]> {
@@ -173,6 +179,7 @@ export class PurchaseRequestController {
   }
 
   @Put('addStatus')
+  @UseInterceptors(CacheInterceptor)
   @ApiQuery({ name: 'id', type: 'string' })
   @ApiBody({ type: StatusDto })
   @ApiOperation({ summary: 'Add Status Master PR' })
