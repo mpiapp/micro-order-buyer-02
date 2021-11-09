@@ -1,11 +1,13 @@
 import {
   Body,
+  CacheInterceptor,
   Controller,
   Delete,
   Get,
   Param,
   Post,
   Query,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { MessagePattern } from '@nestjs/microservices';
@@ -66,6 +68,7 @@ export class PurchaseOrderController {
   }
 
   @Get('list')
+  @UseInterceptors(CacheInterceptor)
   @ApiQuery({ name: 'id', type: 'string' })
   @ApiOperation({ summary: 'List Master PO' })
   @MessagePattern('Purchase-Order-List-Data')
@@ -74,6 +77,7 @@ export class PurchaseOrderController {
   }
 
   @Get('byId')
+  @UseInterceptors(CacheInterceptor)
   @ApiQuery({ name: 'id', type: 'string' })
   @ApiOperation({ summary: 'Get Master PO By Id' })
   @MessagePattern('Purchase-Order-Get-Data-By-Id')
@@ -82,6 +86,7 @@ export class PurchaseOrderController {
   }
 
   @Get('search')
+  @UseInterceptors(CacheInterceptor)
   @ApiQuery({ name: 'id', type: 'string' })
   @ApiOperation({ summary: 'Search Master PO' })
   @MessagePattern('Purchase-Order-Search-Data')

@@ -1,5 +1,6 @@
 import {
   Body,
+  CacheInterceptor,
   Controller,
   Delete,
   Get,
@@ -8,6 +9,7 @@ import {
   Post,
   Put,
   Query,
+  UseInterceptors,
 } from '@nestjs/common';
 import * as mongoose from 'mongoose';
 import { ConfigService } from '@nestjs/config';
@@ -184,6 +186,7 @@ export class TemplateController {
   }
 
   @Get('list')
+  @UseInterceptors(CacheInterceptor)
   @ApiQuery({ name: 'id', type: 'string' })
   @ApiOperation({ summary: 'List Template PR' })
   @MessagePattern('Template-List-Data')
@@ -209,6 +212,7 @@ export class TemplateController {
   }
 
   @Get('byId')
+  @UseInterceptors(CacheInterceptor)
   @ApiQuery({ name: 'id', type: 'string' })
   @ApiOperation({ summary: 'Get Master Template By Id' })
   @MessagePattern('Template-Get-Data-By-Id')
@@ -234,6 +238,7 @@ export class TemplateController {
   }
 
   @Get('search')
+  @UseInterceptors(CacheInterceptor)
   @ApiQuery({ name: 'search', type: 'string' })
   @ApiOperation({ summary: 'Search Master Template PR By Date' })
   @MessagePattern('Template-Search-Data')
