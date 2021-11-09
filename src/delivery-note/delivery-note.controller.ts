@@ -1,5 +1,6 @@
 import {
   Body,
+  CacheInterceptor,
   Controller,
   Delete,
   Get,
@@ -8,6 +9,7 @@ import {
   Post,
   Put,
   Query,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { MessagePattern } from '@nestjs/microservices';
@@ -38,6 +40,7 @@ export class DeliveryNoteController {
   ) {}
 
   @Get('list')
+  @UseInterceptors(CacheInterceptor)
   @ApiQuery({ name: 'id', type: 'string' })
   @ApiOperation({ summary: 'List Delivery Note' })
   @MessagePattern('Delivery-Note-List-Data')
@@ -65,6 +68,7 @@ export class DeliveryNoteController {
   }
 
   @Get('byId')
+  @UseInterceptors(CacheInterceptor)
   @ApiQuery({ name: 'id', type: 'string' })
   @ApiOperation({ summary: 'Get Delivery Note' })
   @MessagePattern('Delivery-Note-ById')
@@ -92,6 +96,7 @@ export class DeliveryNoteController {
   }
 
   @Get('Paginate')
+  @UseInterceptors(CacheInterceptor)
   @ApiOperation({ summary: 'Get Delivery Note Paginate' })
   @MessagePattern('Delivery-Note-Paginate')
   async DeliveryNotePaginate(
