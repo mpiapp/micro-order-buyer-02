@@ -9,6 +9,7 @@ import { TemplateItemsService } from './services/template-items.service';
 import { TemplateService } from './services/template.service';
 import { TemplateController } from './template.controller';
 import { mockControllerTemplate } from './../../test/mocks/services/Controller.mocks';
+import { CacheModule } from '@nestjs/common';
 
 describe('TemplateController', () => {
   let controller: TemplateController;
@@ -19,6 +20,7 @@ describe('TemplateController', () => {
         ConfigModule.forRoot({
           load: [configuration],
         }),
+        CacheModule.register(),
       ],
       controllers: [TemplateController],
       providers: [

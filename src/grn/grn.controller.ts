@@ -1,11 +1,13 @@
 import {
   Body,
+  CacheInterceptor,
   Controller,
   Get,
   HttpStatus,
   Post,
   Put,
   Query,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { MessagePattern } from '@nestjs/microservices';
@@ -28,6 +30,7 @@ export class GrnController {
   ) {}
 
   @Get('list')
+  @UseInterceptors(CacheInterceptor)
   @ApiQuery({ name: 'id', type: 'string' })
   @ApiOperation({ summary: 'List Good Receive Note' })
   @MessagePattern('Good-Receive-Note-List-Data')
@@ -51,6 +54,7 @@ export class GrnController {
   }
 
   @Get('byId')
+  @UseInterceptors(CacheInterceptor)
   @ApiQuery({ name: 'id', type: 'string' })
   @ApiOperation({ summary: 'Get Good Receive Note' })
   @MessagePattern('Good-Receive-Note-ById')
@@ -74,6 +78,7 @@ export class GrnController {
   }
 
   @Get('Paginate')
+  @UseInterceptors(CacheInterceptor)
   @ApiOperation({ summary: 'Get Good Receive Note Paginate' })
   @MessagePattern('Good-Receive-Note-Paginate')
   async GRNPaginate(

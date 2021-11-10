@@ -9,13 +9,14 @@ import { PO } from './schemas/purchase-order.schema';
 import { GenerateCoderService } from './services/purchase-order-generate-code.service';
 import { PurchaseOrderService } from './services/purchase-order.service';
 import { sampleDataCreatePR } from './../../test/mocks/sample/Purchase-Order/sample.data.pr.mock';
+import { CacheModule } from '@nestjs/common';
 
 describe('PurchaseOrderController', () => {
   let controller: PurchaseOrderController;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [ConfigModule.forRoot()],
+      imports: [ConfigModule.forRoot(), CacheModule.register()],
       controllers: [PurchaseOrderController],
       providers: [
         PurchaseOrderService,

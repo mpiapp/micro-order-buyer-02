@@ -9,6 +9,7 @@ import { GrnController } from './grn.controller';
 import { GrnService } from './services/grn.service';
 import { mockGrnController } from './../../test/mocks/services/Controller.mocks';
 import { sampleGRN } from './../../test/mocks/sample/GoodReceiveNote/Sample.Data.mocks';
+import { CacheModule } from '@nestjs/common';
 
 describe('GrnController', () => {
   let controller: GrnController;
@@ -19,6 +20,7 @@ describe('GrnController', () => {
         ConfigModule.forRoot({
           load: [configuration],
         }),
+        CacheModule.register(),
       ],
       controllers: [GrnController],
       providers: [
@@ -202,5 +204,13 @@ describe('GrnController', () => {
         message: 'Reject Good Receive Note Failed',
       });
     }
+  });
+
+  it('should be generate code GRN if get count > 1', async () => {
+    mockGrnController.find.mockResolvedValue(1);
+
+    expect(await controller.GenerateCode('KPJ-01-01-00001-001')).toEqual(
+      'GRN-001-001',
+    );
   });
 });
