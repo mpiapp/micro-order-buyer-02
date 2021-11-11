@@ -1,29 +1,21 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import Bugsnag from '@bugsnag/js';
-import BugsnagPluginExpress from '@bugsnag/plugin-express';
 import { Logger } from 'nestjs-pino';
-
-Bugsnag.start({
-  apiKey: process.env.BUGSNAG,
-  plugins: [BugsnagPluginExpress],
-  appVersion: process.env.APP_VERSION,
-  logger: null,
-});
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-
-  const config = new DocumentBuilder()
-    .setTitle('Order Service')
-    .setDescription('The Order Service API description')
-    .setVersion('0.0.1')
-    .addTag('Service')
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  const app = await NestFactory.createMicroservice<MicroserviceOptions>(
+    AppModule,
+    {
+      transport: Transport.KAFKA,
+      options: {
+        client: {
+          brokers: [process.env.KAFKA],
+        },
+      },
+    },
+  );
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -36,12 +28,7 @@ async function bootstrap() {
     }),
   );
 
-  const bugsnagMiddleware = Bugsnag.getPlugin('express');
-  app.use(bugsnagMiddleware.requestHandler);
-  app.use(bugsnagMiddleware.errorHandler);
-
   app.useLogger(app.get(Logger));
-
-  await app.listen(process.env.PORT);
+  await app.listen();
 }
 bootstrap();
