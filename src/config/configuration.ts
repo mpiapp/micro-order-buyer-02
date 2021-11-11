@@ -72,6 +72,76 @@ export default () => ({
         Failed: 'Get Order Failed',
       },
     },
+    PurchaseRequest: {
+      All: {
+        Success: 'Get Purchase Requests Success',
+        Failed: 'Get Purchase Requests Failed',
+      },
+      One: {
+        Success: 'Get One Purchase Request Success',
+        Failed: 'Get One Purchase Request Failed',
+      },
+      Search: {
+        Success: 'Search Purchase Request Success',
+        Failed: 'Search Purchase Request Failed',
+      },
+      save: {
+        Success: 'Save Purchase Request Success',
+        Failed: 'Save Purchase Request Failed',
+      },
+      update: {
+        Success: 'Update Purchase Request Success',
+        Failed: 'Update Purchase Request Failed',
+      },
+      delete: {
+        Success: 'Delete Purchase Request Success',
+        Failed: 'Delete Purchase Request Failed',
+      },
+    },
+    PurchaseOrder: {
+      All: {
+        Success: 'Get Purchase Requests Success',
+        Failed: 'Get Purchase Requests Failed',
+      },
+      One: {
+        Success: 'Get One Purchase Request Success',
+        Failed: 'Get One Purchase Request Failed',
+      },
+      save: {
+        Success: 'Save Purchase Request Success',
+        Failed: 'Save Purchase Request Failed',
+      },
+      update: {
+        Success: 'Update Purchase Request Success',
+        Failed: 'Update Purchase Request Failed',
+      },
+      delete: {
+        Success: 'Delete Purchase Request Success',
+        Failed: 'Delete Purchase Request Failed',
+      },
+    },
+    Template: {
+      All: {
+        Success: 'Get Purchase Requests Success',
+        Failed: 'Get Purchase Requests Failed',
+      },
+      One: {
+        Success: 'Get One Purchase Request Success',
+        Failed: 'Get One Purchase Request Failed',
+      },
+      save: {
+        Success: 'Save Purchase Request Success',
+        Failed: 'Save Purchase Request Failed',
+      },
+      update: {
+        Success: 'Update Purchase Request Success',
+        Failed: 'Update Purchase Request Failed',
+      },
+      delete: {
+        Success: 'Delete Purchase Request Success',
+        Failed: 'Delete Purchase Request Failed',
+      },
+    },
     Package: {
       All: {
         Success: 'Get All Order Success',
@@ -100,6 +170,20 @@ export default () => ({
       pack: {
         Success: 'Save Pack Package Success',
         Failed: 'Save Pack Package Failed',
+      },
+    },
+    Items: {
+      add: {
+        Success: 'Add Item Success',
+        Failed: 'Add Item Failed',
+      },
+      update: {
+        Success: 'Update Qty Item Success',
+        Failed: 'Update Qty Item Failed',
+      },
+      remove: {
+        Success: 'Remove Item Success',
+        Failed: 'Remove Item Failed',
       },
     },
     removeItem: {

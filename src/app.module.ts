@@ -16,6 +16,8 @@ import { DeliveryNoteModule } from './delivery-note/delivery-note.module';
 import { GrnModule } from './grn/grn.module';
 import { LoggerMiddleware } from './middleware/logs.middleware';
 import { LoggerModule } from 'nestjs-pino';
+import { BugsnagModule } from '@nkaurelien/nest-bugsnag';
+import bugsnagPluginExpress from '@bugsnag/plugin-express';
 
 @Global()
 @Module({
@@ -29,6 +31,10 @@ import { LoggerModule } from 'nestjs-pino';
     }),
     CacheModule.register({
       isGlobal: true,
+    }),
+    BugsnagModule.forRoot({
+      apiKey: process.env.BUGSNAG,
+      plugins: [bugsnagPluginExpress],
     }),
     LoggerModule.forRoot(),
     TemplateModule,

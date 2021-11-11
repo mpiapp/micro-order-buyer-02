@@ -36,10 +36,8 @@ describe('GenerateService', () => {
     });
   });
 
-  it('should be generate code failed ', async () => {
-    mockGenerate.findOne.mockImplementation((_param) => {
-      return { code: _param.code.$regex + '00001' };
-    });
+  it('should be generate code > 1 ', async () => {
+    mockGenerate.find.mockReturnValue([1]);
 
     expect(
       await service.generateCode({
@@ -47,6 +45,18 @@ describe('GenerateService', () => {
       }),
     ).toEqual({
       code: SampleCode.code + '-00002',
+    });
+  });
+
+  it('should be generate code failed ', async () => {
+    mockGenerate.find.mockReturnValue(null);
+
+    expect(
+      await service.generateCode({
+        code: SampleCode.code,
+      }),
+    ).toEqual({
+      code: SampleCode.code + '-00001',
     });
   });
 });

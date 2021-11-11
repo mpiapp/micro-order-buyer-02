@@ -17,7 +17,7 @@ export class GenerateService implements IGenerateCode {
   ) {}
 
   async generateCode(_param: CodePRDto): Promise<IRGenerateCode> {
-    const docs = await this.model.findOne(
+    const docs = await this.model.find(
       {
         code: { $regex: _param.code, $options: 'i' },
       },
@@ -25,22 +25,26 @@ export class GenerateService implements IGenerateCode {
       { sort: { createdAt: -1 } },
     );
 
-    const initNumber = this.config.get('INITIAL_NUMBER');
+    const digits = this.config.get('DIGITS_NUMBER_PR');
 
     if (!docs) {
       return {
-        code: this.HelperService.GenerateNumber(_param.code, initNumber),
+        code: `${_param.code}-${this.HelperService.padNumber(
+          '1',
+          digits,
+          '0',
+        )}`,
       };
     }
 
-    const { code } = docs;
-    const numberCode = code.substring(
-      code.length - initNumber.length,
-      code.length,
-    );
+    const count = docs.length + 1;
 
     return {
-      code: this.HelperService.GenerateNumber(_param.code, numberCode),
+      code: `${_param.code}-${this.HelperService.padNumber(
+        count.toString(),
+        digits,
+        '0',
+      )}`,
     };
   }
 }

@@ -6,7 +6,7 @@ import { PurchaseRequestController } from './purchase-request.controller';
 import { PR } from './schemas/purchase-request.schema';
 import { PurchaseRequestService } from './services/purchase-request.service';
 import { GenerateService } from './services/generate.service';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UpdateItemsService } from './services/update-items.service';
 import { sampleItem } from './../../test/mocks/sample/Products/sample.item.mock';
 import { SampleUpdate } from './../../test/mocks/sample/Purchase-Request/sample.data.update.mock';
@@ -19,6 +19,7 @@ import { CacheModule } from '@nestjs/common';
 
 describe('PurchaseRequestController', () => {
   let controller: PurchaseRequestController;
+  let config: ConfigService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -45,6 +46,7 @@ describe('PurchaseRequestController', () => {
     controller = module.get<PurchaseRequestController>(
       PurchaseRequestController,
     );
+    config = module.get<ConfigService>(ConfigService);
   });
 
   it('should be defined', () => {
@@ -63,15 +65,11 @@ describe('PurchaseRequestController', () => {
     initialValue);
 
     SampleCreate.total = sum;
-    expect(await controller.PRCreate(SampleCreate)).toEqual(SampleCreate);
-  });
-
-  it('should create PR Generate Code', async () => {
-    mockControllerPurchaseRequest.findOne.mockImplementation((_param) => {
-      return { code: _param.code.$regex + '00001' };
+    expect(await controller.PRCreate(SampleCreate)).toEqual({
+      errors: null,
+      status: 201,
+      message: config.get<string>('messageBase.PurchaseRequest.save.Success'),
     });
-
-    expect(await controller.PRCreate(SampleCreate)).toBe(SampleCreate);
   });
 
   it('should create PR Failed Total', async () => {
@@ -138,8 +136,15 @@ describe('PurchaseRequestController', () => {
     });
     expect(await controller.PRUpdate(expect.any(String), SampleUpdate)).toEqual(
       {
-        ...SampleCreate,
-        ...SampleUpdate,
+        errors: null,
+        status: 200,
+        data: {
+          ...SampleCreate,
+          ...SampleUpdate,
+        },
+        message: config.get<string>(
+          'messageBase.PurchaseRequest.update.Success',
+        ),
       },
     );
   });
@@ -152,14 +157,15 @@ describe('PurchaseRequestController', () => {
       };
     });
     expect(await controller.PRDelete(expect.any(String))).toEqual({
-      ...SampleCreate,
-      isDelete: true,
+      errors: null,
+      status: 200,
+      message: config.get<string>('messageBase.PurchaseRequest.delete.Success'),
     });
   });
 
   it('should update PR Failed', async () => {
     mockControllerPurchaseRequest.findByIdAndUpdate.mockImplementation(() => {
-      throw new Error('Sorry Total Price Wrong');
+      throw new Error();
     });
 
     try {
@@ -170,13 +176,41 @@ describe('PurchaseRequestController', () => {
     }
   });
 
+  it('should delete PR Failed', async () => {
+    mockControllerPurchaseRequest.findByIdAndUpdate.mockImplementation(() => {
+      throw new Error();
+    });
+
+    try {
+      await controller.PRDelete(expect.any(String));
+    } catch (error) {
+      expect(error).toBe(error);
+    }
+  });
+
   it('should get list PR Success', async () => {
-    expect(await controller.PRList({ buyerId: expect.any(String) })).toEqual([
-      SampleCreate,
-    ]);
+    expect(await controller.PRList({ buyerId: expect.any(String) })).toEqual({
+      errors: null,
+      status: 200,
+      data: [SampleCreate],
+      message: config.get<string>('messageBase.PurchaseRequest.All.Success'),
+    });
+  });
+
+  it('should Search PR Success', async () => {
+    expect(await controller.PRSearch(SampleCode)).toEqual({
+      errors: null,
+      status: 200,
+      data: [SampleCreate],
+      message: config.get<string>('messageBase.PurchaseRequest.Search.Success'),
+    });
   });
 
   it('should get list PR Failed', async () => {
+    mockControllerPurchaseRequest.find.mockImplementation(() => {
+      throw new Error();
+    });
+
     try {
       await controller.PRList({ buyerId: expect.any(String) });
     } catch (error) {
@@ -185,19 +219,24 @@ describe('PurchaseRequestController', () => {
   });
 
   it('should get PR By Id Success', async () => {
-    expect(await controller.PRById(expect.any(String))).toEqual(SampleCreate);
+    expect(await controller.PRById(expect.any(String))).toEqual({
+      errors: null,
+      status: 200,
+      data: SampleCreate,
+      message: config.get<string>('messageBase.PurchaseRequest.One.Success'),
+    });
   });
 
   it('should get PR By Id Failed', async () => {
+    mockControllerPurchaseRequest.findById.mockImplementation(() => {
+      throw new Error();
+    });
+
     try {
       await controller.PRById(expect.any(String));
     } catch (error) {
       expect(error).toBe(error);
     }
-  });
-
-  it('should Search PR Success', async () => {
-    expect(await controller.PRSearch(SampleCode)).toEqual([SampleCreate]);
   });
 
   it('should Search PR Failed', async () => {
