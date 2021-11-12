@@ -12,4 +12,5 @@ export const mockPurchaseOrder = {
   }),
   find: jest.fn().mockReturnValue([sampleDataCreatePO]),
   findById: jest.fn().mockReturnValue(sampleDataCreatePO),
+  aggregate: jest.fn().mockReturnValue([sampleDataCreatePO]),
 };

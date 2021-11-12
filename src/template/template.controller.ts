@@ -41,7 +41,7 @@ export class TemplateController {
   @Post()
   @ApiBody({ type: TemplateCreateDto })
   @ApiOperation({ summary: 'Create Master Template' })
-  @MessagePattern('Template-Create')
+  @MessagePattern('Template-Save')
   async TemplateCreate(
     @Body() params: TemplateCreateDto,
   ): Promise<ITemplateCreateAndUpdateResponse> {
@@ -49,14 +49,14 @@ export class TemplateController {
       const save = await this.TemplateMaster.createTemplate(params);
       return {
         status: HttpStatus.CREATED,
-        message: this.Config.get<string>('messageBase.TemplateCreate.Success'),
+        message: this.Config.get<string>('messageBase.Template.save.Success'),
         data: save,
         errors: null,
       };
     } catch (error) {
       return {
         status: HttpStatus.PRECONDITION_FAILED,
-        message: this.Config.get<string>('messageBase.TemplateCreate.Failed'),
+        message: this.Config.get<string>('messageBase.Template.save.Failed'),
         data: null,
         errors: error,
       };
@@ -72,13 +72,13 @@ export class TemplateController {
       await this.TemplateMaster.deleteTemplate(id);
       return {
         status: HttpStatus.OK,
-        message: this.Config.get<string>('messageBase.TemplateDelete.Success'),
+        message: this.Config.get<string>('messageBase.Template.delete.Success'),
         errors: null,
       };
     } catch (error) {
       return {
         status: HttpStatus.PRECONDITION_FAILED,
-        message: this.Config.get<string>('messageBase.TemplateDelete.Failed'),
+        message: this.Config.get<string>('messageBase.Template.delete.Failed'),
         errors: error,
       };
     }
@@ -108,14 +108,14 @@ export class TemplateController {
       await this.Items.addItem({ _id: id }, { $push: { items: product } });
       return {
         status: HttpStatus.CREATED,
-        message: this.Config.get<string>('messageBase.addItem.Success'),
+        message: this.Config.get<string>('messageBase.Items.add.Success'),
         errors: null,
       };
     }
 
     return {
       status: HttpStatus.CREATED,
-      message: this.Config.get<string>('messageBase.addItem.Success'),
+      message: this.Config.get<string>('messageBase.Items.add.Success'),
       errors: null,
     };
   }
@@ -144,13 +144,13 @@ export class TemplateController {
 
       return {
         status: HttpStatus.OK,
-        message: this.Config.get<string>('messageBase.updateQty.Success'),
+        message: this.Config.get<string>('messageBase.Items.update.Success'),
         errors: null,
       };
     } catch (error) {
       return {
         status: HttpStatus.PRECONDITION_FAILED,
-        message: this.Config.get<string>('messageBase.updateQty.Failed'),
+        message: this.Config.get<string>('messageBase.Items.update.Failed'),
         errors: error,
       };
     }
@@ -173,13 +173,13 @@ export class TemplateController {
 
       return {
         status: HttpStatus.OK,
-        message: this.Config.get<string>('messageBase.removeItem.Success'),
+        message: this.Config.get<string>('messageBase.Items.remove.Success'),
         errors: null,
       };
     } catch (error) {
       return {
         status: HttpStatus.PRECONDITION_FAILED,
-        message: this.Config.get<string>('messageBase.removeItem.Failed'),
+        message: this.Config.get<string>('messageBase.Items.remove.Failed'),
         errors: error,
       };
     }
@@ -197,14 +197,14 @@ export class TemplateController {
       const getAll = await this.TemplateMaster.listTemplate(id);
       return {
         status: HttpStatus.OK,
-        message: this.Config.get<string>('messageBase.TemplateGetAll.Success'),
+        message: this.Config.get<string>('messageBase.Template.All.Success'),
         data: getAll,
         errors: null,
       };
     } catch (error) {
       return {
         status: HttpStatus.PRECONDITION_FAILED,
-        message: this.Config.get<string>('messageBase.TemplateGetAll.Failed'),
+        message: this.Config.get<string>('messageBase.Template.All.Failed'),
         data: null,
         errors: error,
       };
@@ -223,14 +223,14 @@ export class TemplateController {
       const getById = await this.TemplateMaster.getByIdTemplate(id);
       return {
         status: HttpStatus.OK,
-        message: this.Config.get<string>('messageBase.TemplateGetOne.Success'),
+        message: this.Config.get<string>('messageBase.Template.One.Success'),
         data: getById,
         errors: null,
       };
     } catch (error) {
       return {
         status: HttpStatus.PRECONDITION_FAILED,
-        message: this.Config.get<string>('messageBase.TemplateGetOne.Failed'),
+        message: this.Config.get<string>('messageBase.Template.One.Failed'),
         data: null,
         errors: error,
       };
@@ -249,14 +249,14 @@ export class TemplateController {
       const search = await this.TemplateMaster.searchTemplate(_search);
       return {
         status: HttpStatus.OK,
-        message: this.Config.get<string>('messageBase.TemplateSearch.Success'),
+        message: this.Config.get<string>('messageBase.Template.Search.Success'),
         data: search,
         errors: null,
       };
     } catch (error) {
       return {
         status: HttpStatus.PRECONDITION_FAILED,
-        message: this.Config.get<string>('messageBase.TemplateSearch.Failed'),
+        message: this.Config.get<string>('messageBase.Template.Search.Failed'),
         data: null,
         errors: error,
       };

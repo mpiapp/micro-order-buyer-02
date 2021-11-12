@@ -6,14 +6,6 @@ export default () => ({
     template: '',
   },
   messageBase: {
-    addItem: {
-      Success: 'Add Item Success',
-      Failed: 'Add Item Failed',
-    },
-    updateQty: {
-      Success: 'Update Qty Item Success',
-      Failed: 'Update Qty Item Failed',
-    },
     GRN: {
       All: {
         Success: 'Get Good Receive Notes Success',
@@ -100,46 +92,50 @@ export default () => ({
     },
     PurchaseOrder: {
       All: {
-        Success: 'Get Purchase Requests Success',
-        Failed: 'Get Purchase Requests Failed',
+        Success: 'Get Purchase Orders Success',
+        Failed: 'Get Purchase Orders Failed',
       },
       One: {
-        Success: 'Get One Purchase Request Success',
-        Failed: 'Get One Purchase Request Failed',
+        Success: 'Get One Purchase Order Success',
+        Failed: 'Get One Purchase Order Failed',
       },
       save: {
-        Success: 'Save Purchase Request Success',
-        Failed: 'Save Purchase Request Failed',
+        Success: 'Save Purchase Order Success',
+        Failed: 'Save Purchase Order Failed',
       },
       update: {
-        Success: 'Update Purchase Request Success',
-        Failed: 'Update Purchase Request Failed',
+        Success: 'Update Purchase Order Success',
+        Failed: 'Update Purchase Order Failed',
       },
       delete: {
-        Success: 'Delete Purchase Request Success',
-        Failed: 'Delete Purchase Request Failed',
+        Success: 'Delete Purchase Order Success',
+        Failed: 'Delete Purchase Order Failed',
       },
     },
     Template: {
       All: {
-        Success: 'Get Purchase Requests Success',
-        Failed: 'Get Purchase Requests Failed',
+        Success: 'Get Template Success',
+        Failed: 'Get Template Failed',
+      },
+      Search: {
+        Success: 'Search Template Success',
+        Failed: 'Search Template Failed',
       },
       One: {
-        Success: 'Get One Purchase Request Success',
-        Failed: 'Get One Purchase Request Failed',
+        Success: 'Get One Template Success',
+        Failed: 'Get One Template Failed',
       },
       save: {
-        Success: 'Save Purchase Request Success',
-        Failed: 'Save Purchase Request Failed',
+        Success: 'Save Template Success',
+        Failed: 'Save Template Failed',
       },
       update: {
-        Success: 'Update Purchase Request Success',
-        Failed: 'Update Purchase Request Failed',
+        Success: 'Update Template Success',
+        Failed: 'Update Template Failed',
       },
       delete: {
-        Success: 'Delete Purchase Request Success',
-        Failed: 'Delete Purchase Request Failed',
+        Success: 'Delete Template Success',
+        Failed: 'Delete Template Failed',
       },
     },
     Package: {
@@ -185,30 +181,6 @@ export default () => ({
         Success: 'Remove Item Success',
         Failed: 'Remove Item Failed',
       },
-    },
-    removeItem: {
-      Success: 'Remove Item Success',
-      Failed: 'Remove Item Failed',
-    },
-    TemplateCreate: {
-      Success: 'Template Create Success',
-      Failed: 'Template Create Failed',
-    },
-    TemplateDelete: {
-      Success: 'Template Delete Success',
-      Failed: 'Template Delete Failed',
-    },
-    TemplateGetAll: {
-      Success: 'Template Get All Success',
-      Failed: 'Template Get All Failed',
-    },
-    TemplateGetOne: {
-      Success: 'Template Get One Success',
-      Failed: 'Template Get One Failed',
-    },
-    TemplateSearch: {
-      Success: 'Template Search Success',
-      Failed: 'Template Search Failed',
     },
   },
   history: {

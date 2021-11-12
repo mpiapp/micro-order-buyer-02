@@ -2,27 +2,20 @@ import {
   Body,
   CacheInterceptor,
   Controller,
-  Delete,
-  Get,
+  HttpStatus,
   Param,
-  Post,
   Query,
   UseInterceptors,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { MessagePattern } from '@nestjs/microservices';
-import {
-  ApiBody,
-  ApiOperation,
-  ApiParam,
-  ApiQuery,
-  ApiTags,
-} from '@nestjs/swagger';
-import { Helper } from './../utils/helper.utils';
-import { PRMoveDto } from './dto/PRMove.dto';
-import { IPRMove } from './interfaces/type/IPRMove.interface';
-import { PO } from './schemas/purchase-order.schema';
-import { GenerateCoderService } from './services/purchase-order-generate-code.service';
+import { ApiTags } from '@nestjs/swagger';
+import { BaseResponse } from 'src/config/interfaces/response.base.interface';
+import { POPaginateDto } from './dto/Paginate.dto';
+import { POCreateDto } from './dto/POCreate.dto';
+import { IPurchaseOrdersResponse } from './interfaces/response/Many.interface';
+import { IPurchaseOrderPaginateResponse } from './interfaces/response/Paginate.interface';
+import { IPurchaseOrderResponse } from './interfaces/response/Single.interface';
 import { PurchaseOrderService } from './services/purchase-order.service';
 
 @ApiTags('Purchase Orders')
@@ -30,86 +23,152 @@ import { PurchaseOrderService } from './services/purchase-order.service';
 export class PurchaseOrderController {
   constructor(
     private readonly POMaster: PurchaseOrderService,
-    private readonly Generate: GenerateCoderService,
     private readonly Config: ConfigService,
-    private readonly HelperService: Helper,
   ) {}
 
-  private async spliteItems(code, items) {
-    const hash = items.reduce(
-      (previousValue, currentValue) => (
-        previousValue[currentValue.vendorId]
-          ? previousValue[currentValue.vendorId].push(currentValue)
-          : (previousValue[currentValue.vendorId] = [currentValue]),
-        previousValue
-      ),
-      {},
-    );
-
-    const groupData = Object.keys(hash).map((key, value) => ({
-      vendorId: key,
-      code_po: this.Generate.generateCode({
-        code: code,
-        count: value + 1,
-        digits: this.Config.get('DIGITS_NUMBER_PO'),
-      }),
-      packages: [
-        {
-          code_package: null,
-          items: hash[key],
-          statuses: [],
-        },
-      ],
-      total: this.HelperService.SUM({ items: hash[key] }),
-      statuses: [],
-    }));
-
-    return groupData;
-  }
-
-  @Get('list')
   @UseInterceptors(CacheInterceptor)
-  @ApiQuery({ name: 'id', type: 'string' })
-  @ApiOperation({ summary: 'List Master PO' })
   @MessagePattern('Purchase-Order-List-Data')
-  async POList(@Query('id') id: string): Promise<PO[]> {
-    return this.POMaster.listPurchaseOrder(id);
+  async POList(
+    @Query('buyerId') buyerId: string,
+  ): Promise<IPurchaseOrdersResponse> {
+    try {
+      const getAll = await this.POMaster.listPurchaseOrder(buyerId);
+      return {
+        status: HttpStatus.OK,
+        message: this.Config.get<string>(
+          'messageBase.PurchaseOrder.All.Success',
+        ),
+        data: getAll,
+        errors: null,
+      };
+    } catch (error) {
+      return {
+        status: HttpStatus.PRECONDITION_FAILED,
+        message: this.Config.get<string>(
+          'messageBase.PurchaseOrder.All.Failed',
+        ),
+        data: null,
+        errors: error,
+      };
+    }
   }
 
-  @Get('byId')
   @UseInterceptors(CacheInterceptor)
-  @ApiQuery({ name: 'id', type: 'string' })
-  @ApiOperation({ summary: 'Get Master PO By Id' })
   @MessagePattern('Purchase-Order-Get-Data-By-Id')
-  async POById(@Query('id') id: string): Promise<PO> {
-    return this.POMaster.byIdPurchaseOrder(id);
+  async POById(@Query('id') id: string): Promise<IPurchaseOrderResponse> {
+    try {
+      const getOne = await this.POMaster.byIdPurchaseOrder(id);
+      return {
+        status: HttpStatus.OK,
+        message: this.Config.get<string>(
+          'messageBase.PurchaseOrder.One.Success',
+        ),
+        data: getOne,
+        errors: null,
+      };
+    } catch (error) {
+      return {
+        status: HttpStatus.PRECONDITION_FAILED,
+        message: this.Config.get<string>(
+          'messageBase.PurchaseOrder.One.Failed',
+        ),
+        data: null,
+        errors: error,
+      };
+    }
   }
 
-  @Get('search')
   @UseInterceptors(CacheInterceptor)
-  @ApiQuery({ name: 'id', type: 'string' })
-  @ApiOperation({ summary: 'Search Master PO' })
   @MessagePattern('Purchase-Order-Search-Data')
-  async POSearch(@Query('search') search: string): Promise<PO[]> {
-    return this.POMaster.searchPurchaseOrder(search);
+  async POSearch(
+    @Query('search') search: string,
+  ): Promise<IPurchaseOrdersResponse> {
+    try {
+      const getAll = await this.POMaster.searchPurchaseOrder(search);
+      return {
+        status: HttpStatus.OK,
+        message: this.Config.get<string>(
+          'messageBase.PurchaseOrder.All.Success',
+        ),
+        data: getAll,
+        errors: null,
+      };
+    } catch (error) {
+      return {
+        status: HttpStatus.PRECONDITION_FAILED,
+        message: this.Config.get<string>(
+          'messageBase.PurchaseOrder.All.Failed',
+        ),
+        data: null,
+        errors: error,
+      };
+    }
   }
 
-  @Post()
-  @ApiBody({ type: PRMoveDto })
-  @ApiOperation({ summary: 'Create Master PO' })
-  @MessagePattern('Purchase-Order-Create')
-  async POCreate(@Body() params: IPRMove): Promise<any> {
-    const { code, items } = params;
-    params['vendors'] = await this.spliteItems(code, items);
-    delete params['items'];
-    return this.POMaster.createPurchaseOrder(params);
+  @MessagePattern('Purchase-Order-Paginate')
+  async getPurchaseOrderPaginate(
+    @Query() params: POPaginateDto,
+  ): Promise<IPurchaseOrderPaginateResponse> {
+    const { skip, limit } = params;
+    const getData = await this.POMaster.getPaginate(params);
+    if (!getData) {
+      return {
+        count: 0,
+        page: skip,
+        limit: limit,
+        data: null,
+      };
+    }
+    const { data, metadata } = getData[0];
+    return {
+      count: metadata[0] ? metadata[0].total : 0,
+      page: skip,
+      limit: limit,
+      data: data,
+    };
   }
 
-  @Delete(':id')
-  @ApiParam({ name: 'id', type: 'string' })
-  @ApiOperation({ summary: 'Delete Master PO' })
+  @MessagePattern('Purchase-Order-Save')
+  async POCreate(@Body() params: POCreateDto): Promise<BaseResponse> {
+    try {
+      await this.POMaster.createPurchaseOrder(params);
+      return {
+        status: HttpStatus.CREATED,
+        message: this.Config.get<string>(
+          'messageBase.PurchaseOrder.save.Success',
+        ),
+        errors: null,
+      };
+    } catch (error) {
+      return {
+        status: HttpStatus.PRECONDITION_FAILED,
+        message: this.Config.get<string>(
+          'messageBase.PurchaseOrder.save.Failed',
+        ),
+        errors: error,
+      };
+    }
+  }
+
   @MessagePattern('Purchase-Order-Delete')
-  async PODelete(@Param('id') id: string): Promise<PO> {
-    return this.POMaster.deletePurchaseOrder(id);
+  async PODelete(@Param('id') id: string): Promise<BaseResponse> {
+    try {
+      await this.POMaster.deletePurchaseOrder(id);
+      return {
+        status: HttpStatus.OK,
+        message: this.Config.get<string>(
+          'messageBase.PurchaseOrder.delete.Success',
+        ),
+        errors: null,
+      };
+    } catch (error) {
+      return {
+        status: HttpStatus.PRECONDITION_FAILED,
+        message: this.Config.get<string>(
+          'messageBase.PurchaseOrder.delete.Failed',
+        ),
+        errors: error,
+      };
+    }
   }
 }

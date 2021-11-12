@@ -1,4 +1,4 @@
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import configuration from './../config/configuration';
@@ -13,6 +13,7 @@ import { CacheModule } from '@nestjs/common';
 
 describe('TemplateController', () => {
   let controller: TemplateController;
+  let config: ConfigService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -34,6 +35,7 @@ describe('TemplateController', () => {
     }).compile();
 
     controller = module.get<TemplateController>(TemplateController);
+    config = module.get<ConfigService>(ConfigService);
   });
 
   it('should be defined', () => {
@@ -44,7 +46,7 @@ describe('TemplateController', () => {
     expect(await controller.TemplateCreate(SampleTemplateCreate)).toEqual({
       errors: null,
       status: 201,
-      message: 'Template Create Success',
+      message: config.get('messageBase.Template.save.Success'),
       data: SampleTemplateCreate,
     });
   });
@@ -60,7 +62,7 @@ describe('TemplateController', () => {
       expect(error).toEqual({
         errors: error.errors,
         status: 400,
-        message: 'Template Create Failed',
+        message: config.get('messageBase.Template.save.Failed'),
         data: SampleTemplateCreate,
       });
     }
@@ -69,7 +71,7 @@ describe('TemplateController', () => {
   it('should be delete template', async () => {
     expect(await controller.TemplateDelete(expect.any(String))).toEqual({
       errors: null,
-      message: 'Template Delete Success',
+      message: config.get('messageBase.Template.delete.Success'),
       status: 200,
     });
   });
@@ -85,7 +87,7 @@ describe('TemplateController', () => {
       expect(error).toEqual({
         errors: error.errors,
         status: 400,
-        message: 'Template Delete Failed',
+        message: config.get('messageBase.Template.delete.Failed'),
         data: SampleTemplateCreate,
       });
     }
@@ -96,7 +98,7 @@ describe('TemplateController', () => {
       await controller.TemplateAddItem(expect.any(String), sampleItem),
     ).toEqual({
       errors: null,
-      message: 'Add Item Success',
+      message: config.get('messageBase.Items.add.Success'),
       status: 201,
     });
   });
@@ -106,7 +108,7 @@ describe('TemplateController', () => {
       await controller.TemplateUpdateItem(expect.any(String), sampleItem),
     ).toEqual({
       errors: null,
-      message: 'Update Qty Item Success',
+      message: config.get('messageBase.Items.update.Success'),
       status: 200,
     });
   });
@@ -116,7 +118,7 @@ describe('TemplateController', () => {
       await controller.TemplateRemoveItem(expect.any(String), sampleItem),
     ).toEqual({
       errors: null,
-      message: 'Remove Item Success',
+      message: config.get('messageBase.Items.remove.Success'),
       status: 200,
     });
   });
@@ -142,7 +144,7 @@ describe('TemplateController', () => {
     } catch (error) {
       expect(error).toEqual({
         errors: error,
-        message: 'Update Qty Item Failed',
+        message: config.get('messageBase.Items.update.Failed'),
         status: 412,
       });
     }
@@ -154,7 +156,7 @@ describe('TemplateController', () => {
     } catch (error) {
       expect(error).toEqual({
         errors: error,
-        message: 'Remove Item Failed',
+        message: config.get('messageBase.Items.remove.Failed'),
         status: 412,
       });
     }
@@ -164,7 +166,7 @@ describe('TemplateController', () => {
     expect(await controller.TemplateGetList(expect.any(String))).toEqual({
       errors: null,
       status: 200,
-      message: 'Template Get All Success',
+      message: config.get('messageBase.Template.All.Success'),
       data: [SampleTemplateCreate],
     });
   });
@@ -173,7 +175,7 @@ describe('TemplateController', () => {
     expect(await controller.TemplateGetById(expect.any(String))).toEqual({
       errors: null,
       status: 200,
-      message: 'Template Get One Success',
+      message: config.get('messageBase.Template.One.Success'),
       data: SampleTemplateCreate,
     });
   });
@@ -188,7 +190,7 @@ describe('TemplateController', () => {
       expect(error).toBe({
         errors: error,
         status: 400,
-        message: 'Template Get One Success',
+        message: config.get('messageBase.Template.One.Failed'),
         data: null,
       });
     }
@@ -198,7 +200,7 @@ describe('TemplateController', () => {
     expect(await controller.TemplateSearch(expect.any(String))).toEqual({
       errors: null,
       status: 200,
-      message: 'Template Search Success',
+      message: config.get('messageBase.Template.Search.Success'),
       data: [SampleTemplateCreate],
     });
   });
@@ -213,7 +215,7 @@ describe('TemplateController', () => {
       expect(error).toBe({
         errors: error,
         status: 400,
-        message: 'Template Get All Success',
+        message: config.get('messageBase.Template.All.Failed'),
         data: null,
       });
     }
@@ -226,7 +228,7 @@ describe('TemplateController', () => {
       expect(error).toBe({
         errors: error,
         status: 400,
-        message: 'Template Search Success',
+        message: config.get('messageBase.Template.Search.Failed'),
         data: null,
       });
     }
@@ -240,7 +242,7 @@ describe('TemplateController', () => {
       await controller.TemplateAddItem(expect.any(String), sampleItem),
     ).toEqual({
       errors: null,
-      message: 'Add Item Success',
+      message: config.get('messageBase.Items.add.Success'),
       status: 201,
     });
   });
@@ -255,7 +257,7 @@ describe('TemplateController', () => {
       await controller.TemplateAddItem(expect.any(String), sampleItem),
     ).toEqual({
       errors: null,
-      message: 'Add Item Success',
+      message: config.get('messageBase.Items.add.Success'),
       status: 201,
     });
   });

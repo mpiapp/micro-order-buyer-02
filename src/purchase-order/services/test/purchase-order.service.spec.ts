@@ -56,4 +56,14 @@ describe('PurchaseOrderService', () => {
       sampleDataCreatePO,
     );
   });
+
+  it('should be get paginate purchase order ', async () => {
+    expect(
+      await service.getPaginate({
+        keyId: expect.any(String),
+        skip: 0,
+        limit: 10,
+      }),
+    ).toEqual([sampleDataCreatePO]);
+  });
 });

@@ -19,8 +19,8 @@ import { PRCreateDto } from './dto/CreatePR.dto';
 import { ItemPRDto } from './dto/Items.dto';
 import { StatusDto } from './dto/Status.dto';
 import { PRUpdateDto } from './dto/UpdatePR.dto';
-import { IPurchaseOrdersResponse } from './interfaces/response/Many.interface';
-import { IPurchaseOrderResponse } from './interfaces/response/Single.interface';
+import { IPurchaseRequestsResponse } from './interfaces/response/Many.interface';
+import { IPurchaseRequestResponse } from './interfaces/response/Single.interface';
 import { PR } from './schemas/purchase-request.schema';
 import { GenerateService } from './services/generate.service';
 import { PurchaseRequestService } from './services/purchase-request.service';
@@ -77,7 +77,7 @@ export class PurchaseRequestController {
   async PRUpdate(
     @Query() id: string,
     @Body() param: PRUpdateDto,
-  ): Promise<IPurchaseOrderResponse> {
+  ): Promise<IPurchaseRequestResponse> {
     try {
       this.HelperService.sumValidate(param);
       const update = await this.PRMaster.updatePurchaseRequest(id, param);
@@ -184,7 +184,7 @@ export class PurchaseRequestController {
 
   @UseInterceptors(CacheInterceptor)
   @MessagePattern('Purchase-Request-List-Data')
-  async PRList(@Query() id: BuyerDto): Promise<IPurchaseOrdersResponse> {
+  async PRList(@Query() id: BuyerDto): Promise<IPurchaseRequestsResponse> {
     try {
       const getAll = await this.PRMaster.listPurchaseRequest(id);
       return {
@@ -209,7 +209,7 @@ export class PurchaseRequestController {
 
   @UseInterceptors(CacheInterceptor)
   @MessagePattern('Purchase-Request-Get-Data-By-Id')
-  async PRById(@Query('id') id: string): Promise<IPurchaseOrderResponse> {
+  async PRById(@Query('id') id: string): Promise<IPurchaseRequestResponse> {
     try {
       const getOne = await this.PRMaster.byIdPurchaseRequest(id);
       return {
@@ -234,7 +234,9 @@ export class PurchaseRequestController {
 
   @UseInterceptors(CacheInterceptor)
   @MessagePattern('Purchase-Request-Search-Data')
-  async PRSearch(@Query() search: CodePRDto): Promise<IPurchaseOrdersResponse> {
+  async PRSearch(
+    @Query() search: CodePRDto,
+  ): Promise<IPurchaseRequestsResponse> {
     try {
       const getAll = await this.PRMaster.searchPurchaseRequest(search);
       return {
