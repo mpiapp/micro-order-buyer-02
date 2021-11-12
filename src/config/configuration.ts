@@ -183,6 +183,17 @@ export default () => ({
       },
     },
   },
+  initialCode: {
+    DeliveryNote: {
+      code: 'DN',
+    },
+    Pick: {
+      code: 'PICK',
+    },
+    Pack: {
+      code: 'PACK',
+    },
+  },
   history: {
     addItem: {
       title: 'Add Item',

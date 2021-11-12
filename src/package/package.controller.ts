@@ -123,7 +123,9 @@ export class PackageController {
     try {
       const { code_po, items, statuses } = params;
       const code = this.Generate.generateCode({
-        code: `PICK-${code_po.slice(-3)}`,
+        code: `${this.Config.get('initialCode.Pick.code')}-${code_po.slice(
+          -3,
+        )}`,
         count: 1,
         digits: this.Config.get('DIGITS_NUMBER_PICK'),
       });
@@ -157,7 +159,9 @@ export class PackageController {
     try {
       const { code_po, items, statuses } = params;
       const code = this.Generate.generateCode({
-        code: `PACK-${code_po.slice(-3)}`,
+        code: `${this.Config.get('initialCode.Pack.code')}-${code_po.slice(
+          -3,
+        )}`,
         count: 1,
         digits: this.Config.get('DIGITS_NUMBER_PACK'),
       });
