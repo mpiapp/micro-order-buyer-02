@@ -1,26 +1,8 @@
-import {
-  Body,
-  CacheInterceptor,
-  Controller,
-  Delete,
-  Get,
-  HttpStatus,
-  Param,
-  Post,
-  Put,
-  Query,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Body, Controller, HttpStatus, Param, Query } from '@nestjs/common';
 import * as mongoose from 'mongoose';
 import { ConfigService } from '@nestjs/config';
 import { MessagePattern } from '@nestjs/microservices';
-import {
-  ApiBody,
-  ApiOperation,
-  ApiParam,
-  ApiQuery,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 import { BaseResponse } from './../config/interfaces/response.base.interface';
 import { TemplateCreateDto } from './dto/CreateTemplate.dto';
 import { ItemTemplateDto } from './dto/ItemTemplate.dto';
@@ -38,9 +20,6 @@ export class TemplateController {
     private readonly Config: ConfigService,
   ) {}
 
-  @Post()
-  @ApiBody({ type: TemplateCreateDto })
-  @ApiOperation({ summary: 'Create Master Template' })
   @MessagePattern('Template-Save')
   async TemplateCreate(
     @Body() params: TemplateCreateDto,
@@ -63,9 +42,6 @@ export class TemplateController {
     }
   }
 
-  @Delete(':id')
-  @ApiParam({ name: 'id', type: String })
-  @ApiOperation({ summary: 'Delete Master Template' })
   @MessagePattern('Template-Update')
   async TemplateDelete(@Param('id') id: string): Promise<BaseResponse> {
     try {
@@ -84,10 +60,6 @@ export class TemplateController {
     }
   }
 
-  @Put('addItem')
-  @ApiQuery({ name: 'id', type: String })
-  @ApiBody({ type: ItemTemplateDto })
-  @ApiOperation({ summary: 'Add Item Template' })
   @MessagePattern('Template-Add-Item')
   async TemplateAddItem(
     @Query('id') id: string,
@@ -120,10 +92,6 @@ export class TemplateController {
     };
   }
 
-  @Put('updateItem')
-  @ApiQuery({ name: 'id', type: String })
-  @ApiBody({ type: ItemTemplateDto })
-  @ApiOperation({ summary: 'Update Item Template' })
   @MessagePattern('Template-Update-Item')
   async TemplateUpdateItem(
     @Query('id') id: string,
@@ -156,10 +124,6 @@ export class TemplateController {
     }
   }
 
-  @Put('deleteItem')
-  @ApiQuery({ name: 'id', type: String })
-  @ApiBody({ type: ItemTemplateDto })
-  @ApiOperation({ summary: 'Update Item Template' })
   @MessagePattern('Template-Remove-Item')
   async TemplateRemoveItem(
     @Query('id') id: string,
@@ -185,10 +149,6 @@ export class TemplateController {
     }
   }
 
-  @Get('list')
-  @UseInterceptors(CacheInterceptor)
-  @ApiQuery({ name: 'id', type: 'string' })
-  @ApiOperation({ summary: 'List Template PR' })
   @MessagePattern('Template-List-Data')
   async TemplateGetList(
     @Query('id') id: string,
@@ -211,10 +171,6 @@ export class TemplateController {
     }
   }
 
-  @Get('byId')
-  @UseInterceptors(CacheInterceptor)
-  @ApiQuery({ name: 'id', type: 'string' })
-  @ApiOperation({ summary: 'Get Master Template By Id' })
   @MessagePattern('Template-Get-Data-By-Id')
   async TemplateGetById(
     @Query('id') id: string,
@@ -237,10 +193,6 @@ export class TemplateController {
     }
   }
 
-  @Get('search')
-  @UseInterceptors(CacheInterceptor)
-  @ApiQuery({ name: 'search', type: 'string' })
-  @ApiOperation({ summary: 'Search Master Template PR By Date' })
   @MessagePattern('Template-Search-Data')
   async TemplateSearch(
     @Query('search') _search: string,

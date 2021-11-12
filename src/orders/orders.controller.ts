@@ -1,7 +1,7 @@
-import { Body, Controller, Get, HttpStatus, Query } from '@nestjs/common';
+import { Body, Controller, HttpStatus, Query } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { MessagePattern } from '@nestjs/microservices';
-import { ApiBody, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 import { IdPackage } from './../package/dto/IdPackage.dto';
 import { GenerateCoderService } from './../purchase-order/services/purchase-order-generate-code.service';
 import { PaginateDto } from './../package/dto/Paginate.dto';
@@ -21,10 +21,6 @@ export class OrdersController {
     private readonly Generate: GenerateCoderService,
   ) {}
 
-  @Get('list')
-  @ApiQuery({ name: 'id', type: 'string' })
-  @ApiQuery({ name: 'status', type: 'string' })
-  @ApiOperation({ summary: 'List Order Fulfillment' })
   @MessagePattern('Order-Fulfillment-List-Data')
   async getOrder(
     @Query('id') id: string,
@@ -48,9 +44,6 @@ export class OrdersController {
     }
   }
 
-  @Get('byId')
-  @ApiQuery({ name: 'id', type: 'string' })
-  @ApiOperation({ summary: 'Get By Id Order Fulfillment' })
   @MessagePattern('Order-Fulfillment-ById')
   async getOrderById(@Query('id') id: string): Promise<IOrderResponse> {
     try {
@@ -71,8 +64,6 @@ export class OrdersController {
     }
   }
 
-  @Get('Paginate')
-  @ApiOperation({ summary: 'Get Order Fulfillment Paginate' })
   @MessagePattern('Order-Fulfillment-Paginate')
   async getOrderPaginate(
     @Query() params: PaginateDto,
@@ -96,9 +87,6 @@ export class OrdersController {
     };
   }
 
-  @Get('getIdPackage')
-  @ApiBody({ type: IdPackage })
-  @ApiOperation({ summary: 'Get Id Package' })
   @MessagePattern('Get-ID-Package')
   async getIdPackage(@Body() params: IdPackage): Promise<string> {
     const { id, count } = params;

@@ -6,7 +6,7 @@ import { sampleAfterSplitPackage } from './../../test/mocks/sample/Package/sampl
 import { PackageController } from './package.controller';
 import { PackageService } from './services/package.service';
 import { Helper } from './../utils/helper.utils';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration from './../config/configuration';
 import { sampleFullPackage } from './../../test/mocks/sample/Package/sample.full.data.mock';
 import { splitPackageSample } from './../../test/mocks/sample/Package/sample.full.split.mock';
@@ -22,6 +22,7 @@ const mockControllerPackage = {
 };
 describe('PackageController', () => {
   let controller: PackageController;
+  let config: ConfigService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -45,6 +46,7 @@ describe('PackageController', () => {
     }).compile();
 
     controller = module.get<PackageController>(PackageController);
+    config = module.get<ConfigService>(ConfigService);
   });
 
   it('should be defined', () => {
@@ -57,7 +59,7 @@ describe('PackageController', () => {
     ).toEqual({
       errors: null,
       status: 201,
-      message: 'Save Package Success',
+      message: config.get<string>('messageBase.Package.save.Success'),
     });
   });
 
@@ -67,7 +69,7 @@ describe('PackageController', () => {
     ).toEqual({
       errors: null,
       status: 201,
-      message: 'Save Pick Package Success',
+      message: config.get<string>('messageBase.Package.pick.Success'),
     });
   });
 
@@ -77,7 +79,7 @@ describe('PackageController', () => {
     ).toEqual({
       errors: null,
       status: 201,
-      message: 'Save Pack Package Success',
+      message: config.get<string>('messageBase.Package.pack.Success'),
     });
   });
 
@@ -87,7 +89,7 @@ describe('PackageController', () => {
     ).toEqual({
       errors: null,
       status: 200,
-      message: 'Update Package Success',
+      message: config.get<string>('messageBase.Package.update.Success'),
     });
   });
 
@@ -100,7 +102,7 @@ describe('PackageController', () => {
       expect(error).toEqual({
         errors: error.errors,
         status: 400,
-        message: 'Save Package Failed',
+        message: config.get<string>('messageBase.Package.save.Failed'),
       });
     }
   });
@@ -109,7 +111,7 @@ describe('PackageController', () => {
     expect(await controller.getPackages(expect.any(String), 'NEW')).toEqual({
       errors: null,
       status: 200,
-      message: 'Get All Order Success',
+      message: config.get<string>('messageBase.Package.All.Success'),
       data: sampleFullPackage,
     });
   });
@@ -118,7 +120,7 @@ describe('PackageController', () => {
     expect(await controller.getPackageById(expect.any(String))).toEqual({
       errors: null,
       status: 200,
-      message: 'Get One Order Success',
+      message: config.get<string>('messageBase.Package.One.Success'),
       data: sampleFullPackage,
     });
   });
@@ -132,7 +134,7 @@ describe('PackageController', () => {
       expect(error).toEqual({
         errors: error.errors,
         status: 400,
-        message: 'Get One Order Failed',
+        message: config.get<string>('messageBase.Package.One.Failed'),
       });
     }
   });
@@ -144,7 +146,7 @@ describe('PackageController', () => {
       expect(error).toEqual({
         errors: error.errors,
         status: 400,
-        message: 'Get All Order Failed',
+        message: config.get<string>('messageBase.Package.All.Failed'),
       });
     }
   });
@@ -156,7 +158,7 @@ describe('PackageController', () => {
       expect(error).toEqual({
         errors: error.errors,
         status: 400,
-        message: 'Update Package Failed',
+        message: config.get<string>('messageBase.Package.update.Failed'),
       });
     }
   });
@@ -168,7 +170,7 @@ describe('PackageController', () => {
       expect(error).toEqual({
         errors: error.errors,
         status: 400,
-        message: 'Update Pick Package Failed',
+        message: config.get<string>('messageBase.Package.pick.Failed'),
       });
     }
   });
@@ -180,7 +182,7 @@ describe('PackageController', () => {
       expect(error).toEqual({
         errors: error.errors,
         status: 400,
-        message: 'Update Pack Package Failed',
+        message: config.get<string>('messageBase.Package.pack.Failed'),
       });
     }
   });
