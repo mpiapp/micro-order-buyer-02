@@ -1,4 +1,4 @@
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import configuration from './../config/configuration';
@@ -17,6 +17,7 @@ const mockDeliveryNoteController = {
 
 describe('DeliveryNoteController', () => {
   let controller: DeliveryNoteController;
+  let config: ConfigService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -39,6 +40,7 @@ describe('DeliveryNoteController', () => {
     }).compile();
 
     controller = module.get<DeliveryNoteController>(DeliveryNoteController);
+    config = module.get<ConfigService>(ConfigService);
   });
 
   it('should be defined', () => {
@@ -55,7 +57,7 @@ describe('DeliveryNoteController', () => {
     expect(await controller.DeliveryNoteCreate(sampleDeliveryNote)).toEqual({
       errors: null,
       status: 201,
-      message: 'Save Delivery Note Success',
+      message: config.get<string>('messageBase.DeliveryNote.save.Success'),
     });
   });
 
@@ -68,7 +70,7 @@ describe('DeliveryNoteController', () => {
       expect(error).toEqual({
         errors: error,
         status: 400,
-        message: 'Save Delivery Note Failed',
+        message: config.get<string>('messageBase.DeliveryNote.save.Failed'),
       });
     }
   });
@@ -78,7 +80,7 @@ describe('DeliveryNoteController', () => {
       errors: null,
       status: 200,
       data: sampleDeliveryNote,
-      message: 'Get One Delivery Note Success',
+      message: config.get<string>('messageBase.DeliveryNote.One.Success'),
     });
   });
 
@@ -92,7 +94,7 @@ describe('DeliveryNoteController', () => {
         errors: error,
         status: 400,
         data: null,
-        message: 'Get One Delivery Note Failed',
+        message: config.get<string>('messageBase.DeliveryNote.One.Failed'),
       });
     }
   });
@@ -102,7 +104,7 @@ describe('DeliveryNoteController', () => {
       errors: null,
       status: 200,
       data: [sampleDeliveryNote],
-      message: 'Get Delivery Notes Success',
+      message: config.get<string>('messageBase.DeliveryNote.All.Success'),
     });
   });
 
@@ -171,7 +173,7 @@ describe('DeliveryNoteController', () => {
         errors: error,
         status: 400,
         data: null,
-        message: 'Get Delivery Notes Failed',
+        message: config.get<string>('messageBase.DeliveryNote.All.Failed'),
       });
     }
   });
@@ -185,7 +187,7 @@ describe('DeliveryNoteController', () => {
       errors: null,
       status: 200,
       data: sampleDeliveryNote,
-      message: 'Update Delivery Note Success',
+      message: config.get<string>('messageBase.DeliveryNote.update.Success'),
     });
   });
 
@@ -193,7 +195,7 @@ describe('DeliveryNoteController', () => {
     expect(await controller.DeliveryNoteRemove(expect.any(String))).toEqual({
       errors: null,
       status: 200,
-      message: 'Delete Delivery Note Success',
+      message: config.get<string>('messageBase.DeliveryNote.delete.Success'),
     });
   });
 
@@ -209,7 +211,7 @@ describe('DeliveryNoteController', () => {
         errors: error,
         status: 400,
         data: null,
-        message: 'Update Delivery Note Failed',
+        message: config.get<string>('messageBase.DeliveryNote.update.Failed'),
       });
     }
   });
@@ -223,8 +225,22 @@ describe('DeliveryNoteController', () => {
       expect(error).toEqual({
         errors: error,
         status: 400,
-        message: 'Remove Delivery Note Failed',
+        message: config.get<string>('messageBase.DeliveryNote.delete.Failed'),
       });
     }
+  });
+
+  it('should be count document if = 0', async () => {
+    mockDeliveryNoteController.find.mockReturnValue(0);
+    expect(await controller.GenerateCode('KPJ-01-01-00001-001')).toEqual(
+      'DN-001-001',
+    );
+  });
+
+  it('should be count document if > 0', async () => {
+    mockDeliveryNoteController.find.mockReturnValue(1);
+    expect(await controller.GenerateCode('KPJ-01-01-00001-001')).toEqual(
+      'DN-001-001',
+    );
   });
 });

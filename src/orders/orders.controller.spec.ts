@@ -1,4 +1,4 @@
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Helper } from './../utils/helper.utils';
 import configuration from './../config/configuration';
@@ -15,6 +15,7 @@ const mockControllerOrders = {
 };
 describe('OrdersController', () => {
   let controller: OrdersController;
+  let config: ConfigService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -37,6 +38,7 @@ describe('OrdersController', () => {
     }).compile();
 
     controller = module.get<OrdersController>(OrdersController);
+    config = module.get<ConfigService>(ConfigService);
   });
 
   it('should be defined', () => {
@@ -47,7 +49,7 @@ describe('OrdersController', () => {
     expect(await controller.getOrder(expect.any(String), 'NEW')).toEqual({
       errors: null,
       status: 200,
-      message: 'Get Orders Success',
+      message: config.get<string>('messageBase.Orders.All.Success'),
       data: sampleFullPackage,
     });
   });
@@ -56,7 +58,7 @@ describe('OrdersController', () => {
     expect(await controller.getOrderById(expect.any(String))).toEqual({
       errors: null,
       status: 200,
-      message: 'Get Order Success',
+      message: config.get<string>('messageBase.Orders.One.Success'),
       data: sampleFullPackage,
     });
   });
@@ -76,7 +78,7 @@ describe('OrdersController', () => {
       expect(error).toEqual({
         errors: error.errors,
         status: 400,
-        message: 'Get Order Failed',
+        message: config.get<string>('messageBase.Orders.One.Failed'),
       });
     }
   });
@@ -88,7 +90,7 @@ describe('OrdersController', () => {
       expect(error).toEqual({
         errors: error.errors,
         status: 400,
-        message: 'Get Orders Failed',
+        message: config.get<string>('messageBase.Orders.All.Failed'),
       });
     }
   });

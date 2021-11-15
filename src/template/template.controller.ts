@@ -1,26 +1,8 @@
-import {
-  Body,
-  CacheInterceptor,
-  Controller,
-  Delete,
-  Get,
-  HttpStatus,
-  Param,
-  Post,
-  Put,
-  Query,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Body, Controller, HttpStatus, Param, Query } from '@nestjs/common';
 import * as mongoose from 'mongoose';
 import { ConfigService } from '@nestjs/config';
 import { MessagePattern } from '@nestjs/microservices';
-import {
-  ApiBody,
-  ApiOperation,
-  ApiParam,
-  ApiQuery,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 import { BaseResponse } from './../config/interfaces/response.base.interface';
 import { TemplateCreateDto } from './dto/CreateTemplate.dto';
 import { ItemTemplateDto } from './dto/ItemTemplate.dto';
@@ -38,10 +20,7 @@ export class TemplateController {
     private readonly Config: ConfigService,
   ) {}
 
-  @Post()
-  @ApiBody({ type: TemplateCreateDto })
-  @ApiOperation({ summary: 'Create Master Template' })
-  @MessagePattern('Template-Create')
+  @MessagePattern('Template-Save')
   async TemplateCreate(
     @Body() params: TemplateCreateDto,
   ): Promise<ITemplateCreateAndUpdateResponse> {
@@ -49,45 +28,38 @@ export class TemplateController {
       const save = await this.TemplateMaster.createTemplate(params);
       return {
         status: HttpStatus.CREATED,
-        message: this.Config.get<string>('messageBase.TemplateCreate.Success'),
+        message: this.Config.get<string>('messageBase.Template.save.Success'),
         data: save,
         errors: null,
       };
     } catch (error) {
       return {
         status: HttpStatus.PRECONDITION_FAILED,
-        message: this.Config.get<string>('messageBase.TemplateCreate.Failed'),
+        message: this.Config.get<string>('messageBase.Template.save.Failed'),
         data: null,
         errors: error,
       };
     }
   }
 
-  @Delete(':id')
-  @ApiParam({ name: 'id', type: String })
-  @ApiOperation({ summary: 'Delete Master Template' })
   @MessagePattern('Template-Update')
   async TemplateDelete(@Param('id') id: string): Promise<BaseResponse> {
     try {
       await this.TemplateMaster.deleteTemplate(id);
       return {
         status: HttpStatus.OK,
-        message: this.Config.get<string>('messageBase.TemplateDelete.Success'),
+        message: this.Config.get<string>('messageBase.Template.delete.Success'),
         errors: null,
       };
     } catch (error) {
       return {
         status: HttpStatus.PRECONDITION_FAILED,
-        message: this.Config.get<string>('messageBase.TemplateDelete.Failed'),
+        message: this.Config.get<string>('messageBase.Template.delete.Failed'),
         errors: error,
       };
     }
   }
 
-  @Put('addItem')
-  @ApiQuery({ name: 'id', type: String })
-  @ApiBody({ type: ItemTemplateDto })
-  @ApiOperation({ summary: 'Add Item Template' })
   @MessagePattern('Template-Add-Item')
   async TemplateAddItem(
     @Query('id') id: string,
@@ -108,22 +80,18 @@ export class TemplateController {
       await this.Items.addItem({ _id: id }, { $push: { items: product } });
       return {
         status: HttpStatus.CREATED,
-        message: this.Config.get<string>('messageBase.addItem.Success'),
+        message: this.Config.get<string>('messageBase.Items.add.Success'),
         errors: null,
       };
     }
 
     return {
       status: HttpStatus.CREATED,
-      message: this.Config.get<string>('messageBase.addItem.Success'),
+      message: this.Config.get<string>('messageBase.Items.add.Success'),
       errors: null,
     };
   }
 
-  @Put('updateItem')
-  @ApiQuery({ name: 'id', type: String })
-  @ApiBody({ type: ItemTemplateDto })
-  @ApiOperation({ summary: 'Update Item Template' })
   @MessagePattern('Template-Update-Item')
   async TemplateUpdateItem(
     @Query('id') id: string,
@@ -144,22 +112,18 @@ export class TemplateController {
 
       return {
         status: HttpStatus.OK,
-        message: this.Config.get<string>('messageBase.updateQty.Success'),
+        message: this.Config.get<string>('messageBase.Items.update.Success'),
         errors: null,
       };
     } catch (error) {
       return {
         status: HttpStatus.PRECONDITION_FAILED,
-        message: this.Config.get<string>('messageBase.updateQty.Failed'),
+        message: this.Config.get<string>('messageBase.Items.update.Failed'),
         errors: error,
       };
     }
   }
 
-  @Put('deleteItem')
-  @ApiQuery({ name: 'id', type: String })
-  @ApiBody({ type: ItemTemplateDto })
-  @ApiOperation({ summary: 'Update Item Template' })
   @MessagePattern('Template-Remove-Item')
   async TemplateRemoveItem(
     @Query('id') id: string,
@@ -173,22 +137,18 @@ export class TemplateController {
 
       return {
         status: HttpStatus.OK,
-        message: this.Config.get<string>('messageBase.removeItem.Success'),
+        message: this.Config.get<string>('messageBase.Items.remove.Success'),
         errors: null,
       };
     } catch (error) {
       return {
         status: HttpStatus.PRECONDITION_FAILED,
-        message: this.Config.get<string>('messageBase.removeItem.Failed'),
+        message: this.Config.get<string>('messageBase.Items.remove.Failed'),
         errors: error,
       };
     }
   }
 
-  @Get('list')
-  @UseInterceptors(CacheInterceptor)
-  @ApiQuery({ name: 'id', type: 'string' })
-  @ApiOperation({ summary: 'List Template PR' })
   @MessagePattern('Template-List-Data')
   async TemplateGetList(
     @Query('id') id: string,
@@ -197,24 +157,20 @@ export class TemplateController {
       const getAll = await this.TemplateMaster.listTemplate(id);
       return {
         status: HttpStatus.OK,
-        message: this.Config.get<string>('messageBase.TemplateGetAll.Success'),
+        message: this.Config.get<string>('messageBase.Template.All.Success'),
         data: getAll,
         errors: null,
       };
     } catch (error) {
       return {
         status: HttpStatus.PRECONDITION_FAILED,
-        message: this.Config.get<string>('messageBase.TemplateGetAll.Failed'),
+        message: this.Config.get<string>('messageBase.Template.All.Failed'),
         data: null,
         errors: error,
       };
     }
   }
 
-  @Get('byId')
-  @UseInterceptors(CacheInterceptor)
-  @ApiQuery({ name: 'id', type: 'string' })
-  @ApiOperation({ summary: 'Get Master Template By Id' })
   @MessagePattern('Template-Get-Data-By-Id')
   async TemplateGetById(
     @Query('id') id: string,
@@ -223,24 +179,20 @@ export class TemplateController {
       const getById = await this.TemplateMaster.getByIdTemplate(id);
       return {
         status: HttpStatus.OK,
-        message: this.Config.get<string>('messageBase.TemplateGetOne.Success'),
+        message: this.Config.get<string>('messageBase.Template.One.Success'),
         data: getById,
         errors: null,
       };
     } catch (error) {
       return {
         status: HttpStatus.PRECONDITION_FAILED,
-        message: this.Config.get<string>('messageBase.TemplateGetOne.Failed'),
+        message: this.Config.get<string>('messageBase.Template.One.Failed'),
         data: null,
         errors: error,
       };
     }
   }
 
-  @Get('search')
-  @UseInterceptors(CacheInterceptor)
-  @ApiQuery({ name: 'search', type: 'string' })
-  @ApiOperation({ summary: 'Search Master Template PR By Date' })
   @MessagePattern('Template-Search-Data')
   async TemplateSearch(
     @Query('search') _search: string,
@@ -249,14 +201,14 @@ export class TemplateController {
       const search = await this.TemplateMaster.searchTemplate(_search);
       return {
         status: HttpStatus.OK,
-        message: this.Config.get<string>('messageBase.TemplateSearch.Success'),
+        message: this.Config.get<string>('messageBase.Template.Search.Success'),
         data: search,
         errors: null,
       };
     } catch (error) {
       return {
         status: HttpStatus.PRECONDITION_FAILED,
-        message: this.Config.get<string>('messageBase.TemplateSearch.Failed'),
+        message: this.Config.get<string>('messageBase.Template.Search.Failed'),
         data: null,
         errors: error,
       };

@@ -59,16 +59,6 @@ describe('PurchaseOrderItemsService', () => {
     });
   });
 
-  // it('should be approved product change items from vendor', async () => {
-  //   expect(
-  //     await service.changeProduct('At126abasvt125', sampleItemProductChange),
-  //   ).toEqual({
-  //     message: 'Update Success',
-  //     status: true,
-  //     id: expect.any(String),
-  //   });
-  // });
-
   it('should be reject change items from vendor', async () => {
     POItemMOck.findOneAndUpdate.mockReturnValue({
       ...sampleItemBaseChange,

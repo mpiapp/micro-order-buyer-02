@@ -2,24 +2,14 @@ import {
   Body,
   CacheInterceptor,
   Controller,
-  Delete,
-  Get,
   HttpStatus,
   Param,
-  Post,
-  Put,
   Query,
   UseInterceptors,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { MessagePattern } from '@nestjs/microservices';
-import {
-  ApiBody,
-  ApiOperation,
-  ApiParam,
-  ApiQuery,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 import { BaseResponse } from './../config/interfaces/response.base.interface';
 import { GenerateCoderService } from './../purchase-order/services/purchase-order-generate-code.service';
 import { DeliveryNoteCreateDto } from './dto/DeliveryNoteCreate.dto';
@@ -39,10 +29,7 @@ export class DeliveryNoteController {
     private readonly dnService: DeliveryNoteService,
   ) {}
 
-  @Get('list')
   @UseInterceptors(CacheInterceptor)
-  @ApiQuery({ name: 'id', type: 'string' })
-  @ApiOperation({ summary: 'List Delivery Note' })
   @MessagePattern('Delivery-Note-List-Data')
   async DeliveryNoteList(
     @Query('id') id: string,
@@ -67,10 +54,7 @@ export class DeliveryNoteController {
     }
   }
 
-  @Get('byId')
   @UseInterceptors(CacheInterceptor)
-  @ApiQuery({ name: 'id', type: 'string' })
-  @ApiOperation({ summary: 'Get Delivery Note' })
   @MessagePattern('Delivery-Note-ById')
   async DeliveryNoteById(
     @Query('id') id: string,
@@ -95,9 +79,6 @@ export class DeliveryNoteController {
     }
   }
 
-  @Get('Paginate')
-  @UseInterceptors(CacheInterceptor)
-  @ApiOperation({ summary: 'Get Delivery Note Paginate' })
   @MessagePattern('Delivery-Note-Paginate')
   async DeliveryNotePaginate(
     @Query() params: DNPaginateDto,
@@ -121,10 +102,7 @@ export class DeliveryNoteController {
     };
   }
 
-  @Post()
-  @ApiBody({ type: DeliveryNoteCreateDto })
-  @ApiOperation({ summary: 'Save Delivery Note' })
-  @MessagePattern('Save-Delivery-Note')
+  @MessagePattern('Delivery-Note-Save')
   async DeliveryNoteCreate(
     @Body() params: DeliveryNoteCreateDto,
   ): Promise<BaseResponse> {
@@ -148,12 +126,11 @@ export class DeliveryNoteController {
     }
   }
 
-  @Post('GenerateCode')
-  @ApiQuery({ name: 'po_number', type: String })
-  @ApiOperation({ summary: 'Generate Code Delivery Note' })
   @MessagePattern('Generate-Code-Delivery-Note')
   async GenerateCode(@Query('po_number') po_number: string): Promise<string> {
-    const searchCode = `DN-${po_number.slice(-3)}`;
+    const searchCode = `${this.Config.get(
+      'initialCode.DeliveryNote.code',
+    )}-${po_number.slice(-3)}`;
     const countingNumber: number = await this.dnService.getCount(searchCode);
     return this.generate.generateCode({
       code: searchCode,
@@ -162,10 +139,6 @@ export class DeliveryNoteController {
     });
   }
 
-  @Put()
-  @ApiQuery({ name: 'id', type: 'string' })
-  @ApiBody({ type: DNUpdateDto })
-  @ApiOperation({ summary: 'Update Delivery Note' })
   @MessagePattern('Update-Delivery-Note')
   async DeliveryNoteUpdate(
     @Query('id') id: string,
@@ -193,9 +166,6 @@ export class DeliveryNoteController {
     }
   }
 
-  @Delete(':id')
-  @ApiParam({ name: 'id', type: 'string' })
-  @ApiOperation({ summary: 'Delete Delivery Note' })
   @MessagePattern('Delivery-Note-Delete')
   async DeliveryNoteRemove(@Param('id') id: string): Promise<BaseResponse> {
     try {

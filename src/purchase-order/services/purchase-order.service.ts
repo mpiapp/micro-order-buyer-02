@@ -5,6 +5,7 @@ import { PO, PODocument } from '../schemas/purchase-order.schema';
 import { IPurchaseOrder } from '../interfaces/type/IPOcreate.interface';
 import { ICreatePurchaseOrder } from '../interfaces/services/CreatePurchaseOrder.interface';
 import { IDeletePurchaseOrder } from '../interfaces/services/DeletePurchaseOrder.interface';
+import { TBasePaginate } from 'src/config/type/BasePaginate.type';
 
 @Injectable()
 export class PurchaseOrderService
@@ -32,5 +33,33 @@ export class PurchaseOrderService
 
   async byIdPurchaseOrder(id: string): Promise<PO> {
     return this.model.findById(id);
+  }
+
+  async getPaginate(params: TBasePaginate): Promise<any> {
+    const { keyId, skip, limit } = params;
+    return this.model.aggregate([
+      {
+        $match: {
+          buyerId: keyId,
+        },
+      },
+      {
+        $facet: {
+          metadata: [
+            {
+              $count: 'total',
+            },
+          ],
+          data: [
+            {
+              $skip: skip,
+            },
+            {
+              $limit: limit,
+            },
+          ],
+        },
+      },
+    ]);
   }
 }

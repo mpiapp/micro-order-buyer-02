@@ -1,16 +1,7 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpStatus,
-  Param,
-  Post,
-  Put,
-  Query,
-} from '@nestjs/common';
+import { Body, Controller, HttpStatus, Param, Query } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { MessagePattern } from '@nestjs/microservices';
-import { ApiBody, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 import { BaseResponse } from './../config/interfaces/response.base.interface';
 import { GenerateCoderService } from './../purchase-order/services/purchase-order-generate-code.service';
 import { Helper } from './../utils/helper.utils';
@@ -37,10 +28,6 @@ export class PackageController {
     private readonly helpService: Helper,
   ) {}
 
-  @Get('list')
-  @ApiQuery({ name: 'id', type: 'string' })
-  @ApiQuery({ name: 'status', type: 'string' })
-  @ApiOperation({ summary: 'List Package' })
   @MessagePattern('Package-List-Data')
   async getPackages(
     @Query('id') id: string,
@@ -64,9 +51,6 @@ export class PackageController {
     }
   }
 
-  @Get('byId')
-  @ApiQuery({ name: 'id', type: 'string' })
-  @ApiOperation({ summary: 'Get Package' })
   @MessagePattern('Package-ById')
   async getPackageById(@Query('id') id: string): Promise<IPackageResponse> {
     try {
@@ -87,8 +71,6 @@ export class PackageController {
     }
   }
 
-  @Get('Paginate')
-  @ApiOperation({ summary: 'Get Package Paginate' })
   @MessagePattern('Package-Paginate')
   async getPackagePaginate(
     @Query() params: PaginateDto,
@@ -112,12 +94,7 @@ export class PackageController {
     };
   }
 
-  @Post()
-  @ApiQuery({ name: 'id', type: 'string' })
-  @ApiQuery({ name: 'vendorId', type: 'string' })
-  @ApiBody({ type: PackageDto })
-  @ApiOperation({ summary: 'Save Split Package' })
-  @MessagePattern('Save-Split-Package')
+  @MessagePattern('Package-Split-Save')
   async splitPackage(
     @Param('id') id: string,
     @Body() params: PackageDto[],
@@ -138,10 +115,6 @@ export class PackageController {
     }
   }
 
-  @Post()
-  @ApiQuery({ name: 'id', type: 'string' })
-  @ApiBody({ type: PicknPackPackageDto })
-  @ApiOperation({ summary: 'Pick Package' })
   @MessagePattern('Pick-Package')
   async pickPackage(
     @Param('id') id: string,
@@ -150,7 +123,9 @@ export class PackageController {
     try {
       const { code_po, items, statuses } = params;
       const code = this.Generate.generateCode({
-        code: `PICK-${code_po.slice(-3)}`,
+        code: `${this.Config.get('initialCode.Pick.code')}-${code_po.slice(
+          -3,
+        )}`,
         count: 1,
         digits: this.Config.get('DIGITS_NUMBER_PICK'),
       });
@@ -176,10 +151,6 @@ export class PackageController {
     }
   }
 
-  @Post()
-  @ApiQuery({ name: 'id', type: 'string' })
-  @ApiBody({ type: PicknPackPackageDto })
-  @ApiOperation({ summary: 'Pack Package' })
   @MessagePattern('Pack-Package')
   async packPackage(
     @Param('id') id: string,
@@ -188,12 +159,14 @@ export class PackageController {
     try {
       const { code_po, items, statuses } = params;
       const code = this.Generate.generateCode({
-        code: `PACK-${code_po.slice(-3)}`,
+        code: `${this.Config.get('initialCode.Pack.code')}-${code_po.slice(
+          -3,
+        )}`,
         count: 1,
         digits: this.Config.get('DIGITS_NUMBER_PACK'),
       });
       const total = this.helpService.SUM(params);
-      await this.picknpackService.pickPackage({
+      await this.picknpackService.packPackage({
         id: id,
         code: code,
         items: items,
@@ -214,10 +187,6 @@ export class PackageController {
     }
   }
 
-  @Put()
-  @ApiQuery({ name: 'id', type: 'string' })
-  @ApiBody({ type: MoveItemPackageDto })
-  @ApiOperation({ summary: 'Move Items Package' })
   @MessagePattern('Move-Items-Package')
   async updatePackage(
     @Param('id') id: string,

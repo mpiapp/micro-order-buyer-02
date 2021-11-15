@@ -2,23 +2,16 @@ import {
   Body,
   CacheInterceptor,
   Controller,
-  Delete,
-  Get,
+  HttpStatus,
   Param,
-  Post,
-  Put,
   Query,
   UseInterceptors,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { MessagePattern } from '@nestjs/microservices';
-import {
-  ApiBody,
-  ApiOperation,
-  ApiParam,
-  ApiQuery,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 import * as mongoose from 'mongoose';
+import { BaseResponse } from './../config/interfaces/response.base.interface';
 import { Helper } from './../utils/helper.utils';
 import { BuyerDto } from './dto/Buyer.dto';
 import { CodePRDto } from './dto/CodePR.dto';
@@ -26,6 +19,8 @@ import { PRCreateDto } from './dto/CreatePR.dto';
 import { ItemPRDto } from './dto/Items.dto';
 import { StatusDto } from './dto/Status.dto';
 import { PRUpdateDto } from './dto/UpdatePR.dto';
+import { IPurchaseRequestsResponse } from './interfaces/response/Many.interface';
+import { IPurchaseRequestResponse } from './interfaces/response/Single.interface';
 import { PR } from './schemas/purchase-request.schema';
 import { GenerateService } from './services/generate.service';
 import { PurchaseRequestService } from './services/purchase-request.service';
@@ -41,6 +36,7 @@ export class PurchaseRequestController {
     private readonly Items: UpdateItemsService,
     private readonly Status: UpdateStatusService,
     private readonly HelperService: Helper,
+    private readonly Config: ConfigService,
   ) {}
 
   private async reCalculate(id) {
@@ -50,41 +46,83 @@ export class PurchaseRequestController {
     });
   }
 
-  @Post()
-  @ApiBody({ type: PRCreateDto })
-  @ApiOperation({ summary: 'Create Master PR' })
-  @MessagePattern('Purchase-Request-Create')
-  async PRCreate(@Body() param: PRCreateDto): Promise<PR> {
-    const generateCodePR = await this.Generate.generateCode({
-      code: param.code,
-    });
-    param.code = generateCodePR.code;
-    this.HelperService.sumValidate(param);
-    return this.PRMaster.createPurchaseRequest(param);
+  @MessagePattern('Purchase-Request-Save')
+  async PRCreate(@Body() params: PRCreateDto): Promise<BaseResponse> {
+    try {
+      const generateCodePR = await this.Generate.generateCode({
+        code: params.code,
+      });
+      params.code = generateCodePR.code;
+      this.HelperService.sumValidate(params);
+      this.PRMaster.createPurchaseRequest(params);
+      return {
+        status: HttpStatus.CREATED,
+        message: this.Config.get<string>(
+          'messageBase.PurchaseRequest.save.Success',
+        ),
+        errors: null,
+      };
+    } catch (error) {
+      return {
+        status: HttpStatus.PRECONDITION_FAILED,
+        message: this.Config.get<string>(
+          'messageBase.PurchaseRequest.save.Failed',
+        ),
+        errors: error,
+      };
+    }
   }
 
-  @Put()
-  @ApiQuery({ name: 'id', type: 'string' })
-  @ApiBody({ type: PRUpdateDto })
-  @ApiOperation({ summary: 'Update Master PR' })
   @MessagePattern('Purchase-Request-Update')
-  async PRUpdate(@Query() id: string, @Body() param: PRUpdateDto): Promise<PR> {
-    this.HelperService.sumValidate(param);
-    return this.PRMaster.updatePurchaseRequest(id, param);
+  async PRUpdate(
+    @Query() id: string,
+    @Body() param: PRUpdateDto,
+  ): Promise<IPurchaseRequestResponse> {
+    try {
+      this.HelperService.sumValidate(param);
+      const update = await this.PRMaster.updatePurchaseRequest(id, param);
+      return {
+        status: HttpStatus.OK,
+        message: this.Config.get<string>(
+          'messageBase.PurchaseRequest.update.Success',
+        ),
+        data: update,
+        errors: null,
+      };
+    } catch (error) {
+      return {
+        status: HttpStatus.PRECONDITION_FAILED,
+        message: this.Config.get<string>(
+          'messageBase.PurchaseRequest.update.Failed',
+        ),
+        data: null,
+        errors: error,
+      };
+    }
   }
 
-  @Delete(':id')
-  @ApiParam({ name: 'id', type: 'string' })
-  @ApiOperation({ summary: 'Delete Master PR' })
   @MessagePattern('Purchase-Request-Delete')
-  async PRDelete(@Param('id') id: string): Promise<PR> {
-    return this.PRMaster.deletePurchaseRequest(id);
+  async PRDelete(@Param('id') id: string): Promise<BaseResponse> {
+    try {
+      await this.PRMaster.deletePurchaseRequest(id);
+      return {
+        status: HttpStatus.OK,
+        message: this.Config.get<string>(
+          'messageBase.PurchaseRequest.delete.Success',
+        ),
+        errors: null,
+      };
+    } catch (error) {
+      return {
+        status: HttpStatus.PRECONDITION_FAILED,
+        message: this.Config.get<string>(
+          'messageBase.PurchaseRequest.delete.Failed',
+        ),
+        errors: error,
+      };
+    }
   }
 
-  @Put('addItem')
-  @ApiQuery({ name: 'id', type: 'string' })
-  @ApiBody({ type: ItemPRDto })
-  @ApiOperation({ summary: 'Add Item Master PR' })
   @MessagePattern('Purchase-Request-Add-Item')
   async PRaddItem(
     @Query('id') id: string,
@@ -113,11 +151,7 @@ export class PurchaseRequestController {
     return this.reCalculate(id);
   }
 
-  @Put('updateItem')
-  @ApiQuery({ name: 'id', type: 'string' })
-  @ApiBody({ type: ItemPRDto })
-  @ApiOperation({ summary: 'Update Item Master PR' })
-  @MessagePattern('Purchase-Request-Update-Item')
+  @MessagePattern('Purchase-Request-Update-Qty-Item')
   async PRUpdateItem(
     @Query('id') id: string,
     @Body() product: ItemPRDto,
@@ -136,10 +170,6 @@ export class PurchaseRequestController {
     return this.reCalculate(id);
   }
 
-  @Put('deleteItem')
-  @ApiQuery({ name: 'id', type: 'string' })
-  @ApiBody({ type: ItemPRDto })
-  @ApiOperation({ summary: 'Remove Item Master PR' })
   @MessagePattern('Purchase-Request-Remove-Item')
   async PRRemoveItem(
     @Query('id') id: string,
@@ -152,36 +182,84 @@ export class PurchaseRequestController {
     return this.reCalculate(id);
   }
 
-  @Get('list')
   @UseInterceptors(CacheInterceptor)
-  @ApiOperation({ summary: 'List Master PR' })
   @MessagePattern('Purchase-Request-List-Data')
-  async PRList(@Query() id: BuyerDto): Promise<PR[]> {
-    return this.PRMaster.listPurchaseRequest(id);
+  async PRList(@Query() id: BuyerDto): Promise<IPurchaseRequestsResponse> {
+    try {
+      const getAll = await this.PRMaster.listPurchaseRequest(id);
+      return {
+        status: HttpStatus.OK,
+        message: this.Config.get<string>(
+          'messageBase.PurchaseRequest.All.Success',
+        ),
+        data: getAll,
+        errors: null,
+      };
+    } catch (error) {
+      return {
+        status: HttpStatus.PRECONDITION_FAILED,
+        message: this.Config.get<string>(
+          'messageBase.PurchaseRequest.All.Failed',
+        ),
+        data: null,
+        errors: error,
+      };
+    }
   }
 
-  @Get('byId')
   @UseInterceptors(CacheInterceptor)
-  @ApiQuery({ name: 'id', type: 'string' })
-  @ApiOperation({ summary: 'Get Master PR By Id' })
   @MessagePattern('Purchase-Request-Get-Data-By-Id')
-  async PRById(@Query('id') id: string): Promise<PR> {
-    return this.PRMaster.byIdPurchaseRequest(id);
+  async PRById(@Query('id') id: string): Promise<IPurchaseRequestResponse> {
+    try {
+      const getOne = await this.PRMaster.byIdPurchaseRequest(id);
+      return {
+        status: HttpStatus.OK,
+        message: this.Config.get<string>(
+          'messageBase.PurchaseRequest.One.Success',
+        ),
+        data: getOne,
+        errors: null,
+      };
+    } catch (error) {
+      return {
+        status: HttpStatus.PRECONDITION_FAILED,
+        message: this.Config.get<string>(
+          'messageBase.PurchaseRequest.One.Failed',
+        ),
+        data: null,
+        errors: error,
+      };
+    }
   }
 
-  @Get('search')
   @UseInterceptors(CacheInterceptor)
-  @ApiOperation({ summary: 'Search Master PR' })
   @MessagePattern('Purchase-Request-Search-Data')
-  async PRSearch(@Query() search: CodePRDto): Promise<PR[]> {
-    return this.PRMaster.searchPurchaseRequest(search);
+  async PRSearch(
+    @Query() search: CodePRDto,
+  ): Promise<IPurchaseRequestsResponse> {
+    try {
+      const getAll = await this.PRMaster.searchPurchaseRequest(search);
+      return {
+        status: HttpStatus.OK,
+        message: this.Config.get<string>(
+          'messageBase.PurchaseRequest.Search.Success',
+        ),
+        data: getAll,
+        errors: null,
+      };
+    } catch (error) {
+      return {
+        status: HttpStatus.PRECONDITION_FAILED,
+        message: this.Config.get<string>(
+          'messageBase.PurchaseRequest.Search.Failed',
+        ),
+        data: null,
+        errors: error,
+      };
+    }
   }
 
-  @Put('addStatus')
   @UseInterceptors(CacheInterceptor)
-  @ApiQuery({ name: 'id', type: 'string' })
-  @ApiBody({ type: StatusDto })
-  @ApiOperation({ summary: 'Add Status Master PR' })
   @MessagePattern('Purchase-Request-Add-Status-PR')
   async PRaddStatus(
     @Query() id: string,

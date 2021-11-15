@@ -32,37 +32,7 @@ export class PurchaseOrderItemsService {
       },
     );
   }
-  // async changeProduct(id: string, product: string): Promise<any>{
-  //   return this.POmodel.findOneAndUpdate(
-  //     {
-  //       'vendors.packages.items._id': new mongoose.Types.ObjectId(id),
-  //     },
-  //     {
-  //       $push: {
-  //         'vendors.packages.items.$.statuses': {
-  //           name: 'Rejected',
-  //           timestamp: new Date(),
-  //         },
-  //       },
-  //     },
-  //   );
-  // }
   async changeRejected(id: string): Promise<any> {
-    console.log(
-      await this.POmodel.findOneAndUpdate(
-        {
-          'vendors.packages.items._id': new mongoose.Types.ObjectId(id),
-        },
-        {
-          $push: {
-            'vendors.packages.items.$.statuses': {
-              name: 'Rejected',
-              timestamp: new Date(Date.now()),
-            },
-          },
-        },
-      ),
-    );
     return this.POmodel.findOneAndUpdate(
       {
         'vendors.packages.items._id': new mongoose.Types.ObjectId(id),

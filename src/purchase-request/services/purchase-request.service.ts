@@ -27,7 +27,7 @@ export class PurchaseRequestService
     return this.model.create(params);
   }
 
-  async updatePurchaseRequest(id: string, params: PRUpdateDto) {
+  async updatePurchaseRequest(id: string, params: PRUpdateDto): Promise<PR> {
     return this.model.findByIdAndUpdate(id, { $set: params }, { new: true });
   }
 
