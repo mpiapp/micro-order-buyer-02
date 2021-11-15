@@ -1,4 +1,4 @@
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { DN } from './../delivery-note/schemas/delivery-note.schema';
@@ -13,6 +13,7 @@ import { CacheModule } from '@nestjs/common';
 
 describe('GrnController', () => {
   let controller: GrnController;
+  let config: ConfigService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -35,6 +36,7 @@ describe('GrnController', () => {
     }).compile();
 
     controller = module.get<GrnController>(GrnController);
+    config = module.get<ConfigService>(ConfigService);
   });
 
   it('should be defined', () => {
@@ -52,7 +54,7 @@ describe('GrnController', () => {
       errors: null,
       status: 200,
       data: sampleGRN,
-      message: 'Get One Good Receive Note Success',
+      message: config.get<string>('messageBase.GRN.One.Success'),
     });
   });
 
@@ -66,7 +68,7 @@ describe('GrnController', () => {
         errors: error,
         status: 400,
         data: null,
-        message: 'Get One Good Receive Note Failed',
+        message: config.get<string>('messageBase.GRN.One.Failed'),
       });
     }
   });
@@ -76,7 +78,7 @@ describe('GrnController', () => {
       errors: null,
       status: 200,
       data: [sampleGRN],
-      message: 'Get Good Receive Notes Success',
+      message: config.get<string>('messageBase.GRN.All.Success'),
     });
   });
 
@@ -145,7 +147,7 @@ describe('GrnController', () => {
         errors: error,
         status: 400,
         data: null,
-        message: 'Get Good Receive Notes Failed',
+        message: config.get<string>('messageBase.GRN.All.Failed'),
       });
     }
   });
@@ -155,7 +157,7 @@ describe('GrnController', () => {
       errors: null,
       status: 200,
       data: sampleGRN,
-      message: 'Save Good Receive Note Success',
+      message: config.get<string>('messageBase.GRN.save.Success'),
     });
   });
 
@@ -169,7 +171,7 @@ describe('GrnController', () => {
       errors: null,
       status: 200,
       data: sampleGRN,
-      message: 'Reject Good Receive Note Success',
+      message: config.get<string>('messageBase.GRN.reject.Success'),
     });
   });
 
@@ -183,7 +185,7 @@ describe('GrnController', () => {
         errors: error,
         status: 400,
         data: null,
-        message: 'Save Good Receive Note Failed',
+        message: config.get<string>('messageBase.GRN.save.Failed'),
       });
     }
   });
@@ -201,7 +203,7 @@ describe('GrnController', () => {
         errors: error,
         status: 400,
         data: null,
-        message: 'Reject Good Receive Note Failed',
+        message: config.get<string>('messageBase.GRN.reject.Failed'),
       });
     }
   });

@@ -2,16 +2,12 @@ import {
   Body,
   CacheInterceptor,
   Controller,
-  Get,
   HttpStatus,
-  Post,
-  Put,
   Query,
   UseInterceptors,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { MessagePattern } from '@nestjs/microservices';
-import { ApiBody, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { StatusDto } from './../purchase-request/dto/Status.dto';
 import { IDeliveryNotesResponse } from './../delivery-note/interfaces/response/Many.interface';
 import { IDeliveryNotesPaginateResponse } from './../delivery-note/interfaces/response/Paginate.interface';
@@ -29,10 +25,7 @@ export class GrnController {
     private readonly grnService: GrnService,
   ) {}
 
-  @Get('list')
   @UseInterceptors(CacheInterceptor)
-  @ApiQuery({ name: 'id', type: 'string' })
-  @ApiOperation({ summary: 'List Good Receive Note' })
   @MessagePattern('Good-Receive-Note-List-Data')
   async GRNList(@Query('id') id: string): Promise<IDeliveryNotesResponse> {
     try {
@@ -53,10 +46,7 @@ export class GrnController {
     }
   }
 
-  @Get('byId')
   @UseInterceptors(CacheInterceptor)
-  @ApiQuery({ name: 'id', type: 'string' })
-  @ApiOperation({ summary: 'Get Good Receive Note' })
   @MessagePattern('Good-Receive-Note-ById')
   async GRNGetById(@Query('id') id: string): Promise<IDeliveryNoteResponse> {
     try {
@@ -77,9 +67,7 @@ export class GrnController {
     }
   }
 
-  @Get('Paginate')
   @UseInterceptors(CacheInterceptor)
-  @ApiOperation({ summary: 'Get Good Receive Note Paginate' })
   @MessagePattern('Good-Receive-Note-Paginate')
   async GRNPaginate(
     @Query() params: GrnPaginateDto,
@@ -103,9 +91,6 @@ export class GrnController {
     };
   }
 
-  @Post('GenerateCode')
-  @ApiQuery({ name: 'po_number', type: String })
-  @ApiOperation({ summary: 'Generate Code Good Receive Note' })
   @MessagePattern('Generate-Code-Good-Receive-Note')
   async GenerateCode(@Query('po_number') po_number: string): Promise<string> {
     const searchCode = `GRN-${po_number.slice(-3)}`;
@@ -117,11 +102,7 @@ export class GrnController {
     });
   }
 
-  @Put()
-  @ApiQuery({ name: 'id', type: String })
-  @ApiBody({ type: GRNUpdateDto })
-  @ApiOperation({ summary: 'Save Good Receive Note' })
-  @MessagePattern('Save-Good-Receive-Note')
+  @MessagePattern('Good-Receive-Note-Save')
   async GRNUpdate(
     @Query('id') id: string,
     @Body() params: GRNUpdateDto,
@@ -144,10 +125,6 @@ export class GrnController {
     }
   }
 
-  @Put('Rejected')
-  @ApiQuery({ name: 'id', type: String })
-  @ApiBody({ type: StatusDto })
-  @ApiOperation({ summary: 'Reject Good Receive Note' })
   @MessagePattern('Reject-Good-Receive-Note')
   async GRNRejected(
     @Query('id') id: string,
