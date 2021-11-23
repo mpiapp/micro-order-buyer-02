@@ -30,13 +30,13 @@ describe('GenerateService', () => {
     expect(service).toBeDefined();
   });
 
-  it('should be generate code first number ', async () => {
+  it('should be generate code first number', async () => {
     expect(await service.generateCode(SampleCode)).toEqual({
       code: SampleCode.code + '-00001',
     });
   });
 
-  it('should be generate code > 1 ', async () => {
+  it('should be generate code > 1', async () => {
     mockGenerate.find.mockReturnValue([1]);
 
     expect(
@@ -48,7 +48,7 @@ describe('GenerateService', () => {
     });
   });
 
-  it('should be generate code failed ', async () => {
+  it('should be generate code failed', async () => {
     mockGenerate.find.mockReturnValue(null);
 
     expect(

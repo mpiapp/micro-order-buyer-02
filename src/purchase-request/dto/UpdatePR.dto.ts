@@ -4,12 +4,17 @@ import {
   IsNotEmpty,
   IsNumber,
   IsOptional,
+  IsString,
   Min,
 } from 'class-validator';
 import { ItemPRDto } from './Items.dto';
 import { StatusDto } from './Status.dto';
 
 export class PRUpdateDto {
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  id: string;
   @ApiProperty()
   @IsArray()
   @IsNotEmpty()

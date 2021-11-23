@@ -1,10 +1,8 @@
 import { classToPlain } from 'class-transformer';
 import { validate } from 'class-validator';
-import { BuyerDto } from '../Buyer.dto';
 import { CodePRDto } from '../CodePR.dto';
 import { PRCreateDto } from '../CreatePR.dto';
 import { ItemPRDto } from '../Items.dto';
-import { SearchDto } from '../SearchPR.dto';
 import { StatusDto } from '../Status.dto';
 import { PRUpdateDto } from '../UpdatePR.dto';
 
@@ -48,7 +46,7 @@ describe('Create Status Dto', () => {
     classes.timestamp = null;
 
     validate(classes).then((errors) => {
-      expect(errors.length).toEqual(2);
+      expect(errors.length).toEqual(3);
     });
   });
 
@@ -90,7 +88,7 @@ describe('Create UpdatePR Dto', () => {
     classes.items = null;
 
     validate(classes).then((errors) => {
-      expect(errors.length).toEqual(0);
+      expect(errors.length).toEqual(1);
     });
   });
 });
@@ -103,36 +101,6 @@ describe('Create CodePR Dto', () => {
 
   it('validate element UpdatePR DTO', async () => {
     classes.code = null;
-
-    validate(classes).then((errors) => {
-      expect(errors.length).toEqual(1);
-    });
-  });
-});
-
-describe('Buyer PR Dto', () => {
-  let classes;
-  beforeEach(() => {
-    classes = new BuyerDto();
-  });
-
-  it('validate element Buyer DTO', async () => {
-    classes.buyerId = null;
-
-    validate(classes).then((errors) => {
-      expect(errors.length).toEqual(1);
-    });
-  });
-});
-
-describe('Search PR Dto', () => {
-  let classes;
-  beforeEach(() => {
-    classes = new SearchDto();
-  });
-
-  it('validate element Search DTO', async () => {
-    classes.search = null;
 
     validate(classes).then((errors) => {
       expect(errors.length).toEqual(1);

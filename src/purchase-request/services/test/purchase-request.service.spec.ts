@@ -40,9 +40,10 @@ describe('PurchaseRequestService', () => {
       };
     });
 
-    expect(
-      await service.updatePurchaseRequest(expect.any(String), SampleUpdate),
-    ).toEqual({ ...SampleCreate, ...SampleUpdate });
+    expect(await service.updatePurchaseRequest(SampleUpdate)).toEqual({
+      ...SampleCreate,
+      ...SampleUpdate,
+    });
   });
   it('should be delete purchase request', async () => {
     mockPurchaseRequest.findByIdAndUpdate.mockImplementation(() => {
@@ -58,15 +59,15 @@ describe('PurchaseRequestService', () => {
   });
 
   it('should be search purchase request by code', async () => {
-    expect(
-      await service.searchPurchaseRequest({ code: expect.any(String) }),
-    ).toEqual([SampleCreate]);
+    expect(await service.searchPurchaseRequest(expect.any(String))).toEqual([
+      SampleCreate,
+    ]);
   });
 
   it('should be get list purchase request', async () => {
-    expect(
-      await service.listPurchaseRequest({ buyerId: expect.any(String) }),
-    ).toEqual([SampleCreate]);
+    expect(await service.listPurchaseRequest(expect.any(String))).toEqual([
+      SampleCreate,
+    ]);
   });
 
   it('should be get by Id purchase request', async () => {

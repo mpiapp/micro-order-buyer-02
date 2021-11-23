@@ -22,6 +22,7 @@ export const SampleCreate: PRCreateDto = {
   total: 0,
   statuses: [
     {
+      id: expect.any(String),
       name: 'Open',
       timestamp: new Date('2021-10-10 20:00'),
     },

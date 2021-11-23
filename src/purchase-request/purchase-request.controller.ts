@@ -3,7 +3,6 @@ import {
   CacheInterceptor,
   Controller,
   HttpStatus,
-  Param,
   Query,
   UseInterceptors,
 } from '@nestjs/common';
@@ -11,10 +10,9 @@ import { ConfigService } from '@nestjs/config';
 import { MessagePattern } from '@nestjs/microservices';
 import { ApiTags } from '@nestjs/swagger';
 import * as mongoose from 'mongoose';
+import { IncomingMessage } from 'src/config/interfaces/Income.interface';
 import { BaseResponse } from './../config/interfaces/response.base.interface';
 import { Helper } from './../utils/helper.utils';
-import { BuyerDto } from './dto/Buyer.dto';
-import { CodePRDto } from './dto/CodePR.dto';
 import { PRCreateDto } from './dto/CreatePR.dto';
 import { ItemPRDto } from './dto/Items.dto';
 import { StatusDto } from './dto/Status.dto';
@@ -39,22 +37,26 @@ export class PurchaseRequestController {
     private readonly Config: ConfigService,
   ) {}
 
-  private async reCalculate(id) {
-    const getPRbyId = await this.PRMaster.byIdPurchaseRequest(id);
-    return this.PRMaster.updatePurchaseRequest(id, {
+  private async reCalculate(_id: string) {
+    const getPRbyId = await this.PRMaster.byIdPurchaseRequest(_id);
+    return this.PRMaster.updatePurchaseRequest({
+      id: _id,
       total: this.HelperService.SUM(getPRbyId),
     });
   }
 
-  @MessagePattern('Purchase-Request-Save')
-  async PRCreate(@Body() params: PRCreateDto): Promise<BaseResponse> {
+  @MessagePattern('purchase.request.save')
+  async PRCreate(
+    @Body() message: IncomingMessage<PRCreateDto>,
+  ): Promise<BaseResponse> {
     try {
+      const { value } = message;
       const generateCodePR = await this.Generate.generateCode({
-        code: params.code,
+        code: value.code,
       });
-      params.code = generateCodePR.code;
-      this.HelperService.sumValidate(params);
-      this.PRMaster.createPurchaseRequest(params);
+      value.code = generateCodePR.code;
+      this.HelperService.sumValidate(value);
+      this.PRMaster.createPurchaseRequest(value);
       return {
         status: HttpStatus.CREATED,
         message: this.Config.get<string>(
@@ -73,14 +75,14 @@ export class PurchaseRequestController {
     }
   }
 
-  @MessagePattern('Purchase-Request-Update')
+  @MessagePattern('purchase.request.update')
   async PRUpdate(
-    @Query() id: string,
-    @Body() param: PRUpdateDto,
+    @Body() message: IncomingMessage<PRUpdateDto>,
   ): Promise<IPurchaseRequestResponse> {
     try {
-      this.HelperService.sumValidate(param);
-      const update = await this.PRMaster.updatePurchaseRequest(id, param);
+      const { value } = message;
+      this.HelperService.sumValidate(value);
+      const update = await this.PRMaster.updatePurchaseRequest(value);
       return {
         status: HttpStatus.OK,
         message: this.Config.get<string>(
@@ -101,10 +103,12 @@ export class PurchaseRequestController {
     }
   }
 
-  @MessagePattern('Purchase-Request-Delete')
-  async PRDelete(@Param('id') id: string): Promise<BaseResponse> {
+  @MessagePattern('purchase.request.delete')
+  async PRDelete(
+    @Body() message: IncomingMessage<string>,
+  ): Promise<BaseResponse> {
     try {
-      await this.PRMaster.deletePurchaseRequest(id);
+      await this.PRMaster.deletePurchaseRequest(message.value);
       return {
         status: HttpStatus.OK,
         message: this.Config.get<string>(
@@ -123,7 +127,7 @@ export class PurchaseRequestController {
     }
   }
 
-  @MessagePattern('Purchase-Request-Add-Item')
+  @MessagePattern('purchase.request.add.item')
   async PRaddItem(
     @Query('id') id: string,
     @Body() product: ItemPRDto,
@@ -151,7 +155,7 @@ export class PurchaseRequestController {
     return this.reCalculate(id);
   }
 
-  @MessagePattern('Purchase-Request-Update-Qty-Item')
+  @MessagePattern('purchase.request.update.item')
   async PRUpdateItem(
     @Query('id') id: string,
     @Body() product: ItemPRDto,
@@ -170,7 +174,7 @@ export class PurchaseRequestController {
     return this.reCalculate(id);
   }
 
-  @MessagePattern('Purchase-Request-Remove-Item')
+  @MessagePattern('purchase.request.remove.item')
   async PRRemoveItem(
     @Query('id') id: string,
     @Body() product: ItemPRDto,
@@ -183,10 +187,12 @@ export class PurchaseRequestController {
   }
 
   @UseInterceptors(CacheInterceptor)
-  @MessagePattern('Purchase-Request-List-Data')
-  async PRList(@Query() id: BuyerDto): Promise<IPurchaseRequestsResponse> {
+  @MessagePattern('purchase.request.get.all')
+  async PRList(
+    @Body() message: IncomingMessage<string>,
+  ): Promise<IPurchaseRequestsResponse> {
     try {
-      const getAll = await this.PRMaster.listPurchaseRequest(id);
+      const getAll = await this.PRMaster.listPurchaseRequest(message.value);
       return {
         status: HttpStatus.OK,
         message: this.Config.get<string>(
@@ -208,10 +214,12 @@ export class PurchaseRequestController {
   }
 
   @UseInterceptors(CacheInterceptor)
-  @MessagePattern('Purchase-Request-Get-Data-By-Id')
-  async PRById(@Query('id') id: string): Promise<IPurchaseRequestResponse> {
+  @MessagePattern('purchase.request.get.by.id')
+  async PRById(
+    @Body() message: IncomingMessage<string>,
+  ): Promise<IPurchaseRequestResponse> {
     try {
-      const getOne = await this.PRMaster.byIdPurchaseRequest(id);
+      const getOne = await this.PRMaster.byIdPurchaseRequest(message.value);
       return {
         status: HttpStatus.OK,
         message: this.Config.get<string>(
@@ -233,12 +241,12 @@ export class PurchaseRequestController {
   }
 
   @UseInterceptors(CacheInterceptor)
-  @MessagePattern('Purchase-Request-Search-Data')
+  @MessagePattern('purchase.request.search')
   async PRSearch(
-    @Query() search: CodePRDto,
+    @Body() message: IncomingMessage<string>,
   ): Promise<IPurchaseRequestsResponse> {
     try {
-      const getAll = await this.PRMaster.searchPurchaseRequest(search);
+      const getAll = await this.PRMaster.searchPurchaseRequest(message.value);
       return {
         status: HttpStatus.OK,
         message: this.Config.get<string>(
@@ -260,11 +268,8 @@ export class PurchaseRequestController {
   }
 
   @UseInterceptors(CacheInterceptor)
-  @MessagePattern('Purchase-Request-Add-Status-PR')
-  async PRaddStatus(
-    @Query() id: string,
-    @Body() status: StatusDto,
-  ): Promise<PR> {
-    return this.Status.addStatus(id, status);
+  @MessagePattern('purchase.request.add.status')
+  async PRaddStatus(@Body() message: IncomingMessage<StatusDto>): Promise<PR> {
+    return this.Status.addStatus(message.value);
   }
 }

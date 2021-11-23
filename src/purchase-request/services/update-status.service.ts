@@ -9,7 +9,9 @@ import { PR, PRDocument } from '../schemas/purchase-request.schema';
 export class UpdateStatusService implements IUpdateStatusPurchaseRequest {
   constructor(@InjectModel(PR.name) private model: Model<PRDocument>) {}
 
-  async addStatus(id: string, param: StatusDto): Promise<any> {
+  async addStatus(param: StatusDto): Promise<any> {
+    const { id } = param;
+    delete param['id'];
     return this.model.findByIdAndUpdate(id, { $push: { Status: param } });
   }
 }

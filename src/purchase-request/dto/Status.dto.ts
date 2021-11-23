@@ -7,6 +7,10 @@ export class StatusDto implements IStatus {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
+  id?: string;
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
   name: string;
   @ApiProperty()
   @IsDate()

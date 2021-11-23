@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { BuyerDto } from '../dto/Buyer.dto';
-import { CodePRDto } from '../dto/CodePR.dto';
 import { PRCreateDto } from '../dto/CreatePR.dto';
 import { PRUpdateDto } from '../dto/UpdatePR.dto';
 import { ICreatePurchaseRequest } from '../interfaces/services/CreatePurchaseRequest.intreface';
@@ -27,7 +25,9 @@ export class PurchaseRequestService
     return this.model.create(params);
   }
 
-  async updatePurchaseRequest(id: string, params: PRUpdateDto): Promise<PR> {
+  async updatePurchaseRequest(params: PRUpdateDto): Promise<PR> {
+    const { id } = params;
+    delete params['id'];
     return this.model.findByIdAndUpdate(id, { $set: params }, { new: true });
   }
 
@@ -35,14 +35,12 @@ export class PurchaseRequestService
     return this.model.findByIdAndUpdate(id, { isDeleted: true }, { new: true });
   }
 
-  async searchPurchaseRequest(search: CodePRDto): Promise<PR[]> {
-    const { code } = search;
-    return this.model.find({ code: { $regex: code } });
+  async searchPurchaseRequest(search: string): Promise<PR[]> {
+    return this.model.find({ code: { $regex: search } });
   }
 
-  async listPurchaseRequest(buyer: BuyerDto): Promise<PR[]> {
-    const { buyerId } = buyer;
-    return this.model.find({ buyerId: buyerId });
+  async listPurchaseRequest(buyer: string): Promise<PR[]> {
+    return this.model.find({ buyerId: buyer });
   }
 
   async byIdPurchaseRequest(id: string): Promise<PR> {
