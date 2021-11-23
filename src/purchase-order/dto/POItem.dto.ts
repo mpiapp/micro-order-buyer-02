@@ -8,16 +8,9 @@ import {
   Min,
 } from 'class-validator';
 import { StatusDto } from './../../purchase-request/dto/Status.dto';
-import { IPurchaseOrderItem } from '../interfaces/type/IPurchaseOrderItem.interface';
+import { Items } from './../../items/dto/Items.dto';
 
-export class PurchaseOrderItemDto implements IPurchaseOrderItem {
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
-  productId: string;
-  @ApiProperty()
-  @IsOptional()
-  payment_terms?: string;
+export class PurchaseOrderItemDto extends Items {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
@@ -25,14 +18,6 @@ export class PurchaseOrderItemDto implements IPurchaseOrderItem {
   @ApiProperty()
   @IsOptional()
   package?: string;
-  @ApiProperty()
-  @IsNumber()
-  @Min(0)
-  quantity: number;
-  @ApiProperty()
-  @IsNumber()
-  @Min(0)
-  price: number;
   @ApiProperty()
   @IsNumber()
   @Min(0)

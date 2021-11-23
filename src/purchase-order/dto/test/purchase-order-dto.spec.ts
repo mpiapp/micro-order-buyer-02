@@ -20,7 +20,7 @@ describe('PO Item Dto', () => {
     classes.statuses = null;
 
     validate(classes).then((errors) => {
-      expect(errors.length).toEqual(6);
+      expect(errors.length).toEqual(21);
     });
   });
 });

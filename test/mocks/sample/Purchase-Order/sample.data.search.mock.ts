@@ -1,3 +1,5 @@
+import { sampleItem } from '../Products/sample.item.mock';
+
 export const sampleDataCreatePO = {
   code: 'KPJ-12-10-00001',
   buyerId: '617364617364617364617344',
@@ -10,18 +12,7 @@ export const sampleDataCreatePO = {
       packages: [
         {
           code_package: 'KPJ-12-10-00001-001-001',
-          items: [
-            {
-              productId: expect.any(String),
-              quantity: 14,
-              price: 10000,
-            },
-            {
-              productId: expect.any(String),
-              quantity: 14,
-              price: 10000,
-            },
-          ],
+          items: [sampleItem, sampleItem],
           statuses: [
             {
               name: 'Open',

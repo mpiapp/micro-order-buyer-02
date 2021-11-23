@@ -71,7 +71,7 @@ describe('Create Items Dto', () => {
     classes.price = null;
 
     validate(classes).then((errors) => {
-      expect(errors.length).toEqual(3);
+      expect(errors.length).toEqual(18);
     });
   });
 });

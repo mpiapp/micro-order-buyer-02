@@ -1,25 +1,10 @@
 import { PRUpdateDto } from 'src/purchase-request/dto/UpdatePR.dto';
+import { sampleItem } from '../Products/sample.item.mock';
 
 export const SampleUpdate: PRUpdateDto = {
   id: expect.any(String),
-  items: [
-    {
-      productId: expect.any(String),
-      quantity: 14,
-      price: 10000,
-    },
-    {
-      productId: expect.any(String),
-      quantity: 14,
-      price: 10000,
-    },
-    {
-      productId: expect.any(String),
-      quantity: 14,
-      price: 10000,
-    },
-  ],
-  total: 420000,
+  items: [sampleItem, sampleItem, sampleItem],
+  total: 4320000,
   statuses: [
     {
       id: expect.any(String),

@@ -1,4 +1,4 @@
-import { Body, Controller, HttpStatus, Param, Query } from '@nestjs/common';
+import { Body, Controller, HttpStatus } from '@nestjs/common';
 import * as mongoose from 'mongoose';
 import { ConfigService } from '@nestjs/config';
 import { MessagePattern } from '@nestjs/microservices';
@@ -10,6 +10,7 @@ import { ITemplateCreateAndUpdateResponse } from './interfaces/response/CreateAn
 import { ITemplateSearchAndListResponse } from './interfaces/response/SearchAndList.interface';
 import { TemplateItemsService } from './services/template-items.service';
 import { TemplateService } from './services/template.service';
+import { IncomingMessage } from './../config/interfaces/Income.interface';
 
 @ApiTags('Template Purchase Request')
 @Controller('template')
@@ -20,12 +21,12 @@ export class TemplateController {
     private readonly Config: ConfigService,
   ) {}
 
-  @MessagePattern('Template-Save')
+  @MessagePattern('template.save')
   async TemplateCreate(
-    @Body() params: TemplateCreateDto,
+    @Body() message: IncomingMessage<TemplateCreateDto>,
   ): Promise<ITemplateCreateAndUpdateResponse> {
     try {
-      const save = await this.TemplateMaster.createTemplate(params);
+      const save = await this.TemplateMaster.createTemplate(message.value);
       return {
         status: HttpStatus.CREATED,
         message: this.Config.get<string>('messageBase.Template.save.Success'),
@@ -42,10 +43,12 @@ export class TemplateController {
     }
   }
 
-  @MessagePattern('Template-Update')
-  async TemplateDelete(@Param('id') id: string): Promise<BaseResponse> {
+  @MessagePattern('template.update')
+  async TemplateDelete(
+    @Body() message: IncomingMessage<string>,
+  ): Promise<BaseResponse> {
     try {
-      await this.TemplateMaster.deleteTemplate(id);
+      await this.TemplateMaster.deleteTemplate(message.value);
       return {
         status: HttpStatus.OK,
         message: this.Config.get<string>('messageBase.Template.delete.Success'),
@@ -60,11 +63,11 @@ export class TemplateController {
     }
   }
 
-  @MessagePattern('Template-Add-Item')
+  @MessagePattern('template.add.item')
   async TemplateAddItem(
-    @Query('id') id: string,
-    @Body() product: ItemTemplateDto,
+    @Body() message: IncomingMessage<ItemTemplateDto>,
   ): Promise<BaseResponse> {
+    const { id, ...product } = message.value;
     const addQty = await this.Items.addItem(
       {
         $and: [
@@ -92,12 +95,12 @@ export class TemplateController {
     };
   }
 
-  @MessagePattern('Template-Update-Item')
+  @MessagePattern('template.update.item')
   async TemplateUpdateItem(
-    @Query('id') id: string,
-    @Body() product: ItemTemplateDto,
+    @Body() message: IncomingMessage<ItemTemplateDto>,
   ): Promise<BaseResponse> {
     try {
+      const { id, ...product } = message.value;
       await this.Items.addItem(
         {
           $and: [
@@ -124,12 +127,12 @@ export class TemplateController {
     }
   }
 
-  @MessagePattern('Template-Remove-Item')
+  @MessagePattern('template.remove.item')
   async TemplateRemoveItem(
-    @Query('id') id: string,
-    @Body() product: ItemTemplateDto,
+    @Body() message: IncomingMessage<ItemTemplateDto>,
   ): Promise<BaseResponse> {
     try {
+      const { id, ...product } = message.value;
       await this.Items.removeItem(
         { _id: new mongoose.Types.ObjectId(id) },
         { $pull: { items: { productId: product.productId } } },
@@ -149,12 +152,12 @@ export class TemplateController {
     }
   }
 
-  @MessagePattern('Template-List-Data')
+  @MessagePattern('template.get.all')
   async TemplateGetList(
-    @Query('id') id: string,
+    @Body() message: IncomingMessage<string>,
   ): Promise<ITemplateSearchAndListResponse> {
     try {
-      const getAll = await this.TemplateMaster.listTemplate(id);
+      const getAll = await this.TemplateMaster.listTemplate(message.value);
       return {
         status: HttpStatus.OK,
         message: this.Config.get<string>('messageBase.Template.All.Success'),
@@ -171,12 +174,12 @@ export class TemplateController {
     }
   }
 
-  @MessagePattern('Template-Get-Data-By-Id')
+  @MessagePattern('template.get.by.id')
   async TemplateGetById(
-    @Query('id') id: string,
+    @Body() message: IncomingMessage<string>,
   ): Promise<ITemplateCreateAndUpdateResponse> {
     try {
-      const getById = await this.TemplateMaster.getByIdTemplate(id);
+      const getById = await this.TemplateMaster.getByIdTemplate(message.value);
       return {
         status: HttpStatus.OK,
         message: this.Config.get<string>('messageBase.Template.One.Success'),
@@ -193,12 +196,12 @@ export class TemplateController {
     }
   }
 
-  @MessagePattern('Template-Search-Data')
+  @MessagePattern('template.search')
   async TemplateSearch(
-    @Query('search') _search: string,
+    @Body() message: IncomingMessage<string>,
   ): Promise<ITemplateSearchAndListResponse> {
     try {
-      const search = await this.TemplateMaster.searchTemplate(_search);
+      const search = await this.TemplateMaster.searchTemplate(message.value);
       return {
         status: HttpStatus.OK,
         message: this.Config.get<string>('messageBase.Template.Search.Success'),

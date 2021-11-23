@@ -10,6 +10,7 @@ import { TemplateService } from './services/template.service';
 import { TemplateController } from './template.controller';
 import { mockControllerTemplate } from './../../test/mocks/services/Controller.mocks';
 import { CacheModule } from '@nestjs/common';
+import { MessageSample } from './../../test/mocks/sample/message/sample.message.mock';
 
 describe('TemplateController', () => {
   let controller: TemplateController;
@@ -43,7 +44,12 @@ describe('TemplateController', () => {
   });
 
   it('should be create template', async () => {
-    expect(await controller.TemplateCreate(SampleTemplateCreate)).toEqual({
+    expect(
+      await controller.TemplateCreate({
+        ...MessageSample,
+        value: SampleTemplateCreate,
+      }),
+    ).toEqual({
       errors: null,
       status: 201,
       message: config.get('messageBase.Template.save.Success'),
@@ -57,7 +63,10 @@ describe('TemplateController', () => {
     });
 
     try {
-      await controller.TemplateCreate(SampleTemplateCreate);
+      await controller.TemplateCreate({
+        ...MessageSample,
+        value: SampleTemplateCreate,
+      });
     } catch (error) {
       expect(error).toEqual({
         errors: error.errors,
@@ -69,7 +78,12 @@ describe('TemplateController', () => {
   });
 
   it('should be delete template', async () => {
-    expect(await controller.TemplateDelete(expect.any(String))).toEqual({
+    expect(
+      await controller.TemplateDelete({
+        ...MessageSample,
+        value: expect.any(String),
+      }),
+    ).toEqual({
       errors: null,
       message: config.get('messageBase.Template.delete.Success'),
       status: 200,
@@ -82,7 +96,10 @@ describe('TemplateController', () => {
     });
 
     try {
-      await controller.TemplateDelete(expect.any(String));
+      await controller.TemplateDelete({
+        ...MessageSample,
+        value: expect.any(String),
+      });
     } catch (error) {
       expect(error).toEqual({
         errors: error.errors,
@@ -95,7 +112,10 @@ describe('TemplateController', () => {
 
   it('should update add Item template Success', async () => {
     expect(
-      await controller.TemplateAddItem(expect.any(String), sampleItem),
+      await controller.TemplateAddItem({
+        ...MessageSample,
+        value: { id: expect.any(String), ...sampleItem },
+      }),
     ).toEqual({
       errors: null,
       message: config.get('messageBase.Items.add.Success'),
@@ -105,7 +125,10 @@ describe('TemplateController', () => {
 
   it('should update change qty Item template Success', async () => {
     expect(
-      await controller.TemplateUpdateItem(expect.any(String), sampleItem),
+      await controller.TemplateUpdateItem({
+        ...MessageSample,
+        value: { id: expect.any(String), ...sampleItem },
+      }),
     ).toEqual({
       errors: null,
       message: config.get('messageBase.Items.update.Success'),
@@ -115,7 +138,10 @@ describe('TemplateController', () => {
 
   it('should update remove Item Template Success', async () => {
     expect(
-      await controller.TemplateRemoveItem(expect.any(String), sampleItem),
+      await controller.TemplateRemoveItem({
+        ...MessageSample,
+        value: { id: expect.any(String), ...sampleItem },
+      }),
     ).toEqual({
       errors: null,
       message: config.get('messageBase.Items.remove.Success'),
@@ -128,7 +154,10 @@ describe('TemplateController', () => {
       return false;
     });
     try {
-      await controller.TemplateAddItem(expect.any(String), sampleItem);
+      await controller.TemplateAddItem({
+        ...MessageSample,
+        value: { id: expect.any(String), ...sampleItem },
+      });
     } catch (error) {
       expect(error).toEqual(error);
     }
@@ -140,7 +169,10 @@ describe('TemplateController', () => {
     });
 
     try {
-      await controller.TemplateUpdateItem(expect.any(String), sampleItem);
+      await controller.TemplateUpdateItem({
+        ...MessageSample,
+        value: { id: expect.any(String), ...sampleItem },
+      });
     } catch (error) {
       expect(error).toEqual({
         errors: error,
@@ -152,7 +184,10 @@ describe('TemplateController', () => {
 
   it('should update remove Item Template Failed', async () => {
     try {
-      await controller.TemplateRemoveItem(expect.any(String), sampleItem);
+      await controller.TemplateRemoveItem({
+        ...MessageSample,
+        value: { id: expect.any(String), ...sampleItem },
+      });
     } catch (error) {
       expect(error).toEqual({
         errors: error,
@@ -163,7 +198,12 @@ describe('TemplateController', () => {
   });
 
   it('should get list Template Success', async () => {
-    expect(await controller.TemplateGetList(expect.any(String))).toEqual({
+    expect(
+      await controller.TemplateGetList({
+        ...MessageSample,
+        value: expect.any(String),
+      }),
+    ).toEqual({
       errors: null,
       status: 200,
       message: config.get('messageBase.Template.All.Success'),
@@ -172,7 +212,12 @@ describe('TemplateController', () => {
   });
 
   it('should get Template By Id Success', async () => {
-    expect(await controller.TemplateGetById(expect.any(String))).toEqual({
+    expect(
+      await controller.TemplateGetById({
+        ...MessageSample,
+        value: expect.any(String),
+      }),
+    ).toEqual({
       errors: null,
       status: 200,
       message: config.get('messageBase.Template.One.Success'),
@@ -185,7 +230,10 @@ describe('TemplateController', () => {
       throw new Error();
     });
     try {
-      await controller.TemplateGetById(expect.any(String));
+      await controller.TemplateGetById({
+        ...MessageSample,
+        value: expect.any(String),
+      });
     } catch (error) {
       expect(error).toBe({
         errors: error,
@@ -197,7 +245,12 @@ describe('TemplateController', () => {
   });
 
   it('should Search Template Success', async () => {
-    expect(await controller.TemplateSearch(expect.any(String))).toEqual({
+    expect(
+      await controller.TemplateSearch({
+        ...MessageSample,
+        value: expect.any(String),
+      }),
+    ).toEqual({
       errors: null,
       status: 200,
       message: config.get('messageBase.Template.Search.Success'),
@@ -210,7 +263,10 @@ describe('TemplateController', () => {
       throw new Error();
     });
     try {
-      await controller.TemplateGetList(expect.any(String));
+      await controller.TemplateGetList({
+        ...MessageSample,
+        value: expect.any(String),
+      });
     } catch (error) {
       expect(error).toBe({
         errors: error,
@@ -223,7 +279,10 @@ describe('TemplateController', () => {
 
   it('should Search Template Failed', async () => {
     try {
-      await controller.TemplateSearch(expect.any(String));
+      await controller.TemplateSearch({
+        ...MessageSample,
+        value: expect.any(String),
+      });
     } catch (error) {
       expect(error).toBe({
         errors: error,
@@ -239,7 +298,10 @@ describe('TemplateController', () => {
       return false;
     });
     expect(
-      await controller.TemplateAddItem(expect.any(String), sampleItem),
+      await controller.TemplateAddItem({
+        ...MessageSample,
+        value: { id: expect.any(String), ...sampleItem },
+      }),
     ).toEqual({
       errors: null,
       message: config.get('messageBase.Items.add.Success'),
@@ -254,7 +316,10 @@ describe('TemplateController', () => {
       };
     });
     expect(
-      await controller.TemplateAddItem(expect.any(String), sampleItem),
+      await controller.TemplateAddItem({
+        ...MessageSample,
+        value: { id: expect.any(String), ...sampleItem },
+      }),
     ).toEqual({
       errors: null,
       message: config.get('messageBase.Items.add.Success'),

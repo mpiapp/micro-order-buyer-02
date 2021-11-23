@@ -14,7 +14,7 @@ describe('Delivery Note Create DTO', () => {
     classes.price = null;
 
     validate(classes).then((errors) => {
-      expect(errors.length).toEqual(4);
+      expect(errors.length).toEqual(19);
     });
   });
 });

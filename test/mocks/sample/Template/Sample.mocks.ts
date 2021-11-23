@@ -1,15 +1,8 @@
+import { sampleItem } from '../Products/sample.item.mock';
+
 export const SampleTemplateCreate = {
   buyerId: '617364617364617364617344',
-  items: [
-    {
-      productId: expect.any(String),
-      quantity: 14,
-    },
-    {
-      productId: expect.any(String),
-      quantity: 14,
-    },
-  ],
+  items: [sampleItem, sampleItem],
   statuses: [
     {
       name: 'Draft',
