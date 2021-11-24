@@ -15,7 +15,6 @@ import { BaseResponse } from './../config/interfaces/response.base.interface';
 import { StatusDto } from './dto/Status.dto';
 import { IPurchaseRequestsResponse } from './interfaces/response/Many.interface';
 import { IPurchaseRequestResponse } from './interfaces/response/Single.interface';
-import { PR } from './schemas/purchase-request.schema';
 import { GenerateService } from './services/generate.service';
 import { PurchaseRequestService } from './services/purchase-request.service';
 import { UpdateStatusService } from './services/update-status.service';
@@ -191,7 +190,7 @@ export class PurchaseRequestController {
 
   @UseInterceptors(CacheInterceptor)
   @MessagePattern('purchase.request.add.status')
-  async PRaddStatus(@Body() message: IncomingMessage<StatusDto>): Promise<PR> {
+  async PRaddStatus(@Body() message: IncomingMessage<StatusDto>): Promise<any> {
     return this.Status.addStatus(message.value);
   }
 }

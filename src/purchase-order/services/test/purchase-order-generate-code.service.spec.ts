@@ -28,4 +28,14 @@ describe('PurchaseOrderService', () => {
       }),
     ).toEqual(`KPJ-01-01-00001-001`);
   });
+
+  it('should be generate code > 1', async () => {
+    expect(
+      await service.generateCode({
+        code: 'KPJ-01-01-00001',
+        count: 2,
+        digits: 3,
+      }),
+    ).toEqual(`KPJ-01-01-00001-002`);
+  });
 });

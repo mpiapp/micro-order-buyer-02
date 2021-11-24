@@ -191,7 +191,7 @@ export class Order {
     name: string;
     note: string;
     timestamp: Date;
-  }[];
+  };
   @Prop({ default: false })
   isDeleted: boolean;
   @Prop({ type: mongoose.Schema.Types.ObjectId, required: true })

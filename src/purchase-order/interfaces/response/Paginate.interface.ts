@@ -1,6 +1,6 @@
-import { PO } from './../../schemas/purchase-order.schema';
+import { Order } from './../../../database/schema/orders.schema';
 import { BasePaginateResponse } from './../../../config/interfaces/response.pagination.base.interface';
 
 export interface IPurchaseOrderPaginateResponse extends BasePaginateResponse {
-  data: PO[] | null;
+  data: Order[] | null;
 }

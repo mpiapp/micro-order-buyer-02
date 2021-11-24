@@ -1,9 +1,9 @@
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
-import { PO } from './../../schemas/purchase-order.schema';
 import { PurchaseOrderService } from '../purchase-order.service';
 import { mockPurchaseOrder } from './../../../../test/mocks/services/PO.mocks';
 import { sampleDataCreatePO } from './../../../../test/mocks/sample/Purchase-Order/sample.data.search.mock';
+import { Order } from './../../../database/schema/orders.schema';
 
 describe('PurchaseOrderService', () => {
   let service: PurchaseOrderService;
@@ -13,7 +13,7 @@ describe('PurchaseOrderService', () => {
       providers: [
         PurchaseOrderService,
         {
-          provide: getModelToken(PO.name),
+          provide: getModelToken(Order.name),
           useValue: mockPurchaseOrder,
         },
       ],
@@ -24,12 +24,6 @@ describe('PurchaseOrderService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined();
-  });
-
-  it('should be create master PO', async () => {
-    expect(await service.createPurchaseOrder(sampleDataCreatePO)).toEqual(
-      sampleDataCreatePO,
-    );
   });
 
   it('should be delete master PO', async () => {

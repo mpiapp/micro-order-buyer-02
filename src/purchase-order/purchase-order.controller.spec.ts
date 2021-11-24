@@ -5,10 +5,11 @@ import { Helper } from './../utils/helper.utils';
 import { sampleDataCreatePO } from './../../test/mocks/sample/Purchase-Order/sample.data.search.mock';
 import { mockControllerPurchaseOrder } from './../../test/mocks/services/Controller.mocks';
 import { PurchaseOrderController } from './purchase-order.controller';
-import { PO } from './schemas/purchase-order.schema';
 import { GenerateCoderService } from './services/purchase-order-generate-code.service';
 import { PurchaseOrderService } from './services/purchase-order.service';
 import { CacheModule } from '@nestjs/common';
+import { Order } from './../database/schema/orders.schema';
+import { MessageSample } from './../../test/mocks/sample/message/sample.message.mock';
 
 describe('PurchaseOrderController', () => {
   let controller: PurchaseOrderController;
@@ -23,7 +24,7 @@ describe('PurchaseOrderController', () => {
         GenerateCoderService,
         Helper,
         {
-          provide: getModelToken(PO.name),
+          provide: getModelToken(Order.name),
           useValue: mockControllerPurchaseOrder,
         },
       ],
@@ -37,16 +38,10 @@ describe('PurchaseOrderController', () => {
     expect(controller).toBeDefined();
   });
 
-  it('should be create PO', async () => {
-    expect(await controller.POCreate(sampleDataCreatePO)).toEqual({
-      errors: null,
-      status: 201,
-      message: config.get<string>('messageBase.PurchaseOrder.save.Success'),
-    });
-  });
-
   it('should get list PO Success', async () => {
-    expect(await controller.POList(expect.any(String))).toEqual({
+    expect(
+      await controller.POList({ ...MessageSample, value: expect.any(String) }),
+    ).toEqual({
       errors: null,
       status: 200,
       message: config.get<string>('messageBase.PurchaseOrder.All.Success'),
@@ -55,7 +50,9 @@ describe('PurchaseOrderController', () => {
   });
 
   it('should get PO By Id Success', async () => {
-    expect(await controller.POById(expect.any(String))).toEqual({
+    expect(
+      await controller.POById({ ...MessageSample, value: expect.any(String) }),
+    ).toEqual({
       errors: null,
       status: 200,
       message: config.get<string>('messageBase.PurchaseOrder.One.Success'),
@@ -64,7 +61,12 @@ describe('PurchaseOrderController', () => {
   });
 
   it('should Search PO Success', async () => {
-    expect(await controller.POSearch(expect.any(String))).toEqual({
+    expect(
+      await controller.POSearch({
+        ...MessageSample,
+        value: expect.any(String),
+      }),
+    ).toEqual({
       errors: null,
       status: 200,
       message: config.get<string>('messageBase.PurchaseOrder.Search.Success'),
@@ -80,7 +82,12 @@ describe('PurchaseOrderController', () => {
       };
     });
 
-    expect(await controller.PODelete(expect.any(String))).toEqual({
+    expect(
+      await controller.PODelete({
+        ...MessageSample,
+        value: expect.any(String),
+      }),
+    ).toEqual({
       errors: null,
       status: 200,
       message: config.get<string>('messageBase.PurchaseOrder.delete.Success'),
@@ -94,10 +101,13 @@ describe('PurchaseOrderController', () => {
 
     expect(
       await controller.getPurchaseOrderPaginate({
-        keyId: expect.any(String),
-        status: 'NEW',
-        skip: 0,
-        limit: 10,
+        ...MessageSample,
+        value: {
+          keyId: expect.any(String),
+          status: 'NEW',
+          skip: 0,
+          limit: 10,
+        },
       }),
     ).toEqual({
       count: 1,
@@ -114,10 +124,13 @@ describe('PurchaseOrderController', () => {
 
     expect(
       await controller.getPurchaseOrderPaginate({
-        keyId: expect.any(String),
-        status: 'NEW',
-        skip: 0,
-        limit: 10,
+        ...MessageSample,
+        value: {
+          keyId: expect.any(String),
+          status: 'NEW',
+          skip: 0,
+          limit: 10,
+        },
       }),
     ).toEqual({
       count: 0,
@@ -132,10 +145,13 @@ describe('PurchaseOrderController', () => {
 
     expect(
       await controller.getPurchaseOrderPaginate({
-        keyId: expect.any(String),
-        status: 'NEW',
-        skip: 0,
-        limit: 10,
+        ...MessageSample,
+        value: {
+          keyId: expect.any(String),
+          status: 'NEW',
+          skip: 0,
+          limit: 10,
+        },
       }),
     ).toEqual({
       count: 0,
@@ -148,7 +164,10 @@ describe('PurchaseOrderController', () => {
   it('should get list PO Failed', async () => {
     mockControllerPurchaseOrder.find.mockRejectedValue(Error());
     try {
-      await controller.POList(expect.any(String));
+      await controller.POList({
+        ...MessageSample,
+        value: expect.any(String),
+      });
     } catch (error) {
       expect(error).toBe(error);
     }
@@ -157,7 +176,10 @@ describe('PurchaseOrderController', () => {
   it('should get PO By Id Failed', async () => {
     mockControllerPurchaseOrder.findById.mockRejectedValue(Error());
     try {
-      await controller.POById(expect.any(String));
+      await controller.POById({
+        ...MessageSample,
+        value: expect.any(String),
+      });
     } catch (error) {
       expect(error).toBe(error);
     }
@@ -165,16 +187,10 @@ describe('PurchaseOrderController', () => {
 
   it('should Search PO Failed', async () => {
     try {
-      await controller.POSearch(expect.any(String));
-    } catch (error) {
-      expect(error).toBe(error);
-    }
-  });
-
-  it('should Create PO Failed', async () => {
-    mockControllerPurchaseOrder.create.mockRejectedValue(new Error('error'));
-    try {
-      await controller.POCreate(sampleDataCreatePO);
+      await controller.POSearch({
+        ...MessageSample,
+        value: expect.any(String),
+      });
     } catch (error) {
       expect(error).toBe(error);
     }
@@ -185,7 +201,10 @@ describe('PurchaseOrderController', () => {
       new Error('error'),
     );
     try {
-      await controller.PODelete(expect.any(String));
+      await controller.PODelete({
+        ...MessageSample,
+        value: expect.any(String),
+      });
     } catch (error) {
       expect(error).toBe(error);
     }
