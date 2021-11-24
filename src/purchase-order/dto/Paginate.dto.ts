@@ -7,10 +7,6 @@ export class POPaginateDto {
   @IsNotEmpty()
   keyId: string;
   @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
-  status: string;
-  @ApiProperty()
   @IsNotEmpty()
   @IsNumber()
   @Min(0)

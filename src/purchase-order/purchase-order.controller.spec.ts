@@ -5,7 +5,6 @@ import { Helper } from './../utils/helper.utils';
 import { sampleDataCreatePO } from './../../test/mocks/sample/Purchase-Order/sample.data.search.mock';
 import { mockControllerPurchaseOrder } from './../../test/mocks/services/Controller.mocks';
 import { PurchaseOrderController } from './purchase-order.controller';
-import { GenerateCoderService } from './services/purchase-order-generate-code.service';
 import { PurchaseOrderService } from './services/purchase-order.service';
 import { CacheModule } from '@nestjs/common';
 import { Order } from './../database/schema/orders.schema';
@@ -21,7 +20,6 @@ describe('PurchaseOrderController', () => {
       controllers: [PurchaseOrderController],
       providers: [
         PurchaseOrderService,
-        GenerateCoderService,
         Helper,
         {
           provide: getModelToken(Order.name),
@@ -104,7 +102,6 @@ describe('PurchaseOrderController', () => {
         ...MessageSample,
         value: {
           keyId: expect.any(String),
-          status: 'NEW',
           skip: 0,
           limit: 10,
         },
@@ -127,7 +124,6 @@ describe('PurchaseOrderController', () => {
         ...MessageSample,
         value: {
           keyId: expect.any(String),
-          status: 'NEW',
           skip: 0,
           limit: 10,
         },
@@ -148,7 +144,6 @@ describe('PurchaseOrderController', () => {
         ...MessageSample,
         value: {
           keyId: expect.any(String),
-          status: 'NEW',
           skip: 0,
           limit: 10,
         },

@@ -11,9 +11,9 @@ export class Order {
   code_pr: string;
   @Prop({ type: Date })
   date: Date;
-  @Prop({ type: mongoose.Schema.Types.ObjectId, required: true })
+  @Prop({ type: String, required: true })
   buyerId: string;
-  @Prop({ type: mongoose.Schema.Types.ObjectId, required: true })
+  @Prop({ type: String, required: true })
   addressId: string;
   @Prop({
     type: [
@@ -98,6 +98,15 @@ export class Order {
               payment_terms: { type: String },
               tax: { type: Number },
               total: { type: Number },
+              proof_of_advance_payment: {
+                type: [
+                  {
+                    nominal: { type: Number },
+                    fileUrl: { type: String },
+                    uploader: { type: String },
+                  },
+                ],
+              },
             },
           ],
         },
@@ -112,6 +121,11 @@ export class Order {
       payment_terms?: string;
       total: number;
       tax?: number;
+      proof_of_advance_payment?: {
+        nominal: number;
+        fileUrl: string;
+        uploader: string;
+      };
       items: {
         productId: string;
         quantity: number;
@@ -194,7 +208,7 @@ export class Order {
   };
   @Prop({ default: false })
   isDeleted: boolean;
-  @Prop({ type: mongoose.Schema.Types.ObjectId, required: true })
+  @Prop({ type: String, required: true })
   createdBy: string;
 }
 
