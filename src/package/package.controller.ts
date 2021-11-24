@@ -129,7 +129,7 @@ export class PackageController {
         count: 1,
         digits: this.Config.get('DIGITS_NUMBER_PICK'),
       });
-      const total = this.helpService.SUM(params);
+      const total = this.helpService.SUM(params.items);
       await this.picknpackService.pickPackage({
         id: id,
         code: code,
@@ -165,7 +165,7 @@ export class PackageController {
         count: 1,
         digits: this.Config.get('DIGITS_NUMBER_PACK'),
       });
-      const total = this.helpService.SUM(params);
+      const total = this.helpService.SUM(params.items);
       await this.picknpackService.packPackage({
         id: id,
         code: code,

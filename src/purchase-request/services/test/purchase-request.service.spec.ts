@@ -4,7 +4,7 @@ import { SampleCreate } from '../../../../test/mocks/sample/Purchase-Request/sam
 import { SampleUpdate } from '../../../../test/mocks/sample/Purchase-Request/sample.data.update.mock';
 import { mockPurchaseRequest } from '../../../../test/mocks/services/PR.mocks';
 import { PurchaseRequestService } from '../purchase-request.service';
-import { PR } from '../../schemas/purchase-request.schema';
+import { Order } from './../../../database/schema/orders.schema';
 
 describe('PurchaseRequestService', () => {
   let service: PurchaseRequestService;
@@ -14,7 +14,7 @@ describe('PurchaseRequestService', () => {
       providers: [
         PurchaseRequestService,
         {
-          provide: getModelToken(PR.name),
+          provide: getModelToken(Order.name),
           useValue: mockPurchaseRequest,
         },
       ],

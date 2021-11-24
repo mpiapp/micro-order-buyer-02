@@ -1,6 +1,6 @@
-import { PRCreateDto } from '../../dto/CreatePR.dto';
-import { PR } from '../../schemas/purchase-request.schema';
+import { Order } from './../../../database/schema/orders.schema';
+import { OrderCreateDto } from './../../../config/dto/order-create.dto';
 
 export interface ICreatePurchaseRequest {
-  createPurchaseRequest(param: PRCreateDto): Promise<PR>;
+  createPurchaseRequest(params: OrderCreateDto): Promise<Order>;
 }

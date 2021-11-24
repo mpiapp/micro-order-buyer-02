@@ -1,6 +1,5 @@
 import { classToPlain } from 'class-transformer';
 import { validate } from 'class-validator';
-import { CodePRDto } from '../CodePR.dto';
 import { PRCreateDto } from '../CreatePR.dto';
 import { ItemPRDto } from '../Items.dto';
 import { StatusDto } from '../Status.dto';
@@ -86,21 +85,6 @@ describe('Create UpdatePR Dto', () => {
     classes.statuses = null;
     classes.total = null;
     classes.items = null;
-
-    validate(classes).then((errors) => {
-      expect(errors.length).toEqual(1);
-    });
-  });
-});
-
-describe('Create CodePR Dto', () => {
-  let classes;
-  beforeEach(() => {
-    classes = new CodePRDto();
-  });
-
-  it('validate element UpdatePR DTO', async () => {
-    classes.code = null;
 
     validate(classes).then((errors) => {
       expect(errors.length).toEqual(1);

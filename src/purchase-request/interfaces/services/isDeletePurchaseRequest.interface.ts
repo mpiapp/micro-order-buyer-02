@@ -1,5 +1,5 @@
-import { PR } from './../../schemas/purchase-request.schema';
+import { Order } from './../../../database/schema/orders.schema';
 
 export interface IDeletePurchaseRequest {
-  deletePurchaseRequest(id: string): Promise<PR>;
+  deletePurchaseRequest(id: string): Promise<Order>;
 }

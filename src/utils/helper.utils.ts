@@ -19,16 +19,12 @@ export class Helper {
     }
   }
 
-  SUM(param): number {
+  SUM(array): number {
     const initialValue = 0;
-    const calculate: number = param.items.reduce(function (
-      total,
-      currentValue,
-    ) {
+    const calculate: number = array.reduce(function (total, currentValue) {
       // eslint-disable-next-line prettier/prettier
       return (currentValue.price * currentValue.quantity) + total;
-    },
-    initialValue);
+    }, initialValue);
     return calculate;
   }
 

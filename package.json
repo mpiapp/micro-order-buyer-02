@@ -90,7 +90,10 @@
       ".mock.ts",
       ".module.ts",
       ".config.ts",
-      "main.ts"
+      ".utils.ts",
+      ".dto.ts",
+      "main.ts",
+      "index.ts"
     ]
   }
 }

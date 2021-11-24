@@ -1,9 +1,9 @@
 import { ItemPRDto } from 'src/purchase-request/dto/Items.dto';
-import { PR } from 'src/purchase-request/schemas/purchase-request.schema';
 import { responseUpdateOne } from '../response/service.interface';
+import { Order } from './../../../database/schema/orders.schema';
 
 export interface IUpdateItemPurchaseRequest {
-  addItemPurchaseRequest(id: string, params: ItemPRDto): Promise<PR>;
+  addItemPurchaseRequest(id: string, params: ItemPRDto): Promise<Order>;
   updateQtyItemPurchaseRequest(
     id: string,
     params: ItemPRDto,

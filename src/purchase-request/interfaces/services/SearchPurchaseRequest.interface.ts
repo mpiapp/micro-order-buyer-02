@@ -1,7 +1,7 @@
-import { PR } from './../../schemas/purchase-request.schema';
+import { Order } from './../../../database/schema/orders.schema';
 
 export interface ISearchPurchaseRequest {
-  searchPurchaseRequest(code: string): Promise<PR[]>;
-  listPurchaseRequest(buyerId: string): Promise<PR[]>;
-  byIdPurchaseRequest(id: string): Promise<PR>;
+  searchPurchaseRequest(code: string): Promise<Order[]>;
+  listPurchaseRequest(buyerId: string): Promise<Order[]>;
+  byIdPurchaseRequest(id: string): Promise<Order>;
 }

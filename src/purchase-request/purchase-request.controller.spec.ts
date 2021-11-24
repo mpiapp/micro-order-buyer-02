@@ -3,12 +3,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { SampleCreate } from './../../test/mocks/sample/Purchase-Request/sample.data.create.mock';
 import { mockControllerPurchaseRequest } from '../../test/mocks/services/Controller.mocks';
 import { PurchaseRequestController } from './purchase-request.controller';
-import { PR } from './schemas/purchase-request.schema';
+import { Order } from './../database/schema/orders.schema';
 import { PurchaseRequestService } from './services/purchase-request.service';
 import { GenerateService } from './services/generate.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { UpdateItemsService } from './services/update-items.service';
-import { sampleItem } from './../../test/mocks/sample/Products/sample.item.mock';
 import { SampleUpdate } from './../../test/mocks/sample/Purchase-Request/sample.data.update.mock';
 import configuration from './../config/configuration';
 import { sampleStatus } from './../../test/mocks/sample/Status/sample.data.mocks';
@@ -33,11 +31,10 @@ describe('PurchaseRequestController', () => {
       providers: [
         GenerateService,
         PurchaseRequestService,
-        UpdateItemsService,
         UpdateStatusService,
         Helper,
         {
-          provide: getModelToken(PR.name),
+          provide: getModelToken(Order.name),
           useValue: mockControllerPurchaseRequest,
         },
       ],
@@ -54,17 +51,6 @@ describe('PurchaseRequestController', () => {
   });
 
   it('should create PR Success', async () => {
-    const initialValue = 0;
-    const sum: number = SampleCreate.items.reduce(function (
-      total,
-      currentValue,
-    ) {
-      // eslint-disable-next-line prettier/prettier
-      return (currentValue.price * currentValue.quantity) + total;
-    },
-    initialValue);
-
-    SampleCreate.total = sum;
     expect(
       await controller.PRCreate({ ...MessageSample, value: SampleCreate }),
     ).toEqual({
@@ -72,6 +58,16 @@ describe('PurchaseRequestController', () => {
       status: 201,
       message: config.get<string>('messageBase.PurchaseRequest.save.Success'),
     });
+  });
+
+  it('should create PR Failed', async () => {
+    mockControllerPurchaseRequest.create.mockRejectedValue('testing');
+
+    try {
+      await controller.PRCreate({ ...MessageSample, value: SampleCreate });
+    } catch (error) {
+      expect(error).toEqual('aasdad');
+    }
   });
 
   it('should create PR Failed Total', async () => {
@@ -85,48 +81,6 @@ describe('PurchaseRequestController', () => {
     } catch (error) {
       expect(error).toBe(error);
     }
-  });
-
-  it('should update add Item PR Success', async () => {
-    expect(await controller.PRaddItem(expect.any(String), sampleItem)).toEqual(
-      SampleCreate,
-    );
-  });
-
-  it('should update change qty Item PR Success', async () => {
-    expect(
-      await controller.PRUpdateItem(expect.any(String), sampleItem),
-    ).toEqual(SampleCreate);
-  });
-
-  it('should update remove Item PR Success', async () => {
-    expect(
-      await controller.PRRemoveItem(expect.any(String), sampleItem),
-    ).toEqual(SampleCreate);
-  });
-
-  it('should update add Item PR Success If Item existing', async () => {
-    mockControllerPurchaseRequest.updateOne.mockImplementation(() => {
-      return {
-        matchedCount: 0,
-      };
-    });
-
-    expect(await controller.PRaddItem(expect.any(String), sampleItem)).toEqual(
-      SampleCreate,
-    );
-  });
-
-  it('should update add Item PR Success If Not Item existing', async () => {
-    mockControllerPurchaseRequest.updateOne.mockImplementation(() => {
-      return {
-        matchedCount: 1,
-      };
-    });
-
-    expect(await controller.PRaddItem(expect.any(String), sampleItem)).toEqual(
-      SampleCreate,
-    );
   });
 
   it('should update PR Success', async () => {
@@ -264,44 +218,6 @@ describe('PurchaseRequestController', () => {
       });
     } catch (error) {
       expect(error).toBe(error);
-    }
-  });
-
-  it('should update add Item PR Failed', async () => {
-    mockControllerPurchaseRequest.updateOne.mockImplementation(() => {
-      return false;
-    });
-    try {
-      await controller.PRaddItem(expect.any(String), sampleItem);
-    } catch (error) {
-      expect(error).toEqual(error);
-    }
-  });
-
-  it('should update add Item PR Failed', async () => {
-    mockControllerPurchaseRequest.updateOne.mockImplementation(() => {
-      throw new Error('Sorry Total Price Wrong');
-    });
-    try {
-      await controller.PRaddItem(expect.any(String), sampleItem);
-    } catch (error) {
-      expect(error).toEqual(error);
-    }
-  });
-
-  it('should update change qty Item PR Failed', async () => {
-    try {
-      await controller.PRUpdateItem(expect.any(String), sampleItem);
-    } catch (error) {
-      expect(error).toEqual(error);
-    }
-  });
-
-  it('should update remove Item PR Failed', async () => {
-    try {
-      await controller.PRRemoveItem(expect.any(String), sampleItem);
-    } catch (error) {
-      expect(error).toEqual(error);
     }
   });
 

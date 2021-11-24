@@ -46,7 +46,7 @@ describe('Helper Services', () => {
   });
 
   it('should SUM', () => {
-    expect(services.SUM(sampleDataHelper)).toBe(30000);
+    expect(services.SUM(sampleDataHelper.items)).toBe(30000);
   });
 
   it('should SUM Validate Error', () => {
