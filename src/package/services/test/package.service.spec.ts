@@ -1,9 +1,9 @@
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
-import { PO } from './../../../purchase-order/schemas/purchase-order.schema';
 import { sampleFullPackage } from './../../../../test/mocks/sample/Package/sample.full.data.mock';
 import { PackageService } from '../package.service';
 import { splitPackageSample } from './../../../../test/mocks/sample/Package/sample.full.split.mock';
+import { Order } from './../../../database/schema/orders.schema';
 
 const mockPackage = {
   find: jest.fn().mockReturnValue(sampleFullPackage),
@@ -24,7 +24,7 @@ describe('PackageService', () => {
       providers: [
         PackageService,
         {
-          provide: getModelToken(PO.name),
+          provide: getModelToken(Order.name),
           useValue: mockPackage,
         },
       ],

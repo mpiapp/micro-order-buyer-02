@@ -98,12 +98,28 @@ export class Order {
               payment_terms: { type: String },
               tax: { type: Number },
               total: { type: Number },
+              down_payment: { type: Number },
               proof_of_advance_payment: {
                 type: [
                   {
-                    nominal: { type: Number },
-                    fileUrl: { type: String },
-                    uploader: { type: String },
+                    file: {
+                      type: [
+                        {
+                          url: { type: String },
+                          uploader: { type: String },
+                          date: { type: Date },
+                        },
+                      ],
+                    },
+                    approval: {
+                      type: [
+                        {
+                          nominal: { type: Number },
+                          name: { type: String },
+                          date: { type: Date },
+                        },
+                      ],
+                    },
                   },
                 ],
               },
@@ -121,10 +137,18 @@ export class Order {
       payment_terms?: string;
       total: number;
       tax?: number;
+      down_payment?: number;
       proof_of_advance_payment?: {
-        nominal: number;
-        fileUrl: string;
-        uploader: string;
+        file: {
+          url: string;
+          uploader: string;
+          date: Date;
+        };
+        approval?: {
+          name: string;
+          nominal: number;
+          date: Date;
+        };
       };
       items: {
         productId: string;

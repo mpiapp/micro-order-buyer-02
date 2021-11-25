@@ -1,20 +1,23 @@
 import { Body, Controller, HttpStatus, Param, Query } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { MessagePattern } from '@nestjs/microservices';
+import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
 import { ApiTags } from '@nestjs/swagger';
+import { IncomingMessage } from './../config/interfaces/Income.interface';
 import { BaseResponse } from './../config/interfaces/response.base.interface';
 import { GenerateCoderService } from './../purchase-order/services/purchase-order-generate-code.service';
 import { Helper } from './../utils/helper.utils';
+import { ApprovalOfPaymentDto } from './dto/Approval.Payment.dto';
 import { MoveItemPackageDto } from './dto/MovePackage.dto';
-import { PackageDto } from './dto/Package.dto';
 import { PaginateDto } from './dto/Paginate.dto';
 import { PicknPackPackageDto } from './dto/PicknPack.dto';
+import { ProofOfPaymentDto } from './dto/Proof.Payment.dto';
 import { IPackagesResponse } from './interfaces/response/Many.interface';
 import { IPackagesPaginateResponse } from './interfaces/response/Paginate.interface';
 import { IPackageResponse } from './interfaces/response/Single.interface';
 import { PackageService } from './services/package.service';
 import { PaginatePackageService } from './services/paginate-package.service';
 import { PicknPackService } from './services/picknpack.service';
+import { ProofPaymentService } from './services/proof.payment.package.service';
 
 @ApiTags('Package')
 @Controller('package')
@@ -26,9 +29,10 @@ export class PackageController {
     private readonly paginateService: PaginatePackageService,
     private readonly picknpackService: PicknPackService,
     private readonly helpService: Helper,
+    private readonly paymentService: ProofPaymentService,
   ) {}
 
-  @MessagePattern('Package-List-Data')
+  @MessagePattern('package.get.all')
   async getPackages(
     @Query('id') id: string,
     @Query('status') status: string,
@@ -51,7 +55,7 @@ export class PackageController {
     }
   }
 
-  @MessagePattern('Package-ById')
+  @MessagePattern('package.get.by.id')
   async getPackageById(@Query('id') id: string): Promise<IPackageResponse> {
     try {
       const getOne = await this.packageService.getPackageById(id);
@@ -71,7 +75,7 @@ export class PackageController {
     }
   }
 
-  @MessagePattern('Package-Paginate')
+  @MessagePattern('package.paginate')
   async getPackagePaginate(
     @Query() params: PaginateDto,
   ): Promise<IPackagesPaginateResponse> {
@@ -94,28 +98,47 @@ export class PackageController {
     };
   }
 
-  @MessagePattern('Package-Split-Save')
-  async splitPackage(
-    @Param('id') id: string,
-    @Body() params: PackageDto[],
+  @EventPattern('package.proof.down.payment')
+  async proofPackage(
+    @Payload() params: IncomingMessage<ProofOfPaymentDto>,
   ): Promise<BaseResponse> {
     try {
-      await this.packageService.splitPackage(id, params);
+      await this.paymentService.upload(params.value);
       return {
-        status: HttpStatus.CREATED,
-        message: this.Config.get<string>('messageBase.Package.save.Success'),
+        status: HttpStatus.OK,
+        message: this.Config.get<string>('messageBase.Package.pick.Success'),
         errors: null,
       };
     } catch (error) {
       return {
         status: HttpStatus.PRECONDITION_FAILED,
-        message: this.Config.get<string>('messageBase.Package.save.Failed'),
+        message: this.Config.get<string>('messageBase.Package.pick.Failed'),
         errors: error,
       };
     }
   }
 
-  @MessagePattern('Pick-Package')
+  @EventPattern('package.approval.down.payment')
+  async approvalPackage(
+    @Payload() params: IncomingMessage<ApprovalOfPaymentDto>,
+  ): Promise<BaseResponse> {
+    try {
+      await this.paymentService.approved(params.value);
+      return {
+        status: HttpStatus.OK,
+        message: this.Config.get<string>('messageBase.Package.pick.Success'),
+        errors: null,
+      };
+    } catch (error) {
+      return {
+        status: HttpStatus.PRECONDITION_FAILED,
+        message: this.Config.get<string>('messageBase.Package.pick.Failed'),
+        errors: error,
+      };
+    }
+  }
+
+  @MessagePattern('package.pick')
   async pickPackage(
     @Param('id') id: string,
     @Body() params: PicknPackPackageDto,
@@ -151,7 +174,7 @@ export class PackageController {
     }
   }
 
-  @MessagePattern('Pack-Package')
+  @MessagePattern('package.pack')
   async packPackage(
     @Param('id') id: string,
     @Body() params: PicknPackPackageDto,
@@ -187,7 +210,7 @@ export class PackageController {
     }
   }
 
-  @MessagePattern('Move-Items-Package')
+  @MessagePattern('package.move')
   async updatePackage(
     @Param('id') id: string,
     @Body() params: MoveItemPackageDto,

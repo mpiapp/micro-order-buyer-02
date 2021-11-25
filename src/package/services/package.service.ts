@@ -1,18 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import {
-  PO,
-  PODocument,
-} from './../../purchase-order/schemas/purchase-order.schema';
 import * as mongoose from 'mongoose';
 import { IPackage } from './../../purchase-order/interfaces/type/IPOPackage.interface';
 import { ItemTemplateDto } from 'src/template/dto/ItemTemplate.dto';
+import { Order, OrderDocument } from './../../database/schema/orders.schema';
 
 @Injectable()
 export class PackageService {
   constructor(
-    @InjectModel(PO.name) private readonly model: Model<PODocument>,
+    @InjectModel(Order.name) private readonly model: Model<OrderDocument>,
   ) {}
 
   async splitPackage(id: string, params: IPackage[]): Promise<any> {

@@ -1,9 +1,9 @@
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
-import { PicknPackService } from '../picknpack.service';
-import { Order } from './../../../database/schema/orders.schema';
+import { Order } from '../../../database/schema/orders.schema';
+import { ProofPaymentService } from '../proof.payment.package.service';
 
-const mockPicknPack = {
+const mockProofPayment = {
   updateOne: jest.fn().mockImplementation(() => {
     return {
       message: 'Update Success',
@@ -12,38 +12,33 @@ const mockPicknPack = {
     };
   }),
 };
-describe('PicknPackService', () => {
-  let service: PicknPackService;
+describe('ProofPaymentService', () => {
+  let service: ProofPaymentService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        PicknPackService,
+        ProofPaymentService,
         {
           provide: getModelToken(Order.name),
-          useValue: mockPicknPack,
+          useValue: mockProofPayment,
         },
       ],
     }).compile();
 
-    service = module.get<PicknPackService>(PicknPackService);
+    service = module.get<ProofPaymentService>(ProofPaymentService);
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
 
-  it('should be pick Package', async () => {
+  it('should be upload file', async () => {
     expect(
-      await service.pickPackage({
+      await service.upload({
         id: expect.any(String),
-        code: 'PICK-XXX-001',
-        items: [],
-        total: 10000,
-        statuses: {
-          name: 'PICK',
-          timestamp: new Date('2021-10-21'),
-        },
+        fileUrl: 'PICK-XXX-001',
+        uploader: 'name',
       }),
     ).toEqual({
       message: 'Update Success',
@@ -52,17 +47,12 @@ describe('PicknPackService', () => {
     });
   });
 
-  it('should be pack Package', async () => {
+  it('should be approval', async () => {
     expect(
-      await service.packPackage({
+      await service.approved({
         id: expect.any(String),
-        code: 'PACK-XXX-001',
-        items: [],
-        total: 10000,
-        statuses: {
-          name: 'PICK',
-          timestamp: new Date('2021-10-21'),
-        },
+        name: 'PICK-XXX-001',
+        nominal: 113,
       }),
     ).toEqual({
       message: 'Update Success',

@@ -1,6 +1,5 @@
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
-import { PO } from './../purchase-order/schemas/purchase-order.schema';
 import { GenerateCoderService } from './../purchase-order/services/purchase-order-generate-code.service';
 import { sampleAfterSplitPackage } from './../../test/mocks/sample/Package/sample.after.split.mock';
 import { PackageController } from './package.controller';
@@ -9,11 +8,13 @@ import { Helper } from './../utils/helper.utils';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration from './../config/configuration';
 import { sampleFullPackage } from './../../test/mocks/sample/Package/sample.full.data.mock';
-import { splitPackageSample } from './../../test/mocks/sample/Package/sample.full.split.mock';
 import { sampleMoveItem } from './../../test/mocks/sample/Package/sample.move.item.mock';
 import { PaginatePackageService } from './services/paginate-package.service';
 import { PicknPackService } from './services/picknpack.service';
 import { samplePicknPackPackage } from './../../test/mocks/sample/Package/sample.pick.mock';
+import { Order } from './../database/schema/orders.schema';
+import { ProofPaymentService } from './services/proof.payment.package.service';
+import { MessageSample } from './../../test/mocks/sample/message/sample.message.mock';
 
 const mockControllerPackage = {
   find: jest.fn().mockReturnValue(sampleAfterSplitPackage),
@@ -38,8 +39,9 @@ describe('PackageController', () => {
         Helper,
         PaginatePackageService,
         PicknPackService,
+        ProofPaymentService,
         {
-          provide: getModelToken(PO.name),
+          provide: getModelToken(Order.name),
           useValue: mockControllerPackage,
         },
       ],
@@ -53,22 +55,46 @@ describe('PackageController', () => {
     expect(controller).toBeDefined();
   });
 
-  it('should be split package', async () => {
-    expect(
-      await controller.splitPackage(expect.any(String), splitPackageSample),
-    ).toEqual({
-      errors: null,
-      status: 201,
-      message: config.get<string>('messageBase.Package.save.Success'),
-    });
-  });
-
   it('should be create pick', async () => {
     expect(
       await controller.pickPackage(expect.any(String), samplePicknPackPackage),
     ).toEqual({
       errors: null,
       status: 201,
+      message: config.get<string>('messageBase.Package.pick.Success'),
+    });
+  });
+
+  it('should be proof of down payment', async () => {
+    expect(
+      await controller.proofPackage({
+        ...MessageSample,
+        value: {
+          id: expect.any(String),
+          fileUrl: expect.any(String),
+          uploader: expect.any(String),
+        },
+      }),
+    ).toEqual({
+      errors: null,
+      status: 200,
+      message: config.get<string>('messageBase.Package.pick.Success'),
+    });
+  });
+
+  it('should be approval of down payment', async () => {
+    expect(
+      await controller.approvalPackage({
+        ...MessageSample,
+        value: {
+          id: expect.any(String),
+          name: expect.any(String),
+          nominal: expect.any(Number),
+        },
+      }),
+    ).toEqual({
+      errors: null,
+      status: 200,
       message: config.get<string>('messageBase.Package.pick.Success'),
     });
   });
@@ -91,20 +117,6 @@ describe('PackageController', () => {
       status: 200,
       message: config.get<string>('messageBase.Package.update.Success'),
     });
-  });
-
-  it('should be split package failed', async () => {
-    mockControllerPackage.updateOne.mockRejectedValue(new Error());
-
-    try {
-      await controller.splitPackage(expect.any(String), splitPackageSample);
-    } catch (error) {
-      expect(error).toEqual({
-        errors: error.errors,
-        status: 400,
-        message: config.get<string>('messageBase.Package.save.Failed'),
-      });
-    }
   });
 
   it('should be getOrder', async () => {
@@ -152,6 +164,7 @@ describe('PackageController', () => {
   });
 
   it('should be update package Failed', async () => {
+    mockControllerPackage.updateOne.mockRejectedValue(new Error());
     try {
       await controller.updatePackage(expect.any(String), sampleMoveItem);
     } catch (error) {
@@ -178,6 +191,44 @@ describe('PackageController', () => {
   it('should be create pack failed', async () => {
     try {
       await controller.packPackage(expect.any(String), samplePicknPackPackage);
+    } catch (error) {
+      expect(error).toEqual({
+        errors: error.errors,
+        status: 400,
+        message: config.get<string>('messageBase.Package.pack.Failed'),
+      });
+    }
+  });
+
+  it('should be proof of down payment failed', async () => {
+    try {
+      await controller.proofPackage({
+        ...MessageSample,
+        value: {
+          id: expect.any(String),
+          fileUrl: expect.any(String),
+          uploader: expect.any(String),
+        },
+      });
+    } catch (error) {
+      expect(error).toEqual({
+        errors: error.errors,
+        status: 400,
+        message: config.get<string>('messageBase.Package.pick.Failed'),
+      });
+    }
+  });
+
+  it('should be approval of down payment failed', async () => {
+    try {
+      await controller.approvalPackage({
+        ...MessageSample,
+        value: {
+          id: expect.any(String),
+          name: expect.any(String),
+          nominal: expect.any(Number),
+        },
+      });
     } catch (error) {
       expect(error).toEqual({
         errors: error.errors,

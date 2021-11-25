@@ -110,7 +110,11 @@ export class PurchaseOrderController {
     @Body() message: IncomingMessage<POPaginateDto>,
   ): Promise<IPurchaseOrderPaginateResponse> {
     const { skip, limit } = message.value;
-    const getData = await this.POMaster.getPaginate(message.value);
+    const getData = await this.POMaster.getPaginate({
+      ...message.value,
+      skip: Number(skip),
+      limit: Number(limit),
+    });
     if (!getData) {
       return {
         count: 0,
