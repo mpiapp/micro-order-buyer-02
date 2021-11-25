@@ -6,7 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import configuration from './../config/configuration';
 import { PaginatePackageService } from './services/paginate-package.service';
 import { Helper } from './../utils/helper.utils';
-import { PicknPackService } from './services/picknpack.service';
+import { PickPackService } from './services/pickPack.service';
 import { GenerateCoderService } from './../purchase-order/services/purchase-order-generate-code.service';
 import { Order, OrderSchema } from './../database/schema/orders.schema';
 import { ProofPaymentService } from './services/proof.payment.package.service';
@@ -22,7 +22,7 @@ import { ProofPaymentService } from './services/proof.payment.package.service';
     PackageService,
     PaginatePackageService,
     Helper,
-    PicknPackService,
+    PickPackService,
     GenerateCoderService,
     ProofPaymentService,
   ],

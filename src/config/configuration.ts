@@ -167,6 +167,14 @@ export default () => ({
         Success: 'Save Pack Package Success',
         Failed: 'Save Pack Package Failed',
       },
+      approval: {
+        Success: 'Approval Down Payment Success',
+        Failed: 'Approval Down Payment Failed',
+      },
+      upload: {
+        Success: 'Upload File Success',
+        Failed: 'Upload File Failed',
+      },
     },
     Items: {
       add: {

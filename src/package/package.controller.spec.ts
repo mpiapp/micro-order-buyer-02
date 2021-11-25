@@ -10,8 +10,8 @@ import configuration from './../config/configuration';
 import { sampleFullPackage } from './../../test/mocks/sample/Package/sample.full.data.mock';
 import { sampleMoveItem } from './../../test/mocks/sample/Package/sample.move.item.mock';
 import { PaginatePackageService } from './services/paginate-package.service';
-import { PicknPackService } from './services/picknpack.service';
-import { samplePicknPackPackage } from './../../test/mocks/sample/Package/sample.pick.mock';
+import { PickPackService } from './services/pickPack.service';
+import { samplePickPackPackage } from './../../test/mocks/sample/Package/sample.pick.mock';
 import { Order } from './../database/schema/orders.schema';
 import { ProofPaymentService } from './services/proof.payment.package.service';
 import { MessageSample } from './../../test/mocks/sample/message/sample.message.mock';
@@ -38,7 +38,7 @@ describe('PackageController', () => {
         PackageService,
         Helper,
         PaginatePackageService,
-        PicknPackService,
+        PickPackService,
         ProofPaymentService,
         {
           provide: getModelToken(Order.name),
@@ -57,7 +57,10 @@ describe('PackageController', () => {
 
   it('should be create pick', async () => {
     expect(
-      await controller.pickPackage(expect.any(String), samplePicknPackPackage),
+      await controller.pickPackage({
+        ...MessageSample,
+        value: samplePickPackPackage,
+      }),
     ).toEqual({
       errors: null,
       status: 201,
@@ -78,7 +81,7 @@ describe('PackageController', () => {
     ).toEqual({
       errors: null,
       status: 200,
-      message: config.get<string>('messageBase.Package.pick.Success'),
+      message: config.get<string>('messageBase.Package.upload.Success'),
     });
   });
 
@@ -95,13 +98,16 @@ describe('PackageController', () => {
     ).toEqual({
       errors: null,
       status: 200,
-      message: config.get<string>('messageBase.Package.pick.Success'),
+      message: config.get<string>('messageBase.Package.approval.Success'),
     });
   });
 
   it('should be create pack', async () => {
     expect(
-      await controller.packPackage(expect.any(String), samplePicknPackPackage),
+      await controller.packPackage({
+        ...MessageSample,
+        value: samplePickPackPackage,
+      }),
     ).toEqual({
       errors: null,
       status: 201,
@@ -111,7 +117,10 @@ describe('PackageController', () => {
 
   it('should be update package', async () => {
     expect(
-      await controller.updatePackage(expect.any(String), sampleMoveItem),
+      await controller.updatePackage({
+        ...MessageSample,
+        value: sampleMoveItem,
+      }),
     ).toEqual({
       errors: null,
       status: 200,
@@ -120,7 +129,12 @@ describe('PackageController', () => {
   });
 
   it('should be getOrder', async () => {
-    expect(await controller.getPackages(expect.any(String), 'NEW')).toEqual({
+    expect(
+      await controller.getPackages({
+        ...MessageSample,
+        value: { id: expect.any(String), status: 'NEW' },
+      }),
+    ).toEqual({
       errors: null,
       status: 200,
       message: config.get<string>('messageBase.Package.All.Success'),
@@ -129,7 +143,12 @@ describe('PackageController', () => {
   });
 
   it('should be getOrder By Id', async () => {
-    expect(await controller.getPackageById(expect.any(String))).toEqual({
+    expect(
+      await controller.getPackageById({
+        ...MessageSample,
+        value: expect.any(String),
+      }),
+    ).toEqual({
       errors: null,
       status: 200,
       message: config.get<string>('messageBase.Package.One.Success'),
@@ -141,7 +160,10 @@ describe('PackageController', () => {
     mockControllerPackage.aggregate.mockRejectedValue(new Error());
 
     try {
-      await controller.getPackageById(expect.any(String));
+      await controller.getPackageById({
+        ...MessageSample,
+        value: expect.any(String),
+      });
     } catch (error) {
       expect(error).toEqual({
         errors: error.errors,
@@ -153,7 +175,10 @@ describe('PackageController', () => {
 
   it('should be getOrder failed', async () => {
     try {
-      await controller.getPackages(expect.any(String), 'NEW');
+      await controller.getPackages({
+        ...MessageSample,
+        value: { id: expect.any(String), status: 'NEW' },
+      });
     } catch (error) {
       expect(error).toEqual({
         errors: error.errors,
@@ -166,7 +191,10 @@ describe('PackageController', () => {
   it('should be update package Failed', async () => {
     mockControllerPackage.updateOne.mockRejectedValue(new Error());
     try {
-      await controller.updatePackage(expect.any(String), sampleMoveItem);
+      await controller.updatePackage({
+        ...MessageSample,
+        value: sampleMoveItem,
+      });
     } catch (error) {
       expect(error).toEqual({
         errors: error.errors,
@@ -178,7 +206,10 @@ describe('PackageController', () => {
 
   it('should be create pick failed', async () => {
     try {
-      await controller.pickPackage(expect.any(String), samplePicknPackPackage);
+      await controller.pickPackage({
+        ...MessageSample,
+        value: samplePickPackPackage,
+      });
     } catch (error) {
       expect(error).toEqual({
         errors: error.errors,
@@ -190,7 +221,10 @@ describe('PackageController', () => {
 
   it('should be create pack failed', async () => {
     try {
-      await controller.packPackage(expect.any(String), samplePicknPackPackage);
+      await controller.packPackage({
+        ...MessageSample,
+        value: samplePickPackPackage,
+      });
     } catch (error) {
       expect(error).toEqual({
         errors: error.errors,
@@ -245,10 +279,13 @@ describe('PackageController', () => {
 
     expect(
       await controller.getPackagePaginate({
-        vendorId: expect.any(String),
-        status: 'NEW',
-        skip: 0,
-        limit: 10,
+        ...MessageSample,
+        value: {
+          vendorId: expect.any(String),
+          status: 'NEW',
+          skip: 0,
+          limit: 10,
+        },
       }),
     ).toEqual({
       count: 1,
@@ -265,10 +302,13 @@ describe('PackageController', () => {
 
     expect(
       await controller.getPackagePaginate({
-        vendorId: expect.any(String),
-        status: 'NEW',
-        skip: 0,
-        limit: 10,
+        ...MessageSample,
+        value: {
+          vendorId: expect.any(String),
+          status: 'NEW',
+          skip: 0,
+          limit: 10,
+        },
       }),
     ).toEqual({
       count: 0,
@@ -283,10 +323,13 @@ describe('PackageController', () => {
 
     expect(
       await controller.getPackagePaginate({
-        vendorId: expect.any(String),
-        status: 'NEW',
-        skip: 0,
-        limit: 10,
+        ...MessageSample,
+        value: {
+          vendorId: expect.any(String),
+          status: 'NEW',
+          skip: 0,
+          limit: 10,
+        },
       }),
     ).toEqual({
       count: 0,

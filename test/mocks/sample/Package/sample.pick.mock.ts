@@ -1,6 +1,7 @@
 import { sampleItem } from '../Products/sample.item.mock';
 
-export const samplePicknPackPackage = {
+export const samplePickPackPackage = {
+  id: expect.any(String),
   code_po: 'KPJ-12-10-00001-001',
   items: [sampleItem, sampleItem],
   statuses: {

@@ -37,7 +37,7 @@ describe('PackageService', () => {
     expect(service).toBeDefined();
   });
 
-  it('should be get PO Vendor', async () => {
+  it('should be get PO Vendor ', async () => {
     expect(await service.getPackages(expect.any(String), 'NEW')).toEqual(
       sampleFullPackage,
     );

@@ -1,9 +1,9 @@
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
-import { PicknPackService } from '../picknpack.service';
-import { Order } from './../../../database/schema/orders.schema';
+import { PickPackService } from '../pickpack.service';
+import { Order } from '../../../database/schema/orders.schema';
 
-const mockPicknPack = {
+const mockpickPack = {
   updateOne: jest.fn().mockImplementation(() => {
     return {
       message: 'Update Success',
@@ -12,21 +12,21 @@ const mockPicknPack = {
     };
   }),
 };
-describe('PicknPackService', () => {
-  let service: PicknPackService;
+describe('pickPackService', () => {
+  let service: PickPackService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        PicknPackService,
+        PickPackService,
         {
           provide: getModelToken(Order.name),
-          useValue: mockPicknPack,
+          useValue: mockpickPack,
         },
       ],
     }).compile();
 
-    service = module.get<PicknPackService>(PicknPackService);
+    service = module.get<PickPackService>(PickPackService);
   });
 
   it('should be defined', () => {

@@ -1,4 +1,4 @@
-import { Body, Controller, HttpStatus, Param, Query } from '@nestjs/common';
+import { Body, Controller, HttpStatus } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
 import { ApiTags } from '@nestjs/swagger';
@@ -9,14 +9,14 @@ import { Helper } from './../utils/helper.utils';
 import { ApprovalOfPaymentDto } from './dto/Approval.Payment.dto';
 import { MoveItemPackageDto } from './dto/MovePackage.dto';
 import { PaginateDto } from './dto/Paginate.dto';
-import { PicknPackPackageDto } from './dto/PicknPack.dto';
+import { pickPackPackageDto } from './dto/pickPack.dto';
 import { ProofOfPaymentDto } from './dto/Proof.Payment.dto';
 import { IPackagesResponse } from './interfaces/response/Many.interface';
 import { IPackagesPaginateResponse } from './interfaces/response/Paginate.interface';
 import { IPackageResponse } from './interfaces/response/Single.interface';
 import { PackageService } from './services/package.service';
 import { PaginatePackageService } from './services/paginate-package.service';
-import { PicknPackService } from './services/picknpack.service';
+import { PickPackService } from './services/pickpack.service';
 import { ProofPaymentService } from './services/proof.payment.package.service';
 
 @ApiTags('Package')
@@ -27,17 +27,17 @@ export class PackageController {
     private readonly packageService: PackageService,
     private readonly Config: ConfigService,
     private readonly paginateService: PaginatePackageService,
-    private readonly picknpackService: PicknPackService,
+    private readonly pickPackService: PickPackService,
     private readonly helpService: Helper,
     private readonly paymentService: ProofPaymentService,
   ) {}
 
   @MessagePattern('package.get.all')
   async getPackages(
-    @Query('id') id: string,
-    @Query('status') status: string,
+    @Body() message: IncomingMessage<{ id: string; status: string }>,
   ): Promise<IPackagesResponse> {
     try {
+      const { id, status } = message.value;
       const getAll = await this.packageService.getPackages(id, status);
       return {
         status: HttpStatus.OK,
@@ -56,9 +56,11 @@ export class PackageController {
   }
 
   @MessagePattern('package.get.by.id')
-  async getPackageById(@Query('id') id: string): Promise<IPackageResponse> {
+  async getPackageById(
+    @Body() message: IncomingMessage<string>,
+  ): Promise<IPackageResponse> {
     try {
-      const getOne = await this.packageService.getPackageById(id);
+      const getOne = await this.packageService.getPackageById(message.value);
       return {
         status: HttpStatus.OK,
         message: this.Config.get<string>('messageBase.Package.One.Success'),
@@ -77,10 +79,10 @@ export class PackageController {
 
   @MessagePattern('package.paginate')
   async getPackagePaginate(
-    @Query() params: PaginateDto,
+    @Body() message: IncomingMessage<PaginateDto>,
   ): Promise<IPackagesPaginateResponse> {
-    const { skip, limit } = params;
-    const getData = await this.paginateService.paginate(params);
+    const { skip, limit } = message.value;
+    const getData = await this.paginateService.paginate(message.value);
     if (!getData) {
       return {
         count: 0,
@@ -100,19 +102,19 @@ export class PackageController {
 
   @EventPattern('package.proof.down.payment')
   async proofPackage(
-    @Payload() params: IncomingMessage<ProofOfPaymentDto>,
+    @Payload() message: IncomingMessage<ProofOfPaymentDto>,
   ): Promise<BaseResponse> {
     try {
-      await this.paymentService.upload(params.value);
+      await this.paymentService.upload(message.value);
       return {
         status: HttpStatus.OK,
-        message: this.Config.get<string>('messageBase.Package.pick.Success'),
+        message: this.Config.get<string>('messageBase.Package.upload.Success'),
         errors: null,
       };
     } catch (error) {
       return {
         status: HttpStatus.PRECONDITION_FAILED,
-        message: this.Config.get<string>('messageBase.Package.pick.Failed'),
+        message: this.Config.get<string>('messageBase.Package.upload.Failed'),
         errors: error,
       };
     }
@@ -120,19 +122,21 @@ export class PackageController {
 
   @EventPattern('package.approval.down.payment')
   async approvalPackage(
-    @Payload() params: IncomingMessage<ApprovalOfPaymentDto>,
+    @Payload() message: IncomingMessage<ApprovalOfPaymentDto>,
   ): Promise<BaseResponse> {
     try {
-      await this.paymentService.approved(params.value);
+      await this.paymentService.approved(message.value);
       return {
         status: HttpStatus.OK,
-        message: this.Config.get<string>('messageBase.Package.pick.Success'),
+        message: this.Config.get<string>(
+          'messageBase.Package.approval.Success',
+        ),
         errors: null,
       };
     } catch (error) {
       return {
         status: HttpStatus.PRECONDITION_FAILED,
-        message: this.Config.get<string>('messageBase.Package.pick.Failed'),
+        message: this.Config.get<string>('messageBase.Package.approval.Failed'),
         errors: error,
       };
     }
@@ -140,11 +144,10 @@ export class PackageController {
 
   @MessagePattern('package.pick')
   async pickPackage(
-    @Param('id') id: string,
-    @Body() params: PicknPackPackageDto,
+    @Body() message: IncomingMessage<pickPackPackageDto>,
   ): Promise<BaseResponse> {
     try {
-      const { code_po, items, statuses } = params;
+      const { id, code_po, items, statuses } = message.value;
       const code = this.Generate.generateCode({
         code: `${this.Config.get('initialCode.Pick.code')}-${code_po.slice(
           -3,
@@ -152,8 +155,8 @@ export class PackageController {
         count: 1,
         digits: this.Config.get('DIGITS_NUMBER_PICK'),
       });
-      const total = this.helpService.SUM(params.items);
-      await this.picknpackService.pickPackage({
+      const total = this.helpService.SUM(items);
+      await this.pickPackService.pickPackage({
         id: id,
         code: code,
         items: items,
@@ -176,11 +179,10 @@ export class PackageController {
 
   @MessagePattern('package.pack')
   async packPackage(
-    @Param('id') id: string,
-    @Body() params: PicknPackPackageDto,
+    @Body() message: IncomingMessage<pickPackPackageDto>,
   ): Promise<BaseResponse> {
     try {
-      const { code_po, items, statuses } = params;
+      const { id, code_po, items, statuses } = message.value;
       const code = this.Generate.generateCode({
         code: `${this.Config.get('initialCode.Pack.code')}-${code_po.slice(
           -3,
@@ -188,8 +190,8 @@ export class PackageController {
         count: 1,
         digits: this.Config.get('DIGITS_NUMBER_PACK'),
       });
-      const total = this.helpService.SUM(params.items);
-      await this.picknpackService.packPackage({
+      const total = this.helpService.SUM(items);
+      await this.pickPackService.packPackage({
         id: id,
         code: code,
         items: items,
@@ -212,11 +214,10 @@ export class PackageController {
 
   @MessagePattern('package.move')
   async updatePackage(
-    @Param('id') id: string,
-    @Body() params: MoveItemPackageDto,
+    @Body() message: IncomingMessage<MoveItemPackageDto>,
   ): Promise<BaseResponse> {
     try {
-      const { from_package, to_package, items } = params;
+      const { from_package, to_package, items } = message.value;
       this.removeArray(from_package, items);
       await this.packageService.pushItemPackage(to_package, items);
       return {

@@ -2,17 +2,17 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as mongoose from 'mongoose';
-import { IPicknPackPackage } from '../interfaces/type/PicknPack.Package.interface';
-import { Order, OrderDocument } from './../../database/schema/orders.schema';
+import { IPickPackPackage } from '../interfaces/type/pickPack.Package.interface';
+import { Order, OrderDocument } from '../../database/schema/orders.schema';
 
 @Injectable()
-export class PicknPackService {
+export class PickPackService {
   constructor(
     @InjectModel(Order.name) private readonly model: Model<OrderDocument>,
   ) {}
 
-  async pickPackage(params: IPicknPackPackage): Promise<any> {
-    const { id, code, items, statuses } = params;
+  async pickPackage(params: IPickPackPackage): Promise<any> {
+    const { id, code, items, statuses, total } = params;
 
     return this.model.updateOne(
       {
@@ -26,14 +26,14 @@ export class PicknPackService {
         $set: {
           'vendors.$.packages.$.pick_number': code,
           'vendors.$.packages.$.items': items,
-          'vendors.$.packages.$.total': items,
+          'vendors.$.packages.$.total': total,
         },
         $push: { 'vendors.$.packages.statuses': statuses },
       },
     );
   }
 
-  async packPackage(params: IPicknPackPackage): Promise<any> {
+  async packPackage(params: IPickPackPackage): Promise<any> {
     const { id, code, items, statuses } = params;
 
     return this.model.updateOne(
