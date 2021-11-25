@@ -57,4 +57,18 @@ export class ProofPaymentService {
       },
     );
   }
+
+  async checking(id: string) {
+    return this.model.find({
+      $and: [
+        { 'vendors.packages._id': new mongoose.Types.ObjectId(id) },
+        {
+          'vendors.packages.down_payment': { $exists: true },
+        },
+        {
+          'vendors.packages.approval.name': { $exists: true },
+        },
+      ],
+    });
+  }
 }

@@ -175,6 +175,9 @@ export default () => ({
         Success: 'Upload File Success',
         Failed: 'Upload File Failed',
       },
+      check: {
+        Success: 'Sorry Package Freez, Please Approving Down Payment',
+      },
     },
     Items: {
       add: {

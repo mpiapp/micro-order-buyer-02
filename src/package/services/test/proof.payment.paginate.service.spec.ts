@@ -11,6 +11,7 @@ const mockProofPayment = {
       id: expect.any(String),
     };
   }),
+  find: jest.fn().mockReturnValue(true),
 };
 describe('ProofPaymentService', () => {
   let service: ProofPaymentService;
@@ -45,6 +46,10 @@ describe('ProofPaymentService', () => {
       status: true,
       id: expect.any(String),
     });
+  });
+
+  it('should check field down payment', async () => {
+    expect(await service.checking(expect.any(String))).toEqual(true);
   });
 
   it('should be approval', async () => {

@@ -148,6 +148,14 @@ export class PackageController {
   ): Promise<BaseResponse> {
     try {
       const { id, code_po, items, statuses } = message.value;
+      const validate = await this.paymentService.checking(id);
+      if (validate) {
+        return {
+          status: HttpStatus.NOT_ACCEPTABLE,
+          message: this.Config.get<string>('messageBase.Package.check.Success'),
+          errors: validate,
+        };
+      }
       const code = this.Generate.generateCode({
         code: `${this.Config.get('initialCode.Pick.code')}-${code_po.slice(
           -3,

@@ -56,6 +56,7 @@ describe('PackageController', () => {
   });
 
   it('should be create pick', async () => {
+    mockControllerPackage.find.mockReturnValue(false);
     expect(
       await controller.pickPackage({
         ...MessageSample,
@@ -336,6 +337,20 @@ describe('PackageController', () => {
       page: 0,
       limit: 10,
       data: null,
+    });
+  });
+
+  it('should be create pick freez', async () => {
+    mockControllerPackage.find.mockReturnValue(true);
+    expect(
+      await controller.pickPackage({
+        ...MessageSample,
+        value: samplePickPackPackage,
+      }),
+    ).toEqual({
+      errors: true,
+      status: 406,
+      message: config.get<string>('messageBase.Package.check.Success'),
     });
   });
 });
