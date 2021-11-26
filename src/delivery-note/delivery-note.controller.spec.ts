@@ -10,6 +10,7 @@ import { Helper } from './../utils/helper.utils';
 import { GenerateCoderService } from './../purchase-order/services/purchase-order-generate-code.service';
 import { sampleDeliveryNote } from './../../test/mocks/sample/Delivery-Note/sample.mock';
 import { CacheModule } from '@nestjs/common';
+import { MessageSample } from './../../test/mocks/sample/message/sample.message.mock';
 
 const mockDeliveryNoteController = {
   ...mockDeliveryNoteService,
@@ -48,13 +49,21 @@ describe('DeliveryNoteController', () => {
   });
 
   it('should be generate code Delivery Note', async () => {
-    expect(await controller.GenerateCode('KPJ-01-01-00001-001')).toEqual(
-      'DN-001-002',
-    );
+    expect(
+      await controller.GenerateCode({
+        ...MessageSample,
+        value: 'KPJ-01-01-00001-001',
+      }),
+    ).toEqual('DN-001-002');
   });
 
   it('should be create delivery note', async () => {
-    expect(await controller.DeliveryNoteCreate(sampleDeliveryNote)).toEqual({
+    expect(
+      await controller.DeliveryNoteCreate({
+        ...MessageSample,
+        value: sampleDeliveryNote,
+      }),
+    ).toEqual({
       errors: null,
       status: 201,
       message: config.get<string>('messageBase.DeliveryNote.save.Success'),
@@ -65,7 +74,10 @@ describe('DeliveryNoteController', () => {
     mockDeliveryNoteController.create.mockRejectedValue(new Error());
 
     try {
-      await controller.DeliveryNoteCreate(sampleDeliveryNote);
+      await controller.DeliveryNoteCreate({
+        ...MessageSample,
+        value: sampleDeliveryNote,
+      });
     } catch (error) {
       expect(error).toEqual({
         errors: error,
@@ -76,7 +88,12 @@ describe('DeliveryNoteController', () => {
   });
 
   it('should be getOne delivery note', async () => {
-    expect(await controller.DeliveryNoteById(expect.any(String))).toEqual({
+    expect(
+      await controller.DeliveryNoteById({
+        ...MessageSample,
+        value: expect.any(String),
+      }),
+    ).toEqual({
       errors: null,
       status: 200,
       data: sampleDeliveryNote,
@@ -88,7 +105,10 @@ describe('DeliveryNoteController', () => {
     mockDeliveryNoteController.findById.mockRejectedValue(new Error());
 
     try {
-      await controller.DeliveryNoteById(expect.any(String));
+      await controller.DeliveryNoteById({
+        ...MessageSample,
+        value: expect.any(String),
+      });
     } catch (error) {
       expect(error).toEqual({
         errors: error,
@@ -100,7 +120,12 @@ describe('DeliveryNoteController', () => {
   });
 
   it('should be getAll delivery note', async () => {
-    expect(await controller.DeliveryNoteList(expect.any(String))).toEqual({
+    expect(
+      await controller.DeliveryNoteList({
+        ...MessageSample,
+        value: expect.any(String),
+      }),
+    ).toEqual({
       errors: null,
       status: 200,
       data: [sampleDeliveryNote],
@@ -115,9 +140,12 @@ describe('DeliveryNoteController', () => {
 
     expect(
       await controller.DeliveryNotePaginate({
-        vendorId: expect.any(String),
-        skip: 0,
-        limit: 10,
+        ...MessageSample,
+        value: {
+          vendorId: expect.any(String),
+          skip: 0,
+          limit: 10,
+        },
       }),
     ).toEqual({
       page: 0,
@@ -134,9 +162,12 @@ describe('DeliveryNoteController', () => {
 
     expect(
       await controller.DeliveryNotePaginate({
-        vendorId: expect.any(String),
-        skip: 0,
-        limit: 10,
+        ...MessageSample,
+        value: {
+          vendorId: expect.any(String),
+          skip: 0,
+          limit: 10,
+        },
       }),
     ).toEqual({
       count: 0,
@@ -151,9 +182,12 @@ describe('DeliveryNoteController', () => {
 
     expect(
       await controller.DeliveryNotePaginate({
-        vendorId: expect.any(String),
-        skip: 0,
-        limit: 10,
+        ...MessageSample,
+        value: {
+          vendorId: expect.any(String),
+          skip: 0,
+          limit: 10,
+        },
       }),
     ).toEqual({
       count: 0,
@@ -167,7 +201,10 @@ describe('DeliveryNoteController', () => {
     mockDeliveryNoteController.find.mockRejectedValue(new Error());
 
     try {
-      await controller.DeliveryNoteList(expect.any(String));
+      await controller.DeliveryNoteList({
+        ...MessageSample,
+        value: expect.any(String),
+      });
     } catch (error) {
       expect(error).toEqual({
         errors: error,
@@ -180,8 +217,12 @@ describe('DeliveryNoteController', () => {
 
   it('should be update delivery note', async () => {
     expect(
-      await controller.DeliveryNoteUpdate(expect.any(String), {
-        awb: 'XXXXXXXX',
+      await controller.DeliveryNoteUpdate({
+        ...MessageSample,
+        value: {
+          id: expect.any(String),
+          awb: 'XXXXXXXX',
+        },
       }),
     ).toEqual({
       errors: null,
@@ -192,7 +233,12 @@ describe('DeliveryNoteController', () => {
   });
 
   it('should be remove delivery note', async () => {
-    expect(await controller.DeliveryNoteRemove(expect.any(String))).toEqual({
+    expect(
+      await controller.DeliveryNoteRemove({
+        ...MessageSample,
+        value: expect.any(String),
+      }),
+    ).toEqual({
       errors: null,
       status: 200,
       message: config.get<string>('messageBase.DeliveryNote.delete.Success'),
@@ -203,8 +249,12 @@ describe('DeliveryNoteController', () => {
     mockDeliveryNoteController.findByIdAndUpdate.mockRejectedValue(new Error());
 
     try {
-      await controller.DeliveryNoteUpdate(expect.any(String), {
-        awb: 'XXXXXXXX',
+      await controller.DeliveryNoteUpdate({
+        ...MessageSample,
+        value: {
+          id: expect.any(String),
+          awb: 'XXXXXXXX',
+        },
       });
     } catch (error) {
       expect(error).toEqual({
@@ -220,7 +270,10 @@ describe('DeliveryNoteController', () => {
     mockDeliveryNoteController.findByIdAndUpdate.mockRejectedValue(new Error());
 
     try {
-      await controller.DeliveryNoteRemove(expect.any(String));
+      await controller.DeliveryNoteRemove({
+        ...MessageSample,
+        value: expect.any(String),
+      });
     } catch (error) {
       expect(error).toEqual({
         errors: error,
@@ -232,15 +285,21 @@ describe('DeliveryNoteController', () => {
 
   it('should be count document if = 0', async () => {
     mockDeliveryNoteController.find.mockReturnValue(0);
-    expect(await controller.GenerateCode('KPJ-01-01-00001-001')).toEqual(
-      'DN-001-001',
-    );
+    expect(
+      await controller.GenerateCode({
+        ...MessageSample,
+        value: 'KPJ-01-01-00001-001',
+      }),
+    ).toEqual('DN-001-001');
   });
 
   it('should be count document if > 0', async () => {
     mockDeliveryNoteController.find.mockReturnValue(1);
-    expect(await controller.GenerateCode('KPJ-01-01-00001-001')).toEqual(
-      'DN-001-001',
-    );
+    expect(
+      await controller.GenerateCode({
+        ...MessageSample,
+        value: 'KPJ-01-01-00001-001',
+      }),
+    ).toEqual('DN-001-001');
   });
 });

@@ -35,6 +35,7 @@ export class PurchaseRequestController {
   ): Promise<BaseResponse> {
     try {
       const { value } = message;
+      console.log(value);
       const generateCodePR = await this.Generate.generateCode(value.code_pr);
       value.code_pr = generateCodePR.code;
       await this.PRMaster.createPurchaseRequest(value);

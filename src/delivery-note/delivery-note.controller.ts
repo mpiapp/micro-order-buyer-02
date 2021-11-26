@@ -3,13 +3,12 @@ import {
   CacheInterceptor,
   Controller,
   HttpStatus,
-  Param,
-  Query,
   UseInterceptors,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { MessagePattern } from '@nestjs/microservices';
 import { ApiTags } from '@nestjs/swagger';
+import { IncomingMessage } from './../config/interfaces/Income.interface';
 import { BaseResponse } from './../config/interfaces/response.base.interface';
 import { GenerateCoderService } from './../purchase-order/services/purchase-order-generate-code.service';
 import { DeliveryNoteCreateDto } from './dto/DeliveryNoteCreate.dto';
@@ -30,12 +29,12 @@ export class DeliveryNoteController {
   ) {}
 
   @UseInterceptors(CacheInterceptor)
-  @MessagePattern('Delivery-Note-List-Data')
+  @MessagePattern('delivery.note.get.all')
   async DeliveryNoteList(
-    @Query('id') id: string,
+    @Body() message: IncomingMessage<string>,
   ): Promise<IDeliveryNotesResponse> {
     try {
-      const getAll = await this.dnService.getAll(id);
+      const getAll = await this.dnService.getAll(message.value);
       return {
         status: HttpStatus.OK,
         message: this.Config.get<string>(
@@ -55,12 +54,12 @@ export class DeliveryNoteController {
   }
 
   @UseInterceptors(CacheInterceptor)
-  @MessagePattern('Delivery-Note-ById')
+  @MessagePattern('delivery.note.get.by.id')
   async DeliveryNoteById(
-    @Query('id') id: string,
+    @Body() message: IncomingMessage<string>,
   ): Promise<IDeliveryNoteResponse> {
     try {
-      const getOne = await this.dnService.getOne(id);
+      const getOne = await this.dnService.getOne(message.value);
       return {
         status: HttpStatus.OK,
         message: this.Config.get<string>(
@@ -79,35 +78,35 @@ export class DeliveryNoteController {
     }
   }
 
-  @MessagePattern('Delivery-Note-Paginate')
+  @MessagePattern('delivery.note.paginate')
   async DeliveryNotePaginate(
-    @Query() params: DNPaginateDto,
+    @Body() message: IncomingMessage<DNPaginateDto>,
   ): Promise<IDeliveryNotesPaginateResponse> {
-    const { skip, limit } = params;
-    const getData = await this.dnService.getPaginate(params);
+    const { skip, limit } = message.value;
+    const getData = await this.dnService.getPaginate(message.value);
     if (!getData) {
       return {
         count: 0,
-        page: skip,
-        limit: limit,
+        page: Number(skip),
+        limit: Number(limit),
         data: null,
       };
     }
     const { data, metadata } = getData[0];
     return {
       count: metadata[0] ? metadata[0].total : 0,
-      page: skip,
-      limit: limit,
+      page: Number(skip),
+      limit: Number(limit),
       data: data,
     };
   }
 
-  @MessagePattern('Delivery-Note-Save')
+  @MessagePattern('delivery.note.save')
   async DeliveryNoteCreate(
-    @Body() params: DeliveryNoteCreateDto,
+    @Body() message: IncomingMessage<DeliveryNoteCreateDto>,
   ): Promise<BaseResponse> {
     try {
-      await this.dnService.create(params);
+      await this.dnService.create(message.value);
       return {
         status: HttpStatus.CREATED,
         message: this.Config.get<string>(
@@ -126,11 +125,14 @@ export class DeliveryNoteController {
     }
   }
 
-  @MessagePattern('Generate-Code-Delivery-Note')
-  async GenerateCode(@Query('po_number') po_number: string): Promise<string> {
+  @MessagePattern('delivery.note.generate.code')
+  async GenerateCode(
+    @Body() message: IncomingMessage<string>,
+  ): Promise<string> {
+    const code = message.value;
     const searchCode = `${this.Config.get(
       'initialCode.DeliveryNote.code',
-    )}-${po_number.slice(-3)}`;
+    )}-${code.slice(-3)}`;
     const countingNumber: number = await this.dnService.getCount(searchCode);
     return this.generate.generateCode({
       code: searchCode,
@@ -139,12 +141,12 @@ export class DeliveryNoteController {
     });
   }
 
-  @MessagePattern('Update-Delivery-Note')
+  @MessagePattern('delivery.note.update')
   async DeliveryNoteUpdate(
-    @Query('id') id: string,
-    @Body() params: DNUpdateDto,
+    @Body() message: IncomingMessage<DNUpdateDto>,
   ): Promise<IDeliveryNoteResponse> {
     try {
+      const { id, ...params } = message.value;
       const update = await this.dnService.update(id, params);
       return {
         status: HttpStatus.OK,
@@ -166,10 +168,12 @@ export class DeliveryNoteController {
     }
   }
 
-  @MessagePattern('Delivery-Note-Delete')
-  async DeliveryNoteRemove(@Param('id') id: string): Promise<BaseResponse> {
+  @MessagePattern('delivery.note.delete')
+  async DeliveryNoteRemove(
+    @Body() message: IncomingMessage<string>,
+  ): Promise<BaseResponse> {
     try {
-      await this.dnService.delete(id);
+      await this.dnService.delete(message.value);
       return {
         status: HttpStatus.OK,
         message: this.Config.get<string>(

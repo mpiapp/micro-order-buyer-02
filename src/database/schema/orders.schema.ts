@@ -19,7 +19,8 @@ export class Order {
     type: [
       {
         code_po: { type: String },
-        vendorId: { type: String },
+        vendorId: { type: String, required: true },
+        vendor_name: { type: String, required: true },
         packages: {
           type: [
             {
@@ -27,10 +28,10 @@ export class Order {
               items: {
                 type: [
                   {
-                    productId: { type: String },
+                    productId: { type: String, required: true },
                     quantity: { type: Number },
-                    price: { type: Number },
-                    vendorId: { type: String },
+                    retail_price: { type: Number },
+                    vendorId: { type: String, required: true },
                     vendor_name: { type: String },
                     name: { type: String },
                     sku: { type: String },
@@ -40,55 +41,57 @@ export class Order {
                     storage: {
                       type: [
                         {
-                          rack: Number,
-                          bin: Number,
-                          level: Number,
+                          rack: { type: Number },
+                          bin: { type: Number },
+                          level: { type: Number },
                         },
                       ],
                     },
                     dimension: {
                       type: [
                         {
-                          width: Number,
-                          length: Number,
-                          height: Number,
-                          weight: Number,
+                          width: { type: Number },
+                          length: { type: Number },
+                          height: { type: Number },
+                          weight: { type: Number },
                         },
                       ],
                     },
                     sub_products: {
                       type: [
                         {
-                          sub_product_id: String,
-                          slug: String,
-                          variance: String,
-                          image_sub_product: [String],
-                          made_date: Date,
-                          expired_date: Date,
-                          quantity: Number,
+                          sub_product_id: { type: String },
+                          slug: { type: String },
+                          variance: { type: String },
+                          image_sub_product: { type: [String] },
+                          made_date: { type: Date },
+                          expired_date: { type: Date },
+                          quantity: { type: Number },
                         },
                       ],
                     },
                     categories: { type: String },
                     measurement: { type: String },
-                    author: { type: String },
                     warehouse: {
                       type: [
                         {
-                          name: String,
-                          long: String,
-                          lat: String,
+                          name: { type: String },
+                          long: { type: String },
+                          lat: { type: String },
                         },
                       ],
                     },
                     payment_term: {
                       type: [
                         {
-                          name: String,
-                          value: Number,
+                          name: { type: String },
+                          value: { type: Number },
                         },
                       ],
                     },
+                    discount_price: { type: Number },
+                    discount: { type: Number },
+                    sub_total: { type: Number },
                   },
                 ],
               },
@@ -132,6 +135,7 @@ export class Order {
   vendors: {
     code_po: string;
     vendorId: string;
+    vendor_name: string;
     packages: {
       code_package: string;
       payment_terms?: string;
@@ -153,7 +157,7 @@ export class Order {
       items: {
         productId: string;
         quantity: number;
-        price: number;
+        retail_price: number;
         vendorId: string;
         vendor_name: string;
         name: string;
@@ -183,7 +187,6 @@ export class Order {
         };
         categories: string;
         measurement: string;
-        author: string;
         warehouse: {
           name: string;
           long: string;
@@ -193,6 +196,9 @@ export class Order {
           name: string;
           value: number;
         };
+        discount_price: number;
+        discount: number;
+        sub_total: number;
       }[];
       statuses: {
         name: string;

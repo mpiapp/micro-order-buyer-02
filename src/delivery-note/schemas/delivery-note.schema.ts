@@ -15,11 +15,13 @@ export class DN {
   date: Date;
   @Prop({ type: String, required: true })
   buyerId: string;
-  @Prop({ type: mongoose.Schema.Types.ObjectId, required: true })
+  @Prop({ type: String, required: true })
   addressId: string;
-  @Prop({ type: mongoose.Schema.Types.ObjectId, required: true })
+  @Prop({ type: String, required: true })
   vendorId: string;
-  @Prop({ type: mongoose.Schema.Types.ObjectId, required: true })
+  @Prop({ type: String, required: true })
+  vendor_name: string;
+  @Prop({ type: String, required: true })
   orderId: string;
   @Prop({ type: String })
   awb?: string;
@@ -27,17 +29,27 @@ export class DN {
     type: [
       {
         productId: { type: String },
+        name: { type: String },
+        sku: { type: String },
+        categories: { type: String },
+        brand: { type: String },
         quantity: { type: Number },
         received: { type: Number },
         price: { type: Number },
+        measurement: { type: String },
       },
     ],
   })
   items: {
     productId: string;
+    name: string;
+    sku: string;
+    brand: string;
+    categories: string;
     quantity: number;
     received?: number;
     price: number;
+    measurement: string;
   }[];
   @Prop({
     type: [{ name: { type: String }, timestamp: { type: Date } }],
@@ -48,9 +60,9 @@ export class DN {
   }[];
   @Prop({ default: false })
   isDeleted: boolean;
-  @Prop({ type: mongoose.Schema.Types.ObjectId, required: true })
+  @Prop({ type: String, required: true })
   createdBy: string;
-  @Prop({ type: mongoose.Schema.Types.ObjectId })
+  @Prop({ type: String })
   receivedUserId?: string;
 }
 
