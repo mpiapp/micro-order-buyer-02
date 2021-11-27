@@ -57,6 +57,7 @@ describe('PurchaseRequestController', () => {
       errors: null,
       status: 201,
       message: config.get<string>('messageBase.PurchaseRequest.save.Success'),
+      data: SampleCreate,
     });
   });
 
@@ -176,7 +177,7 @@ describe('PurchaseRequestController', () => {
   });
 
   it('should get list PR Failed', async () => {
-    mockControllerPurchaseRequest.find.mockImplementation(() => {
+    mockControllerPurchaseRequest.aggregate.mockImplementation(() => {
       throw new Error();
     });
 
@@ -211,6 +212,9 @@ describe('PurchaseRequestController', () => {
   });
 
   it('should Search PR Failed', async () => {
+    mockControllerPurchaseRequest.find.mockImplementation(() => {
+      throw new Error();
+    });
     try {
       await controller.PRSearch({
         ...MessageSample,
@@ -222,6 +226,23 @@ describe('PurchaseRequestController', () => {
   });
 
   it('should add Status Master PR', async () => {
+    mockControllerPurchaseRequest.findByIdAndUpdate.mockImplementation(() => {
+      return SampleCreate;
+    });
+    expect(
+      await controller.PRApproval({
+        ...MessageSample,
+        value: {
+          id: expect.any(String),
+          name: expect.any(String),
+          note: expect.any(String),
+          timestamp: new Date(),
+        },
+      }),
+    ).toEqual(SampleCreate);
+  });
+
+  it('should add Status Master PR', async () => {
     SampleCreate.statuses.push(sampleStatus);
     mockControllerPurchaseRequest.findByIdAndUpdate.mockImplementation(() => {
       return SampleCreate;
@@ -229,5 +250,69 @@ describe('PurchaseRequestController', () => {
     expect(
       await controller.PRaddStatus({ ...MessageSample, value: sampleStatus }),
     ).toEqual(SampleCreate);
+  });
+
+  it('should be paginate Purchase Order', async () => {
+    mockControllerPurchaseRequest.aggregate.mockReturnValue([
+      { data: [SampleCreate], metadata: [{ total: 1 }] },
+    ]);
+
+    expect(
+      await controller.getPurchaseRequestPaginate({
+        ...MessageSample,
+        value: {
+          keyId: expect.any(String),
+          skip: 0,
+          limit: 10,
+        },
+      }),
+    ).toEqual({
+      count: 1,
+      page: 0,
+      limit: 10,
+      data: [SampleCreate],
+    });
+  });
+
+  it('should be paginate Purchase Order Metadata Null', async () => {
+    mockControllerPurchaseRequest.aggregate.mockReturnValue([
+      { data: [SampleCreate], metadata: [] },
+    ]);
+
+    expect(
+      await controller.getPurchaseRequestPaginate({
+        ...MessageSample,
+        value: {
+          keyId: expect.any(String),
+          skip: 0,
+          limit: 10,
+        },
+      }),
+    ).toEqual({
+      count: 0,
+      page: 0,
+      limit: 10,
+      data: [SampleCreate],
+    });
+  });
+
+  it('should be paginate Purchase Order failed', async () => {
+    mockControllerPurchaseRequest.aggregate.mockReturnValue(false);
+
+    expect(
+      await controller.getPurchaseRequestPaginate({
+        ...MessageSample,
+        value: {
+          keyId: expect.any(String),
+          skip: 0,
+          limit: 10,
+        },
+      }),
+    ).toEqual({
+      count: 0,
+      page: 0,
+      limit: 10,
+      data: null,
+    });
   });
 });

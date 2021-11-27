@@ -6,14 +6,17 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { MessagePattern } from '@nestjs/microservices';
+import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
 import { ApiTags } from '@nestjs/swagger';
+import { POPaginateDto } from 'src/purchase-order/dto/Paginate.dto';
 import { OrderCreateDto } from './../config/dto/order-create.dto';
 import { OrderUpdateDto } from './../config/dto/order-update.dto';
 import { IncomingMessage } from './../config/interfaces/Income.interface';
 import { BaseResponse } from './../config/interfaces/response.base.interface';
+import { ApprovalDto } from './dto/Approval.dto';
 import { StatusDto } from './dto/Status.dto';
 import { IPurchaseRequestsResponse } from './interfaces/response/Many.interface';
+import { IPurchaseRequestPaginateResponse } from './interfaces/response/Paginate.interface';
 import { IPurchaseRequestResponse } from './interfaces/response/Single.interface';
 import { GenerateService } from './services/generate.service';
 import { PurchaseRequestService } from './services/purchase-request.service';
@@ -32,18 +35,18 @@ export class PurchaseRequestController {
   @MessagePattern('purchase.request.save')
   async PRCreate(
     @Body() message: IncomingMessage<OrderCreateDto>,
-  ): Promise<BaseResponse> {
+  ): Promise<IPurchaseRequestResponse> {
     try {
       const { value } = message;
-      console.log(value);
       const generateCodePR = await this.Generate.generateCode(value.code_pr);
       value.code_pr = generateCodePR.code;
-      await this.PRMaster.createPurchaseRequest(value);
+      const create = await this.PRMaster.createPurchaseRequest(value);
       return {
         status: HttpStatus.CREATED,
         message: this.Config.get<string>(
           'messageBase.PurchaseRequest.save.Success',
         ),
+        data: create,
         errors: null,
       };
     } catch (error) {
@@ -53,6 +56,7 @@ export class PurchaseRequestController {
           'messageBase.PurchaseRequest.save.Failed',
         ),
         errors: error,
+        data: null,
       };
     }
   }
@@ -189,9 +193,42 @@ export class PurchaseRequestController {
     }
   }
 
-  @UseInterceptors(CacheInterceptor)
+  @MessagePattern('purchase.request.paginate')
+  async getPurchaseRequestPaginate(
+    @Body() message: IncomingMessage<POPaginateDto>,
+  ): Promise<IPurchaseRequestPaginateResponse> {
+    const { skip, limit } = message.value;
+    const getData = await this.PRMaster.getPaginate({
+      ...message.value,
+      skip: Number(skip),
+      limit: Number(limit),
+    });
+    if (!getData) {
+      return {
+        count: 0,
+        page: Number(skip),
+        limit: Number(limit),
+        data: null,
+      };
+    }
+    const { data, metadata } = getData[0];
+    return {
+      count: metadata[0] ? metadata[0].total : 0,
+      page: Number(skip),
+      limit: Number(limit),
+      data: data,
+    };
+  }
+
   @MessagePattern('purchase.request.add.status')
   async PRaddStatus(@Body() message: IncomingMessage<StatusDto>): Promise<any> {
     return this.Status.addStatus(message.value);
+  }
+
+  @EventPattern('purchase.request.approval')
+  async PRApproval(
+    @Payload() message: IncomingMessage<ApprovalDto>,
+  ): Promise<any> {
+    return this.PRMaster.approvalPurchaseRequest(message.value);
   }
 }

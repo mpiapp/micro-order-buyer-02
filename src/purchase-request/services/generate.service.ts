@@ -3,8 +3,8 @@ import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Helper } from './../../utils/helper.utils';
-import { IRGenerateCode } from '../interfaces/response/GenerateCode.interface';
-import { IGenerateCode } from '../interfaces/services/GenerateCode.interface';
+import { IRGenerateCode } from './../interfaces/response/GenerateCode.interface';
+import { IGenerateCode } from './../interfaces/services/GenerateCode.interface';
 import { Order, OrderDocument } from './../../database/schema/orders.schema';
 
 @Injectable()
@@ -18,7 +18,7 @@ export class GenerateService implements IGenerateCode {
   async generateCode(_param: string): Promise<IRGenerateCode> {
     const docs = await this.model.find(
       {
-        code: { $regex: _param, $options: 'i' },
+        code_pr: { $regex: _param, $options: 'i' },
       },
       {},
       { sort: { createdAt: -1 } },

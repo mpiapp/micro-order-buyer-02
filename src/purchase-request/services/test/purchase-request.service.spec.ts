@@ -45,6 +45,21 @@ describe('PurchaseRequestService', () => {
       ...SampleUpdate,
     });
   });
+
+  it('should be approval purchase request', async () => {
+    expect(
+      await service.approvalPurchaseRequest({
+        id: expect.any(String),
+        name: expect.any(String),
+        note: expect.any(String),
+        timestamp: new Date(),
+      }),
+    ).toEqual({
+      ...SampleCreate,
+      ...SampleUpdate,
+    });
+  });
+
   it('should be delete purchase request', async () => {
     mockPurchaseRequest.findByIdAndUpdate.mockImplementation(() => {
       return {
