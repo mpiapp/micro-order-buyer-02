@@ -6,7 +6,6 @@ import { DN, DNSchema } from './../delivery-note/schemas/delivery-note.schema';
 import { ConfigModule } from '@nestjs/config';
 import configuration from './../config/configuration';
 import { Helper } from './../utils/helper.utils';
-import { GenerateCoderService } from './../purchase-order/services/purchase-order-generate-code.service';
 import * as pino from 'pino';
 import { LoggerModule } from 'nestjs-pino';
 
@@ -24,7 +23,7 @@ const logger = pino(dest);
     }),
     LoggerModule.forRoot({ pinoHttp: { logger } }),
   ],
-  providers: [GrnService, Helper, GenerateCoderService],
+  providers: [GrnService, Helper],
   controllers: [GrnController],
 })
 export class GrnModule {}

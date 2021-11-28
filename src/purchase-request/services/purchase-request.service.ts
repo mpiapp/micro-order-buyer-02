@@ -32,6 +32,14 @@ export class PurchaseRequestService
     return this.model.findByIdAndUpdate(id, { $set: update }, { new: true });
   }
 
+  async updateVendor(id: string, update: any): Promise<Order> {
+    return this.model.findByIdAndUpdate(
+      id,
+      { $set: { vendors: update } },
+      { new: true },
+    );
+  }
+
   async approvalPurchaseRequest(params: ApprovalDto): Promise<Order> {
     const { id, ...update } = params;
     return this.model.findByIdAndUpdate(
@@ -46,11 +54,10 @@ export class PurchaseRequestService
   }
 
   async searchPurchaseRequest(search: string): Promise<Order[]> {
-    return this.model.find({ code: { $regex: search }, isDeleted: false,});
+    return this.model.find({ code: { $regex: search }, isDeleted: false });
   }
 
   async listPurchaseRequest(buyer: string): Promise<Order[]> {
-    // return this.model.find({ buyerId: buyer });
     return this.model.aggregate([
       {
         $match: {

@@ -4,7 +4,6 @@ import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
 import { ApiTags } from '@nestjs/swagger';
 import { IncomingMessage } from './../config/interfaces/Income.interface';
 import { BaseResponse } from './../config/interfaces/response.base.interface';
-import { GenerateCoderService } from './../purchase-order/services/purchase-order-generate-code.service';
 import { Helper } from './../utils/helper.utils';
 import { ApprovalOfPaymentDto } from './dto/Approval.Payment.dto';
 import { MoveItemPackageDto } from './dto/MovePackage.dto';
@@ -23,7 +22,6 @@ import { ProofPaymentService } from './services/proof.payment.package.service';
 @Controller('package')
 export class PackageController {
   constructor(
-    private readonly Generate: GenerateCoderService,
     private readonly packageService: PackageService,
     private readonly Config: ConfigService,
     private readonly paginateService: PaginatePackageService,
@@ -156,7 +154,7 @@ export class PackageController {
           errors: validate,
         };
       }
-      const code = this.Generate.generateCode({
+      const code = await this.helpService.generateCode({
         code: `${this.Config.get('initialCode.Pick.code')}-${code_po.slice(
           -3,
         )}`,
@@ -191,7 +189,7 @@ export class PackageController {
   ): Promise<BaseResponse> {
     try {
       const { id, code_po, items, statuses } = message.value;
-      const code = this.Generate.generateCode({
+      const code = await this.helpService.generateCode({
         code: `${this.Config.get('initialCode.Pack.code')}-${code_po.slice(
           -3,
         )}`,

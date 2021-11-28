@@ -226,6 +226,9 @@ describe('PurchaseRequestController', () => {
   });
 
   it('should add Status Master PR', async () => {
+    mockControllerPurchaseRequest.findById.mockImplementation(() => {
+      return SampleCreate;
+    });
     mockControllerPurchaseRequest.findByIdAndUpdate.mockImplementation(() => {
       return SampleCreate;
     });

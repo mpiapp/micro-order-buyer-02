@@ -1,6 +1,5 @@
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
-import { GenerateCoderService } from './../purchase-order/services/purchase-order-generate-code.service';
 import { sampleAfterSplitPackage } from './../../test/mocks/sample/Package/sample.after.split.mock';
 import { PackageController } from './package.controller';
 import { PackageService } from './services/package.service';
@@ -34,7 +33,6 @@ describe('PackageController', () => {
       ],
       controllers: [PackageController],
       providers: [
-        GenerateCoderService,
         PackageService,
         Helper,
         PaginatePackageService,

@@ -66,17 +66,31 @@ describe('Helper Services', () => {
     }
   });
 
-  it('should generate number', () => {
-    expect(services.GenerateNumber(sampleDataHelper.code, '00000')).toEqual(
-      `${sampleDataHelper.code}-00001`,
-    );
-  });
-
   it('should pad number', () => {
     expect(services.padNumber('9', 4, '0')).toEqual(`0009`);
   });
 
   it('should pad number > width ', () => {
     expect(services.padNumber('19', 1, '0')).toEqual(`19`);
+  });
+
+  it('should be generate code number', async () => {
+    expect(
+      await services.generateCode({
+        code: 'KPJ-01-01-00001',
+        count: 1,
+        digits: 3,
+      }),
+    ).toEqual(`KPJ-01-01-00001-001`);
+  });
+
+  it('should be generate code > 1', async () => {
+    expect(
+      await services.generateCode({
+        code: 'KPJ-01-01-00001',
+        count: 2,
+        digits: 3,
+      }),
+    ).toEqual(`KPJ-01-01-00001-002`);
   });
 });

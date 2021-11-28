@@ -8,7 +8,6 @@ import { OrdersService } from './services/orders.service';
 import { getModelToken } from '@nestjs/mongoose';
 import { PO } from './../purchase-order/schemas/purchase-order.schema';
 import { sampleFullPackage } from './../../test/mocks/sample/Package/sample.full.data.mock';
-import { GenerateCoderService } from './../purchase-order/services/purchase-order-generate-code.service';
 
 const mockControllerOrders = {
   aggregate: jest.fn().mockReturnValue(sampleFullPackage),
@@ -26,7 +25,6 @@ describe('OrdersController', () => {
       ],
       controllers: [OrdersController],
       providers: [
-        GenerateCoderService,
         OrdersService,
         Helper,
         OrderPaginateService,

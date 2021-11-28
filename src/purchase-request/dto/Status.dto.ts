@@ -19,7 +19,7 @@ export class StatusDto implements IStatus {
   @ApiProperty()
   @IsString()
   @IsOptional()
-  message?: string;
+  note?: string;
   @ApiProperty()
   @IsString()
   @IsOptional()

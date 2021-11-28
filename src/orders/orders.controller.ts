@@ -2,8 +2,8 @@ import { Body, Controller, HttpStatus, Query } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { MessagePattern } from '@nestjs/microservices';
 import { ApiTags } from '@nestjs/swagger';
+import { Helper } from './../utils/helper.utils';
 import { IdPackage } from './../package/dto/IdPackage.dto';
-import { GenerateCoderService } from './../purchase-order/services/purchase-order-generate-code.service';
 import { PaginateDto } from './../package/dto/Paginate.dto';
 import { IOrdersResponse } from './interfaces/response/Many.interface';
 import { IOrderPaginateResponse } from './interfaces/response/Paginate.interface';
@@ -18,7 +18,7 @@ export class OrdersController {
     private readonly ordersService: OrdersService,
     private readonly Config: ConfigService,
     private readonly paginateService: OrderPaginateService,
-    private readonly Generate: GenerateCoderService,
+    private readonly helperService: Helper,
   ) {}
 
   @MessagePattern('Order-Fulfillment-List-Data')
@@ -93,7 +93,7 @@ export class OrdersController {
 
     const getOrder = await this.ordersService.getOrderById(id);
 
-    return this.Generate.generateCode({
+    return this.helperService.generateCode({
       code: getOrder.code_po,
       count: getOrder.packages.length > 1 ? getOrder.packages.length : count,
       digits: this.Config.get('DIGITS_NUMBER_PACKAGE'),

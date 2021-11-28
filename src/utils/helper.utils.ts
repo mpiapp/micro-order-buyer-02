@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { IGenerateCode } from './../purchase-order/interfaces/type/IPOGenerate.interface';
 import configuration from './../config/configuration';
 
 @Module({
@@ -28,17 +29,13 @@ export class Helper {
     return calculate;
   }
 
-  GenerateNumber(code: string, initialNumber): string {
-    const iNumber: number = parseInt(initialNumber) + 1;
-    return `${code}-${
-      initialNumber.substring(
-        0,
-        initialNumber.length - iNumber.toString().length,
-      ) + iNumber
-    }`;
-  }
-
   padNumber(n: string, width: number, z: string) {
     return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+  }
+
+  async generateCode(params: IGenerateCode): Promise<string> {
+    const { code, count, digits } = params;
+
+    return `${code}-${this.padNumber(count.toString(), digits, '0')}`;
   }
 }

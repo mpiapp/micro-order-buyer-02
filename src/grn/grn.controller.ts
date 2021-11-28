@@ -12,15 +12,15 @@ import { StatusDto } from './../purchase-request/dto/Status.dto';
 import { IDeliveryNotesResponse } from './../delivery-note/interfaces/response/Many.interface';
 import { IDeliveryNotesPaginateResponse } from './../delivery-note/interfaces/response/Paginate.interface';
 import { IDeliveryNoteResponse } from './../delivery-note/interfaces/response/Single.interface';
-import { GenerateCoderService } from './../purchase-order/services/purchase-order-generate-code.service';
 import { GrnPaginateDto } from './dto/Paginate.dto';
 import { GRNUpdateDto } from './dto/Update.dto';
 import { GrnService } from './services/grn.service';
+import { Helper } from './../utils/helper.utils';
 
 @Controller('grn')
 export class GrnController {
   constructor(
-    private readonly generate: GenerateCoderService,
+    private readonly helperService: Helper,
     private readonly Config: ConfigService,
     private readonly grnService: GrnService,
   ) {}
@@ -95,7 +95,7 @@ export class GrnController {
   async GenerateCode(@Query('po_number') po_number: string): Promise<string> {
     const searchCode = `GRN-${po_number.slice(-3)}`;
     const countingNumber: number = await this.grnService.getCount(searchCode);
-    return this.generate.generateCode({
+    return this.helperService.generateCode({
       code: searchCode,
       count: countingNumber + 1,
       digits: this.Config.get('DIGITS_NUMBER_GRN'),

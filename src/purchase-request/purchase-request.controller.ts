@@ -8,7 +8,8 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
 import { ApiTags } from '@nestjs/swagger';
-import { POPaginateDto } from 'src/purchase-order/dto/Paginate.dto';
+import { POPaginateDto } from './../purchase-order/dto/Paginate.dto';
+import { Helper } from './../utils/helper.utils';
 import { OrderCreateDto } from './../config/dto/order-create.dto';
 import { OrderUpdateDto } from './../config/dto/order-update.dto';
 import { IncomingMessage } from './../config/interfaces/Income.interface';
@@ -30,6 +31,7 @@ export class PurchaseRequestController {
     private readonly Generate: GenerateService,
     private readonly Status: UpdateStatusService,
     private readonly Config: ConfigService,
+    private readonly HelperService: Helper,
   ) {}
 
   @MessagePattern('purchase.request.save')
@@ -229,6 +231,19 @@ export class PurchaseRequestController {
   async PRApproval(
     @Payload() message: IncomingMessage<ApprovalDto>,
   ): Promise<any> {
+    const { id } = message.value;
+    const { vendors, code_pr } = await this.PRMaster.byIdPurchaseRequest(id);
+
+    let counting = 1;
+    for (const rows of vendors) {
+      rows.code_po = await this.HelperService.generateCode({
+        code: code_pr,
+        count: counting++,
+        digits: this.Config.get('DIGITS_NUMBER_PO'),
+      });
+    }
+    await this.PRMaster.updateVendor(id, vendors);
+
     return this.PRMaster.approvalPurchaseRequest(message.value);
   }
 }

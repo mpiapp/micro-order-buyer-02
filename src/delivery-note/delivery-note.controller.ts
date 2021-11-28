@@ -8,9 +8,9 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { MessagePattern } from '@nestjs/microservices';
 import { ApiTags } from '@nestjs/swagger';
+import { Helper } from './../utils/helper.utils';
 import { IncomingMessage } from './../config/interfaces/Income.interface';
 import { BaseResponse } from './../config/interfaces/response.base.interface';
-import { GenerateCoderService } from './../purchase-order/services/purchase-order-generate-code.service';
 import { DeliveryNoteCreateDto } from './dto/DeliveryNoteCreate.dto';
 import { DNUpdateDto } from './dto/DeliveryNoteUpdate.dto';
 import { DNPaginateDto } from './dto/Paginate.dto';
@@ -23,7 +23,7 @@ import { DeliveryNoteService } from './services/delivery-note.service';
 @Controller('delivery-note')
 export class DeliveryNoteController {
   constructor(
-    private readonly generate: GenerateCoderService,
+    private readonly helperService: Helper,
     private readonly Config: ConfigService,
     private readonly dnService: DeliveryNoteService,
   ) {}
@@ -134,7 +134,7 @@ export class DeliveryNoteController {
       'initialCode.DeliveryNote.code',
     )}-${code.slice(-3)}`;
     const countingNumber: number = await this.dnService.getCount(searchCode);
-    return this.generate.generateCode({
+    return this.helperService.generateCode({
       code: searchCode,
       count: countingNumber + 1,
       digits: this.Config.get('DIGITS_NUMBER_DELIVERY_NOTE'),

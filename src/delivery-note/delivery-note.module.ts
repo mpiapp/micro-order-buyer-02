@@ -1,7 +1,6 @@
 import { CacheModule, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { GenerateCoderService } from './../purchase-order/services/purchase-order-generate-code.service';
 import { Helper } from './../utils/helper.utils';
 import configuration from './../config/configuration';
 import { DeliveryNoteController } from './delivery-note.controller';
@@ -25,6 +24,6 @@ const logger = pino(dest);
     LoggerModule.forRoot({ pinoHttp: { logger } }),
   ],
   controllers: [DeliveryNoteController],
-  providers: [DeliveryNoteService, Helper, GenerateCoderService],
+  providers: [DeliveryNoteService, Helper],
 })
 export class DeliveryNoteModule {}

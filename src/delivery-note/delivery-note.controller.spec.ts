@@ -7,7 +7,6 @@ import { DeliveryNoteController } from './delivery-note.controller';
 import { DN } from './schemas/delivery-note.schema';
 import { DeliveryNoteService } from './services/delivery-note.service';
 import { Helper } from './../utils/helper.utils';
-import { GenerateCoderService } from './../purchase-order/services/purchase-order-generate-code.service';
 import { sampleDeliveryNote } from './../../test/mocks/sample/Delivery-Note/sample.mock';
 import { CacheModule } from '@nestjs/common';
 import { MessageSample } from './../../test/mocks/sample/message/sample.message.mock';
@@ -32,7 +31,6 @@ describe('DeliveryNoteController', () => {
       providers: [
         DeliveryNoteService,
         Helper,
-        GenerateCoderService,
         {
           provide: getModelToken(DN.name),
           useValue: mockDeliveryNoteController,

@@ -1,4 +1,4 @@
 import { IRGenerateCode } from '../response/GenerateCode.interface';
-export interface IGenerateCode {
+export interface IGenerateCodeService {
   generateCode(code: string): Promise<IRGenerateCode>;
 }

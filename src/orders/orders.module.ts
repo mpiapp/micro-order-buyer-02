@@ -9,8 +9,7 @@ import {
 import { ConfigModule } from '@nestjs/config';
 import configuration from './../config/configuration';
 import { OrderPaginateService } from './services/order-paginate.service';
-import { GenerateCoderService } from 'src/purchase-order/services/purchase-order-generate-code.service';
-import { Helper } from 'src/utils/helper.utils';
+import { Helper } from './../utils/helper.utils';
 
 @Module({
   imports: [
@@ -19,12 +18,7 @@ import { Helper } from 'src/utils/helper.utils';
       load: [configuration],
     }),
   ],
-  providers: [
-    OrdersService,
-    OrderPaginateService,
-    GenerateCoderService,
-    Helper,
-  ],
+  providers: [OrdersService, OrderPaginateService, Helper],
   controllers: [OrdersController],
 })
 export class OrdersModule {}

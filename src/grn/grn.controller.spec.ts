@@ -2,7 +2,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { DN } from './../delivery-note/schemas/delivery-note.schema';
-import { GenerateCoderService } from './../purchase-order/services/purchase-order-generate-code.service';
 import { Helper } from './../utils/helper.utils';
 import configuration from './../config/configuration';
 import { GrnController } from './grn.controller';
@@ -26,7 +25,6 @@ describe('GrnController', () => {
       controllers: [GrnController],
       providers: [
         GrnService,
-        GenerateCoderService,
         Helper,
         {
           provide: getModelToken(DN.name),
