@@ -103,7 +103,7 @@ describe('GrnController', () => {
       await controller.GRNPaginate({
         ...MessageSample,
         value: {
-          buyerId: expect.any(String),
+          keyId: expect.any(String),
           skip: 0,
           limit: 10,
         },
@@ -125,7 +125,7 @@ describe('GrnController', () => {
       await controller.GRNPaginate({
         ...MessageSample,
         value: {
-          buyerId: expect.any(String),
+          keyId: expect.any(String),
           skip: 0,
           limit: 10,
         },
@@ -145,7 +145,7 @@ describe('GrnController', () => {
       await controller.GRNPaginate({
         ...MessageSample,
         value: {
-          buyerId: expect.any(String),
+          keyId: expect.any(String),
           skip: 0,
           limit: 10,
         },

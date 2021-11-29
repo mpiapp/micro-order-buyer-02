@@ -1,5 +1,5 @@
 export type TGrnPaginate = {
-  buyerId: string;
+  keyId: string;
   skip: number;
   limit: number;
 };

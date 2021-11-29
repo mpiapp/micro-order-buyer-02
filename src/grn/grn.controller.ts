@@ -132,7 +132,7 @@ export class GrnController {
     }
   }
 
-  @MessagePattern('Reject-Good-Receive-Note')
+  @MessagePattern('good.receive.note.reject')
   async GRNRejected(
     @Body() message: IncomingMessage<{ id: string; params: StatusDto }>,
   ): Promise<IDeliveryNoteResponse> {

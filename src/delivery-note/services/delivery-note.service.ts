@@ -31,7 +31,7 @@ export class DeliveryNoteService
   }
 
   async getAll(vendor: string): Promise<DN[]> {
-    return this.model.find({ vendorId: vendor });
+    return this.model.find({ vendorId: vendor, isDeleted: false });
   }
 
   async getCount(SearchCode: string): Promise<number> {
@@ -47,6 +47,7 @@ export class DeliveryNoteService
       {
         $match: {
           vendorId: keyId,
+          isDeleted: false,
         },
       },
       {

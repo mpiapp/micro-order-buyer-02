@@ -6,7 +6,7 @@ export class GrnPaginateDto implements TGrnPaginate {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  buyerId: string;
+  keyId: string;
   @ApiProperty()
   @IsNotEmpty()
   @IsNumber()

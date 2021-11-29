@@ -16,7 +16,7 @@ export class GrnService {
   ) {}
 
   async getAll(id: string): Promise<DN[]> {
-    return this.grnModel.find({ buyerId: id });
+    return this.grnModel.find({ buyerId: id, isDeleted: false });
   }
 
   async getOne(id: string): Promise<DN> {
@@ -24,11 +24,12 @@ export class GrnService {
   }
 
   async getPaginate(params: TGrnPaginate): Promise<any> {
-    const { buyerId, skip, limit } = params;
+    const { keyId, skip, limit } = params;
     return this.grnModel.aggregate([
       {
         $match: {
-          buyerId: buyerId,
+          buyerId: keyId,
+          isDeleted: false,
         },
       },
       {
