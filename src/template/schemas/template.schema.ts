@@ -7,8 +7,10 @@ export type TemplateDocument = Template & mongoose.Document;
 export class Template {
   @Prop({ type: String })
   id: string;
-  @Prop({ type: mongoose.Schema.Types.ObjectId, required: true })
+  @Prop({ type: String, required: true })
   buyerId: string;
+  @Prop({ type: String, required: true })
+  name: string;
   @Prop({
     type: [
       {
@@ -130,10 +132,8 @@ export class Template {
   }[];
   @Prop({ default: false })
   isDeleted: boolean;
-  @Prop({ type: mongoose.Schema.Types.ObjectId, required: true, index: true })
+  @Prop({ type: String, required: true, index: true })
   createdBy: string;
-  @Prop()
-  createdAt?: Date;
 }
 
 const TemplateSchema = SchemaFactory.createForClass(Template);

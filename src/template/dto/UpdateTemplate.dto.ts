@@ -1,13 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsNotEmpty, IsString } from 'class-validator';
-import { StatusDto } from './../../purchase-request/dto/Status.dto';
 import { ItemTemplateDto } from './ItemTemplate.dto';
 
-export class TemplateCreateDto {
+export class TemplateUpdateDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  buyerId: string;
+  id: string;
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
@@ -16,10 +15,4 @@ export class TemplateCreateDto {
   @IsArray()
   @IsNotEmpty()
   items: ItemTemplateDto[];
-  @ApiProperty()
-  @IsArray()
-  statuses: StatusDto[];
-  @ApiProperty()
-  @IsNotEmpty()
-  createdBy: string;
 }

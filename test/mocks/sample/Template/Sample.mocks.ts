@@ -1,6 +1,7 @@
 import { sampleItem } from '../Products/sample.item.mock';
 
 export const SampleTemplateCreate = {
+  name: 'Template A',
   buyerId: '617364617364617364617344',
   items: [sampleItem, sampleItem],
   statuses: [

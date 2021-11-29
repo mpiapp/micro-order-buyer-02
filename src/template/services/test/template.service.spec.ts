@@ -32,6 +32,15 @@ describe('TemplateService', () => {
     );
   });
 
+  it('should be update template', async () => {
+    expect(
+      await service.updateTemplate({
+        id: expect.any(String),
+        ...SampleTemplateCreate,
+      }),
+    ).toEqual('617364617364617364617344');
+  });
+
   it('should be delete template', async () => {
     expect(await service.deleteTemplate('617364617364617364617344')).toEqual(
       '617364617364617364617344',

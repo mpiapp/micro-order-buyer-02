@@ -6,6 +6,7 @@ import { TemplateCreateDto } from '../dto/CreateTemplate.dto';
 import { ICreateTemplate } from '../interfaces/services/CreateTemplate.interface';
 import { IDeleteTemplate } from '../interfaces/services/DeleteTemplate.interface';
 import moment = require('moment');
+import { TemplateUpdateDto } from '../dto/UpdateTemplate.dto';
 
 @Injectable()
 export class TemplateService implements ICreateTemplate, IDeleteTemplate {
@@ -15,6 +16,11 @@ export class TemplateService implements ICreateTemplate, IDeleteTemplate {
 
   async createTemplate(param: TemplateCreateDto): Promise<Template> {
     return this.model.create(param);
+  }
+
+  async updateTemplate(params: TemplateUpdateDto): Promise<Template> {
+    const { id, ...update } = params;
+    return this.model.findByIdAndUpdate(id, { $set: update }, { new: true });
   }
 
   async deleteTemplate(id: string): Promise<Template> {
