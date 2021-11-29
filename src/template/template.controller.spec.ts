@@ -3,7 +3,10 @@ import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import configuration from './../config/configuration';
 import { sampleItem } from './../../test/mocks/sample/Products/sample.item.mock';
-import { SampleTemplateCreate } from './../../test/mocks/sample/Template/Sample.mocks';
+import {
+  SampleTemplateCreate,
+  SampleTemplateUpdate,
+} from './../../test/mocks/sample/Template/Sample.mocks';
 import { Template } from './schemas/template.schema';
 import { TemplateItemsService } from './services/template-items.service';
 import { TemplateService } from './services/template.service';
@@ -90,6 +93,19 @@ describe('TemplateController', () => {
     });
   });
 
+  it('should be update template', async () => {
+    expect(
+      await controller.TemplateUpdate({
+        ...MessageSample,
+        value: SampleTemplateUpdate,
+      }),
+    ).toEqual({
+      errors: null,
+      message: config.get('messageBase.Template.update.Success'),
+      status: 200,
+    });
+  });
+
   it('should be create template failed', async () => {
     mockControllerTemplate.findByIdAndUpdate.mockImplementation(() => {
       throw new Error();
@@ -105,6 +121,22 @@ describe('TemplateController', () => {
         errors: error.errors,
         status: 400,
         message: config.get('messageBase.Template.delete.Failed'),
+        data: SampleTemplateCreate,
+      });
+    }
+  });
+
+  it('should be update template failed', async () => {
+    try {
+      await controller.TemplateUpdate({
+        ...MessageSample,
+        value: SampleTemplateUpdate,
+      });
+    } catch (error) {
+      expect(error).toEqual({
+        errors: error.errors,
+        status: 400,
+        message: config.get('messageBase.Template.update.Failed'),
         data: SampleTemplateCreate,
       });
     }

@@ -9,7 +9,7 @@ export class DeliveryNoteCreateDto implements IDnCreate {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  code: string;
+  code_delivery_note: string;
   @ApiProperty()
   @IsString()
   @IsNotEmpty()

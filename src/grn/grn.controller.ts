@@ -3,7 +3,6 @@ import {
   CacheInterceptor,
   Controller,
   HttpStatus,
-  Query,
   UseInterceptors,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -16,6 +15,7 @@ import { GrnPaginateDto } from './dto/Paginate.dto';
 import { GRNUpdateDto } from './dto/Update.dto';
 import { GrnService } from './services/grn.service';
 import { Helper } from './../utils/helper.utils';
+import { IncomingMessage } from './../config/interfaces/Income.interface';
 
 @Controller('grn')
 export class GrnController {
@@ -26,10 +26,12 @@ export class GrnController {
   ) {}
 
   @UseInterceptors(CacheInterceptor)
-  @MessagePattern('Good-Receive-Note-List-Data')
-  async GRNList(@Query('id') id: string): Promise<IDeliveryNotesResponse> {
+  @MessagePattern('good.receive.note.get.all')
+  async GRNList(
+    @Body() message: IncomingMessage<string>,
+  ): Promise<IDeliveryNotesResponse> {
     try {
-      const getAll = await this.grnService.getAll(id);
+      const getAll = await this.grnService.getAll(message.value);
       return {
         status: HttpStatus.OK,
         message: this.Config.get<string>('messageBase.GRN.All.Success'),
@@ -47,10 +49,12 @@ export class GrnController {
   }
 
   @UseInterceptors(CacheInterceptor)
-  @MessagePattern('Good-Receive-Note-ById')
-  async GRNGetById(@Query('id') id: string): Promise<IDeliveryNoteResponse> {
+  @MessagePattern('good.receive.note.get.by.id')
+  async GRNGetById(
+    @Body() message: IncomingMessage<string>,
+  ): Promise<IDeliveryNoteResponse> {
     try {
-      const getOne = await this.grnService.getOne(id);
+      const getOne = await this.grnService.getOne(message.value);
       return {
         status: HttpStatus.OK,
         message: this.Config.get<string>('messageBase.GRN.One.Success'),
@@ -68,32 +72,35 @@ export class GrnController {
   }
 
   @UseInterceptors(CacheInterceptor)
-  @MessagePattern('Good-Receive-Note-Paginate')
+  @MessagePattern('good.receive.note.paginate')
   async GRNPaginate(
-    @Query() params: GrnPaginateDto,
+    @Body() message: IncomingMessage<GrnPaginateDto>,
   ): Promise<IDeliveryNotesPaginateResponse> {
-    const { skip, limit } = params;
-    const getData = await this.grnService.getPaginate(params);
+    const { skip, limit } = message.value;
+    const getData = await this.grnService.getPaginate(message.value);
     if (!getData) {
       return {
         count: 0,
-        page: skip,
-        limit: limit,
+        page: Number(skip),
+        limit: Number(limit),
         data: null,
       };
     }
     const { data, metadata } = getData[0];
     return {
       count: metadata[0] ? metadata[0].total : 0,
-      page: skip,
-      limit: limit,
+      page: Number(skip),
+      limit: Number(limit),
       data: data,
     };
   }
 
-  @MessagePattern('Generate-Code-Good-Receive-Note')
-  async GenerateCode(@Query('po_number') po_number: string): Promise<string> {
-    const searchCode = `GRN-${po_number.slice(-3)}`;
+  @MessagePattern('good.receive.note.generate.code')
+  async GenerateCode(
+    @Body() message: IncomingMessage<string>,
+  ): Promise<string> {
+    const code = message.value;
+    const searchCode = `GRN-${code.slice(-3)}`;
     const countingNumber: number = await this.grnService.getCount(searchCode);
     return this.helperService.generateCode({
       code: searchCode,
@@ -102,12 +109,12 @@ export class GrnController {
     });
   }
 
-  @MessagePattern('Good-Receive-Note-Save')
+  @MessagePattern('good.receive.note.save')
   async GRNUpdate(
-    @Query('id') id: string,
-    @Body() params: GRNUpdateDto,
+    @Body() message: IncomingMessage<{ id: string; params: GRNUpdateDto }>,
   ): Promise<IDeliveryNoteResponse> {
     try {
+      const { id, params } = message.value;
       const save = await this.grnService.updateGRN(id, params);
       return {
         status: HttpStatus.OK,
@@ -127,10 +134,10 @@ export class GrnController {
 
   @MessagePattern('Reject-Good-Receive-Note')
   async GRNRejected(
-    @Query('id') id: string,
-    @Body() params: StatusDto,
+    @Body() message: IncomingMessage<{ id: string; params: StatusDto }>,
   ): Promise<IDeliveryNoteResponse> {
     try {
+      const { id, params } = message.value;
       const save = await this.grnService.rejectGRN(id, params);
       return {
         status: HttpStatus.OK,

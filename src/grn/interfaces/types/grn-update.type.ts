@@ -1,5 +1,5 @@
 export type TGrnUpdate = {
-  grn_number: string;
+  code_good_received_note: string;
   receivedUserId: string;
   items: {
     productId: string;

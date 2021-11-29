@@ -9,6 +9,7 @@ import { GrnService } from './services/grn.service';
 import { mockGrnController } from './../../test/mocks/services/Controller.mocks';
 import { sampleGRN } from './../../test/mocks/sample/GoodReceiveNote/Sample.Data.mocks';
 import { CacheModule } from '@nestjs/common';
+import { MessageSample } from './../../test/mocks/sample/message/sample.message.mock';
 
 describe('GrnController', () => {
   let controller: GrnController;
@@ -42,13 +43,21 @@ describe('GrnController', () => {
   });
 
   it('should be generate code GRN', async () => {
-    expect(await controller.GenerateCode('KPJ-01-01-00001-001')).toEqual(
-      'GRN-001-002',
-    );
+    expect(
+      await controller.GenerateCode({
+        ...MessageSample,
+        value: 'KPJ-01-01-00001-001',
+      }),
+    ).toEqual('GRN-001-002');
   });
 
   it('should be getOne Good Receive note', async () => {
-    expect(await controller.GRNGetById(expect.any(String))).toEqual({
+    expect(
+      await controller.GRNGetById({
+        ...MessageSample,
+        value: expect.any(String),
+      }),
+    ).toEqual({
       errors: null,
       status: 200,
       data: sampleGRN,
@@ -60,7 +69,10 @@ describe('GrnController', () => {
     mockGrnController.findById.mockRejectedValue(new Error());
 
     try {
-      await controller.GRNGetById(expect.any(String));
+      await controller.GRNGetById({
+        ...MessageSample,
+        value: expect.any(String),
+      });
     } catch (error) {
       expect(error).toEqual({
         errors: error,
@@ -72,7 +84,9 @@ describe('GrnController', () => {
   });
 
   it('should be getAll Good Receive note', async () => {
-    expect(await controller.GRNList(expect.any(String))).toEqual({
+    expect(
+      await controller.GRNList({ ...MessageSample, value: expect.any(String) }),
+    ).toEqual({
       errors: null,
       status: 200,
       data: [sampleGRN],
@@ -87,9 +101,12 @@ describe('GrnController', () => {
 
     expect(
       await controller.GRNPaginate({
-        buyerId: expect.any(String),
-        skip: 0,
-        limit: 10,
+        ...MessageSample,
+        value: {
+          buyerId: expect.any(String),
+          skip: 0,
+          limit: 10,
+        },
       }),
     ).toEqual({
       page: 0,
@@ -106,9 +123,12 @@ describe('GrnController', () => {
 
     expect(
       await controller.GRNPaginate({
-        buyerId: expect.any(String),
-        skip: 0,
-        limit: 10,
+        ...MessageSample,
+        value: {
+          buyerId: expect.any(String),
+          skip: 0,
+          limit: 10,
+        },
       }),
     ).toEqual({
       count: 0,
@@ -123,9 +143,12 @@ describe('GrnController', () => {
 
     expect(
       await controller.GRNPaginate({
-        buyerId: expect.any(String),
-        skip: 0,
-        limit: 10,
+        ...MessageSample,
+        value: {
+          buyerId: expect.any(String),
+          skip: 0,
+          limit: 10,
+        },
       }),
     ).toEqual({
       count: 0,
@@ -139,7 +162,7 @@ describe('GrnController', () => {
     mockGrnController.find.mockRejectedValue(new Error());
 
     try {
-      await controller.GRNList(expect.any(String));
+      await controller.GRNList({ ...MessageSample, value: expect.any(String) });
     } catch (error) {
       expect(error).toEqual({
         errors: error,
@@ -151,7 +174,12 @@ describe('GrnController', () => {
   });
 
   it('should be update Good Receive Note', async () => {
-    expect(await controller.GRNUpdate(expect.any(String), sampleGRN)).toEqual({
+    expect(
+      await controller.GRNUpdate({
+        ...MessageSample,
+        value: { id: expect.any(String), params: sampleGRN },
+      }),
+    ).toEqual({
       errors: null,
       status: 200,
       data: sampleGRN,
@@ -161,9 +189,15 @@ describe('GrnController', () => {
 
   it('should be Reject Good Receive note', async () => {
     expect(
-      await controller.GRNRejected(expect.any(String), {
-        name: 'Rejected',
-        timestamp: new Date(),
+      await controller.GRNRejected({
+        ...MessageSample,
+        value: {
+          id: expect.any(String),
+          params: {
+            name: 'Rejected',
+            timestamp: new Date(),
+          },
+        },
       }),
     ).toEqual({
       errors: null,
@@ -177,7 +211,10 @@ describe('GrnController', () => {
     mockGrnController.findByIdAndUpdate.mockRejectedValue(new Error());
 
     try {
-      await controller.GRNUpdate(expect.any(String), sampleGRN);
+      await controller.GRNUpdate({
+        ...MessageSample,
+        value: { id: expect.any(String), params: sampleGRN },
+      });
     } catch (error) {
       expect(error).toEqual({
         errors: error,
@@ -192,9 +229,15 @@ describe('GrnController', () => {
     mockGrnController.findByIdAndUpdate.mockRejectedValue(new Error());
 
     try {
-      await controller.GRNRejected(expect.any(String), {
-        name: 'Rejected',
-        timestamp: new Date(),
+      await controller.GRNRejected({
+        ...MessageSample,
+        value: {
+          id: expect.any(String),
+          params: {
+            name: 'Rejected',
+            timestamp: new Date(),
+          },
+        },
       });
     } catch (error) {
       expect(error).toEqual({
@@ -209,8 +252,11 @@ describe('GrnController', () => {
   it('should be generate code GRN if get count > 1', async () => {
     mockGrnController.find.mockResolvedValue(1);
 
-    expect(await controller.GenerateCode('KPJ-01-01-00001-001')).toEqual(
-      'GRN-001-001',
-    );
+    expect(
+      await controller.GenerateCode({
+        ...MessageSample,
+        value: 'KPJ-01-01-00001-001',
+      }),
+    ).toEqual('GRN-001-001');
   });
 });

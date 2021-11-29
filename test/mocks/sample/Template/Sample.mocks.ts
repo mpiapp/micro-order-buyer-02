@@ -12,3 +12,9 @@ export const SampleTemplateCreate = {
   ],
   createdBy: '615fc7256dce435b915538ec',
 };
+
+export const SampleTemplateUpdate = {
+  name: 'Template A',
+  id: expect.any(String),
+  items: [sampleItem, sampleItem],
+};

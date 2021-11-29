@@ -6,7 +6,7 @@ export class GRNUpdateDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  grn_number: string;
+  code_good_received_note: string;
   @ApiProperty()
   @IsString()
   @IsNotEmpty()

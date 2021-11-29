@@ -8,9 +8,9 @@ export class DN {
   @Prop()
   id: string;
   @Prop({ unique: true, required: true, index: true, type: String })
-  code: string;
+  code_delivery_note: string;
   @Prop({ type: String })
-  code_grn?: string;
+  code_good_received_note?: string;
   @Prop({ type: Date })
   date: Date;
   @Prop({ type: String, required: true })

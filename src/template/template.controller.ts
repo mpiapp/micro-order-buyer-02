@@ -11,6 +11,7 @@ import { ITemplateSearchAndListResponse } from './interfaces/response/SearchAndL
 import { TemplateItemsService } from './services/template-items.service';
 import { TemplateService } from './services/template.service';
 import { IncomingMessage } from './../config/interfaces/Income.interface';
+import { TemplateUpdateDto } from './dto/UpdateTemplate.dto';
 
 @ApiTags('Template Purchase Request')
 @Controller('template')
@@ -44,6 +45,26 @@ export class TemplateController {
   }
 
   @MessagePattern('template.update')
+  async TemplateUpdate(
+    @Body() message: IncomingMessage<TemplateUpdateDto>,
+  ): Promise<BaseResponse> {
+    try {
+      await this.TemplateMaster.updateTemplate(message.value);
+      return {
+        status: HttpStatus.OK,
+        message: this.Config.get<string>('messageBase.Template.update.Success'),
+        errors: null,
+      };
+    } catch (error) {
+      return {
+        status: HttpStatus.PRECONDITION_FAILED,
+        message: this.Config.get<string>('messageBase.Template.update.Failed'),
+        errors: error,
+      };
+    }
+  }
+
+  @MessagePattern('template.delete')
   async TemplateDelete(
     @Body() message: IncomingMessage<string>,
   ): Promise<BaseResponse> {
