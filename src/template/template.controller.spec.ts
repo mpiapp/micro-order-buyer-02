@@ -358,4 +358,68 @@ describe('TemplateController', () => {
       status: 201,
     });
   });
+
+  it('should be paginate Template', async () => {
+    mockControllerTemplate.aggregate.mockReturnValue([
+      { data: [SampleTemplateCreate], metadata: [{ total: 1 }] },
+    ]);
+
+    expect(
+      await controller.TemplatePaginate({
+        ...MessageSample,
+        value: {
+          keyId: expect.any(String),
+          skip: 0,
+          limit: 10,
+        },
+      }),
+    ).toEqual({
+      count: 1,
+      page: 0,
+      limit: 10,
+      data: [SampleTemplateCreate],
+    });
+  });
+
+  it('should be paginate Template Metadata Null', async () => {
+    mockControllerTemplate.aggregate.mockReturnValue([
+      { data: [SampleTemplateCreate], metadata: [] },
+    ]);
+
+    expect(
+      await controller.TemplatePaginate({
+        ...MessageSample,
+        value: {
+          keyId: expect.any(String),
+          skip: 0,
+          limit: 10,
+        },
+      }),
+    ).toEqual({
+      count: 0,
+      page: 0,
+      limit: 10,
+      data: [SampleTemplateCreate],
+    });
+  });
+
+  it('should be paginate Template failed', async () => {
+    mockControllerTemplate.aggregate.mockReturnValue(false);
+
+    expect(
+      await controller.TemplatePaginate({
+        ...MessageSample,
+        value: {
+          keyId: expect.any(String),
+          skip: 0,
+          limit: 10,
+        },
+      }),
+    ).toEqual({
+      count: 0,
+      page: 0,
+      limit: 10,
+      data: null,
+    });
+  });
 });

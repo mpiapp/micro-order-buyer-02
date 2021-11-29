@@ -90,4 +90,14 @@ describe('PurchaseRequestService', () => {
       SampleCreate,
     );
   });
+
+  it('should get data paginate', async () => {
+    expect(
+      await service.getPaginate({
+        keyId: expect.any(String),
+        skip: 0,
+        limit: 10,
+      }),
+    ).toEqual([SampleCreate]);
+  });
 });

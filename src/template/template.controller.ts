@@ -12,6 +12,8 @@ import { TemplateItemsService } from './services/template-items.service';
 import { TemplateService } from './services/template.service';
 import { IncomingMessage } from './../config/interfaces/Income.interface';
 import { TemplateUpdateDto } from './dto/UpdateTemplate.dto';
+import { TBasePaginate } from './../config/type/BasePaginate.type';
+import { ITemplatePaginateResponse } from './interfaces/response/Paginate.interface';
 
 @ApiTags('Template Purchase Request')
 @Controller('template')
@@ -27,6 +29,8 @@ export class TemplateController {
     @Body() message: IncomingMessage<TemplateCreateDto>,
   ): Promise<ITemplateCreateAndUpdateResponse> {
     try {
+      const { value } = message;
+      console.log(JSON.stringify(value));
       const save = await this.TemplateMaster.createTemplate(message.value);
       return {
         status: HttpStatus.CREATED,
@@ -237,5 +241,32 @@ export class TemplateController {
         errors: error,
       };
     }
+  }
+
+  @MessagePattern('template.paginate')
+  async TemplatePaginate(
+    @Body() message: IncomingMessage<TBasePaginate>,
+  ): Promise<ITemplatePaginateResponse> {
+    const { skip, limit } = message.value;
+    const getData = await this.TemplateMaster.getPaginate({
+      ...message.value,
+      skip: Number(skip),
+      limit: Number(limit),
+    });
+    if (!getData) {
+      return {
+        count: 0,
+        page: Number(skip),
+        limit: Number(limit),
+        data: null,
+      };
+    }
+    const { data, metadata } = getData[0];
+    return {
+      count: metadata[0] ? metadata[0].total : 0,
+      page: Number(skip),
+      limit: Number(limit),
+      data: data,
+    };
   }
 }

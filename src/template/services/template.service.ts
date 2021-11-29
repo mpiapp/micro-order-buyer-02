@@ -7,6 +7,7 @@ import { ICreateTemplate } from '../interfaces/services/CreateTemplate.interface
 import { IDeleteTemplate } from '../interfaces/services/DeleteTemplate.interface';
 import moment = require('moment');
 import { TemplateUpdateDto } from '../dto/UpdateTemplate.dto';
+import { TBasePaginate } from './../../config/type/BasePaginate.type';
 
 @Injectable()
 export class TemplateService implements ICreateTemplate, IDeleteTemplate {
@@ -28,7 +29,7 @@ export class TemplateService implements ICreateTemplate, IDeleteTemplate {
   }
 
   async listTemplate(idBuyer: string): Promise<Template[]> {
-    return this.model.find({ buyerId: idBuyer });
+    return this.model.find({ buyerId: idBuyer, isDeleted: false });
   }
 
   async getByIdTemplate(id: string): Promise<Template> {
@@ -37,10 +38,47 @@ export class TemplateService implements ICreateTemplate, IDeleteTemplate {
 
   async searchTemplate(search: string): Promise<Template[]> {
     return this.model.find({
+      name: { $regex: search },
       createdAt: {
         $gte: moment(new Date(search)).startOf('day').toDate(),
         $lte: moment(new Date(search)).endOf('day').toDate(),
       },
     });
+  }
+
+  async getPaginate(params: TBasePaginate): Promise<any> {
+    const { keyId, skip, limit } = params;
+    return this.model.aggregate([
+      {
+        $match: {
+          buyerId: keyId,
+          isDeleted: false,
+        },
+      },
+      {
+        $facet: {
+          metadata: [
+            {
+              $count: 'total',
+            },
+          ],
+          data: [
+            {
+              $skip: skip,
+            },
+            {
+              $limit: limit,
+            },
+          ],
+        },
+      },
+      {
+        $addFields: {
+          lastStatus: {
+            $last: '$statuses.name',
+          },
+        },
+      },
+    ]);
   }
 }

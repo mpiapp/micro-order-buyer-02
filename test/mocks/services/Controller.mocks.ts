@@ -37,6 +37,7 @@ export const mockControllerTemplate = {
   }),
   find: jest.fn().mockReturnValue([SampleTemplateCreate]),
   findById: jest.fn().mockReturnValue(SampleTemplateCreate),
+  aggregate: jest.fn().mockReturnValue(SampleTemplateCreate),
 };
 
 export const mockControllerPurchaseOrder = {

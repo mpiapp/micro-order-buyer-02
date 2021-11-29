@@ -14,4 +14,5 @@ export const mockServiceTemplate = {
   }),
   find: jest.fn().mockResolvedValue([SampleTemplateCreate]),
   findById: jest.fn().mockResolvedValue(SampleTemplateCreate),
+  aggregate: jest.fn().mockReturnValue([SampleTemplateCreate]),
 };
