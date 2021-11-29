@@ -21,7 +21,7 @@ export class OrdersController {
     private readonly helperService: Helper,
   ) {}
 
-  @MessagePattern('Order-Fulfillment-List-Data')
+  @MessagePattern('order.fulfillment.get.all')
   async getOrder(
     @Query('id') id: string,
     @Query('status') status: string,
@@ -44,7 +44,7 @@ export class OrdersController {
     }
   }
 
-  @MessagePattern('Order-Fulfillment-ById')
+  @MessagePattern('order.fulfillment.get.by.id')
   async getOrderById(@Query('id') id: string): Promise<IOrderResponse> {
     try {
       const getOne = await this.ordersService.getOrderById(id);
@@ -64,7 +64,7 @@ export class OrdersController {
     }
   }
 
-  @MessagePattern('Order-Fulfillment-Paginate')
+  @MessagePattern('order.fulfillment.paginate')
   async getOrderPaginate(
     @Query() params: PaginateDto,
   ): Promise<IOrderPaginateResponse> {
@@ -87,7 +87,7 @@ export class OrdersController {
     };
   }
 
-  @MessagePattern('Get-ID-Package')
+  @MessagePattern('order.fulfillment.get.id.package')
   async getIdPackage(@Body() params: IdPackage): Promise<string> {
     const { id, count } = params;
 
