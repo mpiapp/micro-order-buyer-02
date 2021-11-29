@@ -1,5 +1,5 @@
 export type TPaginate = {
-  vendorId: string;
+  keyId: string;
   skip: number;
   limit: number;
 };

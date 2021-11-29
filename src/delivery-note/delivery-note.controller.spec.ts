@@ -140,7 +140,7 @@ describe('DeliveryNoteController', () => {
       await controller.DeliveryNotePaginate({
         ...MessageSample,
         value: {
-          vendorId: expect.any(String),
+          keyId: expect.any(String),
           skip: 0,
           limit: 10,
         },
@@ -162,7 +162,7 @@ describe('DeliveryNoteController', () => {
       await controller.DeliveryNotePaginate({
         ...MessageSample,
         value: {
-          vendorId: expect.any(String),
+          keyId: expect.any(String),
           skip: 0,
           limit: 10,
         },
@@ -182,7 +182,7 @@ describe('DeliveryNoteController', () => {
       await controller.DeliveryNotePaginate({
         ...MessageSample,
         value: {
-          vendorId: expect.any(String),
+          keyId: expect.any(String),
           skip: 0,
           limit: 10,
         },

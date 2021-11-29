@@ -42,11 +42,11 @@ export class DeliveryNoteService
   }
 
   async getPaginate(params: TPaginate): Promise<any> {
-    const { vendorId, skip, limit } = params;
+    const { keyId, skip, limit } = params;
     return this.model.aggregate([
       {
         $match: {
-          vendorId: vendorId,
+          vendorId: keyId,
         },
       },
       {

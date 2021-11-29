@@ -47,7 +47,7 @@ describe('DeliveryNoteService', () => {
   it('should be get paginate delivery note ', async () => {
     expect(
       await service.getPaginate({
-        vendorId: expect.any(String),
+        keyId: expect.any(String),
         skip: 0,
         limit: 10,
       }),

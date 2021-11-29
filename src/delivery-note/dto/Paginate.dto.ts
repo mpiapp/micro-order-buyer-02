@@ -1,12 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber, IsString, Min } from 'class-validator';
-import { TPaginate } from '../interfaces/type/dn-paginate.type';
+import { TBasePaginate } from './../../config/type/BasePaginate.type';
 
-export class DNPaginateDto implements TPaginate {
+export class DNPaginateDto implements TBasePaginate {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  vendorId: string;
+  keyId: string;
   @ApiProperty()
   @IsNotEmpty()
   @IsNumber()
