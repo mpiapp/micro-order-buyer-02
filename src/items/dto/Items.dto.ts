@@ -81,5 +81,5 @@ export class Items implements ItemsInterface {
   @ApiProperty()
   @IsObject()
   @IsNotEmpty()
-  payment_term: IPaymentTerm;
+  payment_term: IPaymentTerm[];
 }

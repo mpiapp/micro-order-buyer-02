@@ -30,7 +30,6 @@ export class TemplateController {
   ): Promise<ITemplateCreateAndUpdateResponse> {
     try {
       const { value } = message;
-      console.log(JSON.stringify(value));
       const save = await this.TemplateMaster.createTemplate(message.value);
       return {
         status: HttpStatus.CREATED,

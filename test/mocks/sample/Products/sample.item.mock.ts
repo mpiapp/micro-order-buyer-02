@@ -39,8 +39,10 @@ export const sampleItem: ItemPRDto = {
   },
   price: 120000,
   quantity: 12,
-  payment_term: {
-    name: 'Test',
-    value: 12,
-  },
+  payment_term: [
+    {
+      name: 'Test',
+      value: 12,
+    },
+  ],
 };

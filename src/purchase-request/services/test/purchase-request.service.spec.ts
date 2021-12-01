@@ -46,6 +46,22 @@ describe('PurchaseRequestService', () => {
     });
   });
 
+  it('should be update purchase request', async () => {
+    mockPurchaseRequest.findByIdAndUpdate.mockImplementation(() => {
+      return {
+        ...SampleCreate,
+        ...SampleUpdate,
+      };
+    });
+
+    expect(
+      await service.updateVendor(expect.any(String), SampleUpdate),
+    ).toEqual({
+      ...SampleCreate,
+      ...SampleUpdate,
+    });
+  });
+
   it('should be approval purchase request', async () => {
     expect(
       await service.approvalPurchaseRequest({
@@ -89,6 +105,10 @@ describe('PurchaseRequestService', () => {
     expect(await service.byIdPurchaseRequest(expect.any(String))).toEqual(
       SampleCreate,
     );
+  });
+
+  it('should be get by Id purchase request any', async () => {
+    expect(await service.getOneAny(expect.any(String))).toEqual(SampleCreate);
   });
 
   it('should get data paginate', async () => {

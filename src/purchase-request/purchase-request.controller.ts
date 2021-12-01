@@ -232,7 +232,7 @@ export class PurchaseRequestController {
     @Payload() message: IncomingMessage<ApprovalDto>,
   ): Promise<any> {
     const { id } = message.value;
-    const { vendors, code_pr } = await this.PRMaster.byIdPurchaseRequest(id);
+    const { vendors, code_pr } = await this.PRMaster.getOneAny(id);
 
     let counting = 1;
     for (const rows of vendors) {
@@ -241,7 +241,16 @@ export class PurchaseRequestController {
         count: counting++,
         digits: this.Config.get('DIGITS_NUMBER_PO'),
       });
+
+      const pack = await this.HelperService.group(
+        rows.packages,
+        rows.code_po,
+        'Open',
+      );
+
+      rows.packages = pack;
     }
+
     await this.PRMaster.updateVendor(id, vendors);
 
     return this.PRMaster.approvalPurchaseRequest(message.value);

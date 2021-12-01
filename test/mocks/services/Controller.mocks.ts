@@ -49,7 +49,7 @@ export const mockControllerPurchaseOrder = {
   }),
   findById: jest.fn().mockReturnValue(sampleDataCreatePO),
   find: jest.fn().mockReturnValue([sampleDataCreatePO]),
-  aggregate: jest.fn().mockReturnValue(sampleDataCreatePO),
+  aggregate: jest.fn().mockReturnValue([sampleDataCreatePO]),
 };
 
 export const mockGrnController = {

@@ -49,7 +49,7 @@ describe('PackageService', () => {
     );
   });
 
-  it('should be split Package', async () => {
+  it('should be split Package ', async () => {
     expect(
       await service.splitPackage(expect.any(String), splitPackageSample),
     ).toEqual({

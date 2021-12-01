@@ -81,11 +81,6 @@ export class PackageService {
   async getPackageById(id: string): Promise<any> {
     return this.model.aggregate([
       {
-        $addFields: {
-          'vendors._id': '$_id',
-        },
-      },
-      {
         $unwind: '$vendors',
       },
       {
@@ -96,15 +91,12 @@ export class PackageService {
                 buyerId: '$buyerId',
                 addressId: '$addressId',
                 date: '$date',
+                code_po: '$code_po',
+                vendor_name: '$vendor_name',
               },
               '$vendors',
             ],
           },
-        },
-      },
-      {
-        $addFields: {
-          'packages._id': '$_id',
         },
       },
       {
@@ -119,6 +111,8 @@ export class PackageService {
                 addressId: '$addressId',
                 vendorId: '$vendorId',
                 date: '$date',
+                code_po: '$code_po',
+                vendor_name: '$vendor_name',
               },
               '$packages',
             ],
@@ -129,6 +123,9 @@ export class PackageService {
         $addFields: {
           lastStatus: {
             $last: '$statuses.name',
+          },
+          grand_total: {
+            $sum: '$items.sub_total',
           },
         },
       },
@@ -143,11 +140,6 @@ export class PackageService {
   async getPackages(vendorId: string, status: string): Promise<any[]> {
     return this.model.aggregate([
       {
-        $addFields: {
-          'vendors._id': '$_id',
-        },
-      },
-      {
         $unwind: '$vendors',
       },
       {
@@ -158,6 +150,8 @@ export class PackageService {
                 buyerId: '$buyerId',
                 addressId: '$addressId',
                 date: '$date',
+                code_po: '$code_po',
+                vendor_name: '$vendor_name',
               },
               '$vendors',
             ],
@@ -167,11 +161,6 @@ export class PackageService {
       {
         $match: {
           vendorId: vendorId,
-        },
-      },
-      {
-        $addFields: {
-          'packages._id': '$_id',
         },
       },
       {
@@ -186,6 +175,8 @@ export class PackageService {
                 addressId: '$addressId',
                 vendorId: '$vendorId',
                 date: '$date',
+                code_po: '$code_po',
+                vendor_name: '$vendor_name',
               },
               '$packages',
             ],
@@ -196,6 +187,9 @@ export class PackageService {
         $addFields: {
           lastStatus: {
             $last: '$statuses.name',
+          },
+          grand_total: {
+            $sum: '$items.sub_total',
           },
         },
       },

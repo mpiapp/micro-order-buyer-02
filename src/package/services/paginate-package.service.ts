@@ -15,11 +15,6 @@ export class PaginatePackageService {
 
     return this.model.aggregate([
       {
-        $addFields: {
-          'vendors._id': '$_id',
-        },
-      },
-      {
         $unwind: '$vendors',
       },
       {
@@ -29,9 +24,31 @@ export class PaginatePackageService {
               {
                 buyerId: '$buyerId',
                 addressId: '$addressId',
+                vendor_name: '$vendor_name',
                 date: '$date',
+                code_po: '$code_po',
               },
               '$vendors',
+            ],
+          },
+        },
+      },
+      {
+        $unwind: '$packages',
+      },
+      {
+        $replaceRoot: {
+          newRoot: {
+            $mergeObjects: [
+              {
+                buyerId: '$buyerId',
+                addressId: '$addressId',
+                vendorId: '$vendorId',
+                vendor_name: '$vendor_name',
+                date: '$date',
+                code_po: '$code_po',
+              },
+              '$packages',
             ],
           },
         },
@@ -40,6 +57,9 @@ export class PaginatePackageService {
         $addFields: {
           lastStatus: {
             $last: '$statuses.name',
+          },
+          grand_total: {
+            $sum: '$items.sub_total',
           },
         },
       },

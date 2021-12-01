@@ -79,6 +79,10 @@ export class PurchaseRequestService
     return this.model.findById(id);
   }
 
+  async getOneAny(id: string): Promise<any> {
+    return this.model.findById(id);
+  }
+
   async getPaginate(params: TBasePaginate): Promise<any> {
     const { keyId, skip, limit } = params;
     return this.model.aggregate([

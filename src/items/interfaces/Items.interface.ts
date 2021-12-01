@@ -16,7 +16,7 @@ export interface ItemsInterface {
   author: string;
   warehouse: IWarehouse;
   price: number;
-  payment_term: IPaymentTerm;
+  payment_term: IPaymentTerm[];
 }
 
 export interface IPaymentTerm {

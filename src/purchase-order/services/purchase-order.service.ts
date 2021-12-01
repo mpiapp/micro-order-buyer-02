@@ -24,11 +24,47 @@ export class PurchaseOrderService implements IDeletePurchaseOrder {
   }
 
   async listPurchaseOrder(id: string): Promise<Order[]> {
-    return this.model.find({
-      buyerId: id,
-      isDeleted: false,
-      'approval.name': { $exists: true },
-    });
+    return this.model.aggregate([
+      {
+        $match: {
+          buyerId: id,
+          isDeleted: false,
+          'approval.name': { $exists: true },
+        },
+      },
+      {
+        $addFields: {
+          'vendors._id': '$_id',
+          lastStatus: {
+            $last: '$statuses.name',
+          },
+        },
+      },
+      {
+        $unwind: '$vendors',
+      },
+      {
+        $replaceRoot: {
+          newRoot: {
+            $mergeObjects: [
+              {
+                buyerId: '$buyerId',
+                addressId: '$addressId',
+                vendor_name: '$vendor_name',
+                date: '$date',
+                lastStatus: '$lastStatus',
+              },
+              '$vendors',
+            ],
+          },
+        },
+      },
+      {
+        $addFields: {
+          'packages.lastStatus': { $last: '$packages.statuses.name' },
+        },
+      },
+    ]);
   }
 
   async byIdPurchaseOrder(id: string): Promise<Order> {
@@ -43,6 +79,38 @@ export class PurchaseOrderService implements IDeletePurchaseOrder {
           buyerId: keyId,
           isDeleted: false,
           'approval.name': { $exists: true },
+        },
+      },
+      {
+        $addFields: {
+          'vendors._id': '$_id',
+          lastStatus: {
+            $last: '$statuses.name',
+          },
+        },
+      },
+      {
+        $unwind: '$vendors',
+      },
+      {
+        $replaceRoot: {
+          newRoot: {
+            $mergeObjects: [
+              {
+                buyerId: '$buyerId',
+                addressId: '$addressId',
+                vendor_name: '$vendor_name',
+                date: '$date',
+                lastStatus: '$lastStatus',
+              },
+              '$vendors',
+            ],
+          },
+        },
+      },
+      {
+        $addFields: {
+          'packages.lastStatus': { $last: '$packages.statuses.name' },
         },
       },
       {
