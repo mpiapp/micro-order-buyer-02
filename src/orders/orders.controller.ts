@@ -10,6 +10,7 @@ import { IOrderPaginateResponse } from './interfaces/response/Paginate.interface
 import { IOrderResponse } from './interfaces/response/Single.interface';
 import { OrderPaginateService } from './services/order-paginate.service';
 import { OrdersService } from './services/orders.service';
+import { IncomingMessage } from './../config/interfaces/Income.interface';
 
 @ApiTags('Order-Fulfillment')
 @Controller('orders')
@@ -23,11 +24,10 @@ export class OrdersController {
 
   @MessagePattern('order.fulfillment.get.all')
   async getOrder(
-    @Query('id') id: string,
-    @Query('status') status: string,
+    @Body() message: IncomingMessage<string>,
   ): Promise<IOrdersResponse> {
     try {
-      const getAll = await this.ordersService.getOrders(id, status);
+      const getAll = await this.ordersService.getOrders(message.value);
       return {
         status: HttpStatus.OK,
         message: this.Config.get<string>('messageBase.Orders.All.Success'),

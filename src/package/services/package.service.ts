@@ -5,6 +5,7 @@ import * as mongoose from 'mongoose';
 import { IPackage } from './../../purchase-order/interfaces/type/IPOPackage.interface';
 import { ItemTemplateDto } from 'src/template/dto/ItemTemplate.dto';
 import { Order, OrderDocument } from './../../database/schema/orders.schema';
+import { PackageStatusDto } from '../dto/PackageSattus.dto';
 
 @Injectable()
 export class PackageService {
@@ -78,6 +79,30 @@ export class PackageService {
     );
   }
 
+  async addStatusPackage(params: PackageStatusDto): Promise<any> {
+    const { id, statuses, vendorId } = params;
+    return this.model.findOneAndUpdate(
+      {
+        $and: [
+          {
+            'vendors.packages._id': new mongoose.Types.ObjectId(id),
+          },
+        ],
+      },
+      {
+        $push: {
+          'vendors.$[arrayVendor].packages.$[arrayPackage].statuses': statuses,
+        },
+      },
+      {
+        arrayFilters: [
+          { 'arrayVendor.vendorId': vendorId },
+          { 'arrayPackage._id': new mongoose.Types.ObjectId(id) },
+        ],
+      },
+    );
+  }
+
   async getPackageById(id: string): Promise<any> {
     return this.model.aggregate([
       {
@@ -97,6 +122,18 @@ export class PackageService {
               '$vendors',
             ],
           },
+        },
+      },
+      {
+        $addFields: {
+          paymentStatus: {
+            $last: '$statuses.name',
+          },
+        },
+      },
+      {
+        $match: {
+          paymentStatus: { $not: { $eq: 'Waiting Down Payment' } },
         },
       },
       {
@@ -127,6 +164,7 @@ export class PackageService {
           grand_total: {
             $sum: '$items.sub_total',
           },
+          update: 'false',
         },
       },
       {
@@ -159,8 +197,16 @@ export class PackageService {
         },
       },
       {
+        $addFields: {
+          paymentStatus: {
+            $last: '$statuses.name',
+          },
+        },
+      },
+      {
         $match: {
           vendorId: vendorId,
+          paymentStatus: { $not: { $eq: 'Waiting Down Payment' } },
         },
       },
       {
@@ -191,11 +237,7 @@ export class PackageService {
           grand_total: {
             $sum: '$items.sub_total',
           },
-        },
-      },
-      {
-        $match: {
-          lastStatus: status,
+          update: 'false',
         },
       },
     ]);

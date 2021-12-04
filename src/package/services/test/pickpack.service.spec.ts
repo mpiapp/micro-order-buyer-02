@@ -11,6 +11,13 @@ const mockpickPack = {
       id: expect.any(String),
     };
   }),
+  findOneAndUpdate: jest.fn().mockImplementation(() => {
+    return {
+      message: 'Update Success',
+      status: true,
+      id: expect.any(String),
+    };
+  }),
 };
 describe('pickPackService', () => {
   let service: PickPackService;
@@ -37,6 +44,7 @@ describe('pickPackService', () => {
     expect(
       await service.pickPackage({
         id: expect.any(String),
+        vendorId: expect.any(String),
         code: 'PICK-XXX-001',
         items: [],
         total: 10000,
@@ -56,6 +64,7 @@ describe('pickPackService', () => {
     expect(
       await service.packPackage({
         id: expect.any(String),
+        vendorId: expect.any(String),
         code: 'PACK-XXX-001',
         items: [],
         total: 10000,

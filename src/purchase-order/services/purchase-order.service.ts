@@ -33,14 +33,6 @@ export class PurchaseOrderService implements IDeletePurchaseOrder {
         },
       },
       {
-        $addFields: {
-          'vendors._id': '$_id',
-          lastStatus: {
-            $last: '$statuses.name',
-          },
-        },
-      },
-      {
         $unwind: '$vendors',
       },
       {
@@ -52,7 +44,6 @@ export class PurchaseOrderService implements IDeletePurchaseOrder {
                 addressId: '$addressId',
                 vendor_name: '$vendor_name',
                 date: '$date',
-                lastStatus: '$lastStatus',
               },
               '$vendors',
             ],
@@ -61,7 +52,30 @@ export class PurchaseOrderService implements IDeletePurchaseOrder {
       },
       {
         $addFields: {
-          'packages.lastStatus': { $last: '$packages.statuses.name' },
+          lastStatus: {
+            $last: '$statuses.name',
+          },
+          packages: {
+            $map: {
+              input: '$packages',
+              as: 'row',
+              in: {
+                _id: '$$row._id',
+                items: '$$row.items',
+                statuses: '$$row.statuses',
+                total: '$$row.total',
+                payment_terms: '$$row.payment_terms',
+                code_pick: '$$row.code_pick',
+                code_pack: '$$row.code_pack',
+                lastStatus: {
+                  $last: '$$row.statuses.name',
+                },
+              },
+            },
+          },
+          grand_total: {
+            $sum: '$packages.total',
+          },
         },
       },
     ]);
@@ -82,14 +96,6 @@ export class PurchaseOrderService implements IDeletePurchaseOrder {
         },
       },
       {
-        $addFields: {
-          'vendors._id': '$_id',
-          lastStatus: {
-            $last: '$statuses.name',
-          },
-        },
-      },
-      {
         $unwind: '$vendors',
       },
       {
@@ -101,7 +107,6 @@ export class PurchaseOrderService implements IDeletePurchaseOrder {
                 addressId: '$addressId',
                 vendor_name: '$vendor_name',
                 date: '$date',
-                lastStatus: '$lastStatus',
               },
               '$vendors',
             ],
@@ -110,7 +115,30 @@ export class PurchaseOrderService implements IDeletePurchaseOrder {
       },
       {
         $addFields: {
-          'packages.lastStatus': { $last: '$packages.statuses.name' },
+          lastStatus: {
+            $last: '$statuses.name',
+          },
+          packages: {
+            $map: {
+              input: '$packages',
+              as: 'row',
+              in: {
+                _id: '$$row._id',
+                items: '$$row.items',
+                statuses: '$$row.statuses',
+                total: '$$row.total',
+                payment_terms: '$$row.payment_terms',
+                code_pick: '$$row.code_pick',
+                code_pack: '$$row.code_pack',
+                lastStatus: {
+                  $last: '$$row.statuses.name',
+                },
+              },
+            },
+          },
+          grand_total: {
+            $sum: '$packages.total',
+          },
         },
       },
       {

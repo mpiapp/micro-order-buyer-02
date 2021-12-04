@@ -15,45 +15,56 @@ export class ProofPaymentService {
 
   async upload(params: ProofOfPaymentDto) {
     const { id, fileUrl, uploader } = params;
-    return this.model.updateOne(
+    return this.model.findOneAndUpdate(
       {
         $and: [
           {
-            'vendors.packages._id': new mongoose.Types.ObjectId(id),
+            'vendors._id': new mongoose.Types.ObjectId(id),
           },
         ],
       },
       {
         $set: {
-          'vendors.$.packages.$.proof_of_advance_payment.file.url': fileUrl,
-          'vendors.$.packages.$.proof_of_advance_payment.file.uploader':
-            uploader,
-          'vendors.$.packages.$.proof_of_advance_payment.file.date': new Date(
+          'vendors.$[array].proof_of_advance_payment.file.url': fileUrl,
+          'vendors.$[array].proof_of_advance_payment.file.uploader': uploader,
+          'vendors.$[array].proof_of_advance_payment.file.date': new Date(
             now(),
           ),
         },
+      },
+      {
+        arrayFilters: [{ 'array._id': new mongoose.Types.ObjectId(id) }],
       },
     );
   }
 
   async approved(params: ApprovalOfPaymentDto) {
     const { id, name, nominal } = params;
-    return this.model.updateOne(
+    return this.model.findOneAndUpdate(
       {
         $and: [
           {
-            'vendors.packages._id': new mongoose.Types.ObjectId(id),
+            'vendors._id': new mongoose.Types.ObjectId(id),
           },
         ],
       },
       {
         $set: {
-          'vendors.$.packages.$.proof_of_advance_payment.approval.nominal':
-            nominal,
-          'vendors.$.packages.$.proof_of_advance_payment.approval.name': name,
-          'vendors.$.packages.$.proof_of_advance_payment.approval.date':
-            new Date(now()),
+          'vendors.$[array].proof_of_advance_payment.approval.nominal': nominal,
+          'vendors.$[array].proof_of_advance_payment.approval.name': name,
+          'vendors.$[array].proof_of_advance_payment.approval.date': new Date(
+            Date.now(),
+          ),
         },
+        $push: {
+          'vendors.$[array].statuses': {
+            name: 'Active',
+            timestamp: new Date(Date.now()),
+          },
+        },
+      },
+      {
+        arrayFilters: [{ 'array._id': new mongoose.Types.ObjectId(id) }],
       },
     );
   }
@@ -61,12 +72,12 @@ export class ProofPaymentService {
   async checking(id: string) {
     return this.model.find({
       $and: [
-        { 'vendors.packages._id': new mongoose.Types.ObjectId(id) },
+        { 'vendors._id': new mongoose.Types.ObjectId(id) },
         {
-          'vendors.packages.down_payment': { $exists: true },
+          'vendors.down_payment': { $exists: true },
         },
         {
-          'vendors.packages.approval.name': { $exists: true },
+          'vendors.proof_of_advance_payment.approval.name': { $exists: true },
         },
       ],
     });

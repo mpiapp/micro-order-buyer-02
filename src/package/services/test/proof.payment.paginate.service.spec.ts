@@ -11,6 +11,13 @@ const mockProofPayment = {
       id: expect.any(String),
     };
   }),
+  findOneAndUpdate: jest.fn().mockImplementation(() => {
+    return {
+      message: 'Update Success',
+      status: true,
+      id: expect.any(String),
+    };
+  }),
   find: jest.fn().mockReturnValue(true),
 };
 describe('ProofPaymentService', () => {

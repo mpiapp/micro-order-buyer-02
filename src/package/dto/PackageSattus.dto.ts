@@ -1,9 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsNotEmpty, IsString } from 'class-validator';
-import { ItemPRDto } from '../../purchase-request/dto/Items.dto';
-import { StatusDto } from '../../purchase-request/dto/Status.dto';
+import { StatusDto } from './../../purchase-request/dto/Status.dto';
 
-export class pickPackPackageDto {
+export class PackageStatusDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
@@ -12,13 +11,6 @@ export class pickPackPackageDto {
   @IsString()
   @IsNotEmpty()
   vendorId: string;
-  @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
-  code_po: string;
-  @ApiProperty()
-  @IsArray()
-  items: ItemPRDto[];
   @ApiProperty()
   @IsArray()
   statuses: StatusDto;

@@ -80,4 +80,26 @@ describe('PurchaseOrderItemsService', () => {
       ],
     });
   });
+
+  it('should be reject change items from vendor', async () => {
+    POItemMOck.findOneAndUpdate.mockReturnValue({
+      ...sampleItemBaseChange,
+      statuses: [
+        {
+          name: 'Rejected',
+          timestamp: new Date('2021-10-25'),
+        },
+      ],
+    });
+
+    expect(await service.changeApprove(expect.any(String))).toEqual({
+      ...sampleItemBaseChange,
+      statuses: [
+        {
+          name: 'Rejected',
+          timestamp: new Date('2021-10-25'),
+        },
+      ],
+    });
+  });
 });

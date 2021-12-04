@@ -23,6 +23,7 @@ export const mockControllerPurchaseRequest = {
   findById: jest.fn().mockReturnValue(SampleCreate),
   find: jest.fn().mockReturnValue([SampleCreate]),
   aggregate: jest.fn().mockReturnValue([SampleCreate]),
+  push: jest.fn().mockReturnValue(null),
 };
 
 export const mockControllerTemplate = {

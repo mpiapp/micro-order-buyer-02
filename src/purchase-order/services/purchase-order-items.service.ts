@@ -32,6 +32,7 @@ export class PurchaseOrderItemsService {
       },
     );
   }
+
   async changeRejected(id: string): Promise<any> {
     return this.POmodel.findOneAndUpdate(
       {
@@ -39,8 +40,24 @@ export class PurchaseOrderItemsService {
       },
       {
         $push: {
-          'vendors.packages.items.$.statuses': {
+          'vendors.packages.items.$.status': {
             name: 'Rejected',
+            timestamp: new Date(Date.now()),
+          },
+        },
+      },
+    );
+  }
+
+  async changeApprove(id: string): Promise<any> {
+    return this.POmodel.findOneAndUpdate(
+      {
+        'vendors.packages.items._id': new mongoose.Types.ObjectId(id),
+      },
+      {
+        $push: {
+          'vendors.packages.items.$.status': {
+            name: 'Approved',
             timestamp: new Date(Date.now()),
           },
         },

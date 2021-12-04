@@ -14,6 +14,13 @@ const mockPackage = {
       id: expect.any(String),
     };
   }),
+  findOneAndUpdate: jest.fn().mockImplementation(() => {
+    return {
+      message: 'Update Success',
+      status: true,
+      id: expect.any(String),
+    };
+  }),
   aggregate: jest.fn().mockReturnValue(sampleFullPackage),
 };
 describe('PackageService', () => {
@@ -72,6 +79,40 @@ describe('PackageService', () => {
   it('should be pull Package', async () => {
     expect(
       await service.pullPackage(expect.any(String), expect.any(String)),
+    ).toEqual({
+      message: 'Update Success',
+      status: true,
+      id: expect.any(String),
+    });
+  });
+
+  it('should be pull Package items', async () => {
+    expect(
+      await service.pushItemPackage(expect.any(String), expect.any(String)),
+    ).toEqual({
+      message: 'Update Success',
+      status: true,
+      id: expect.any(String),
+    });
+  });
+
+  it('should be push Package items', async () => {
+    expect(
+      await service.pullItemPackage(expect.any(String), expect.any(String)),
+    ).toEqual({
+      message: 'Update Success',
+      status: true,
+      id: expect.any(String),
+    });
+  });
+
+  it('should be add status Package', async () => {
+    expect(
+      await service.addStatusPackage({
+        id: expect.any(String),
+        vendorId: expect.any(String),
+        statuses: { name: 'testing', timestamp: new Date() },
+      }),
     ).toEqual({
       message: 'Update Success',
       status: true,

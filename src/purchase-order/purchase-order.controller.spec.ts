@@ -157,7 +157,7 @@ describe('PurchaseOrderController', () => {
   });
 
   it('should get list PO Failed', async () => {
-    mockControllerPurchaseOrder.find.mockRejectedValue(Error());
+    mockControllerPurchaseOrder.aggregate.mockRejectedValue(Error());
     try {
       await controller.POList({
         ...MessageSample,
@@ -181,6 +181,7 @@ describe('PurchaseOrderController', () => {
   });
 
   it('should Search PO Failed', async () => {
+    mockControllerPurchaseOrder.find.mockRejectedValue(Error());
     try {
       await controller.POSearch({
         ...MessageSample,

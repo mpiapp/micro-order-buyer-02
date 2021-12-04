@@ -6,7 +6,7 @@ import { IncomingMessage } from './../config/interfaces/Income.interface';
 import { BaseResponse } from './../config/interfaces/response.base.interface';
 import { Helper } from './../utils/helper.utils';
 import { ApprovalOfPaymentDto } from './dto/Approval.Payment.dto';
-import { MoveItemPackageDto } from './dto/MovePackage.dto';
+import { PackageStatusDto } from './dto/PackageSattus.dto';
 import { PaginateDto } from './dto/Paginate.dto';
 import { pickPackPackageDto } from './dto/pickPack.dto';
 import { ProofOfPaymentDto } from './dto/Proof.Payment.dto';
@@ -100,10 +100,10 @@ export class PackageController {
 
   @EventPattern('package.proof.down.payment')
   async proofPackage(
-    @Payload() message: IncomingMessage<ProofOfPaymentDto>,
+    @Payload() message: IncomingMessage<{ params: ProofOfPaymentDto }>,
   ): Promise<BaseResponse> {
     try {
-      await this.paymentService.upload(message.value);
+      await this.paymentService.upload(message.value.params);
       return {
         status: HttpStatus.OK,
         message: this.Config.get<string>('messageBase.Package.upload.Success'),
@@ -120,10 +120,10 @@ export class PackageController {
 
   @EventPattern('package.approval.down.payment')
   async approvalPackage(
-    @Payload() message: IncomingMessage<ApprovalOfPaymentDto>,
+    @Payload() message: IncomingMessage<{ params: ApprovalOfPaymentDto }>,
   ): Promise<BaseResponse> {
     try {
-      await this.paymentService.approved(message.value);
+      await this.paymentService.approved(message.value.params);
       return {
         status: HttpStatus.OK,
         message: this.Config.get<string>(
@@ -145,9 +145,9 @@ export class PackageController {
     @Body() message: IncomingMessage<pickPackPackageDto>,
   ): Promise<BaseResponse> {
     try {
-      const { id, code_po, items, statuses } = message.value;
+      const { id, code_po, items, statuses, vendorId } = message.value;
       const validate = await this.paymentService.checking(id);
-      if (validate) {
+      if (!validate) {
         return {
           status: HttpStatus.NOT_ACCEPTABLE,
           message: this.Config.get<string>('messageBase.Package.check.Success'),
@@ -161,9 +161,10 @@ export class PackageController {
         count: 1,
         digits: this.Config.get('DIGITS_NUMBER_PICK'),
       });
-      const total = this.helpService.SUM(items);
+      const total = this.helpService.SubTotal(items);
       await this.pickPackService.pickPackage({
         id: id,
+        vendorId: vendorId,
         code: code,
         items: items,
         total: total,
@@ -188,7 +189,7 @@ export class PackageController {
     @Body() message: IncomingMessage<pickPackPackageDto>,
   ): Promise<BaseResponse> {
     try {
-      const { id, code_po, items, statuses } = message.value;
+      const { id, code_po, items, statuses, vendorId } = message.value;
       const code = await this.helpService.generateCode({
         code: `${this.Config.get('initialCode.Pack.code')}-${code_po.slice(
           -3,
@@ -200,6 +201,7 @@ export class PackageController {
       await this.pickPackService.packPackage({
         id: id,
         code: code,
+        vendorId: vendorId,
         items: items,
         total: total,
         statuses: statuses,
@@ -220,12 +222,10 @@ export class PackageController {
 
   @MessagePattern('package.move')
   async updatePackage(
-    @Body() message: IncomingMessage<MoveItemPackageDto>,
+    @Body() message: IncomingMessage<{ params: PackageStatusDto }>,
   ): Promise<BaseResponse> {
     try {
-      const { from_package, to_package, items } = message.value;
-      this.removeArray(from_package, items);
-      await this.packageService.pushItemPackage(to_package, items);
+      await this.packageService.addStatusPackage(message.value.params);
       return {
         status: HttpStatus.OK,
         message: this.Config.get<string>('messageBase.Package.update.Success'),
@@ -237,12 +237,6 @@ export class PackageController {
         message: this.Config.get<string>('messageBase.Package.update.Failed'),
         errors: error,
       };
-    }
-  }
-
-  private removeArray(id, items) {
-    for (const rows of items) {
-      this.packageService.pullItemPackage(id, rows.ProductId);
     }
   }
 }

@@ -6,8 +6,8 @@ import { OrdersController } from './orders.controller';
 import { OrderPaginateService } from './services/order-paginate.service';
 import { OrdersService } from './services/orders.service';
 import { getModelToken } from '@nestjs/mongoose';
-import { PO } from './../purchase-order/schemas/purchase-order.schema';
 import { sampleFullPackage } from './../../test/mocks/sample/Package/sample.full.data.mock';
+import { Order } from './../database/schema/orders.schema';
 
 const mockControllerOrders = {
   aggregate: jest.fn().mockReturnValue(sampleFullPackage),
@@ -29,7 +29,7 @@ describe('OrdersController', () => {
         Helper,
         OrderPaginateService,
         {
-          provide: getModelToken(PO.name),
+          provide: getModelToken(Order.name),
           useValue: mockControllerOrders,
         },
       ],
@@ -44,7 +44,7 @@ describe('OrdersController', () => {
   });
 
   it('should be getOrder', async () => {
-    expect(await controller.getOrder(expect.any(String), 'NEW')).toEqual({
+    expect(await controller.getOrder(expect.any(String))).toEqual({
       errors: null,
       status: 200,
       message: config.get<string>('messageBase.Orders.All.Success'),
@@ -83,7 +83,7 @@ describe('OrdersController', () => {
 
   it('should be getOrder failed', async () => {
     try {
-      await controller.getOrder(expect.any(String), 'NEW');
+      await controller.getOrder(expect.any(String));
     } catch (error) {
       expect(error).toEqual({
         errors: error.errors,

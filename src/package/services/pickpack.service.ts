@@ -12,9 +12,8 @@ export class PickPackService {
   ) {}
 
   async pickPackage(params: IPickPackPackage): Promise<any> {
-    const { id, code, items, statuses, total } = params;
-
-    return this.model.updateOne(
+    const { id, code, items, statuses, total, vendorId } = params;
+    return this.model.findOneAndUpdate(
       {
         $and: [
           {
@@ -24,19 +23,27 @@ export class PickPackService {
       },
       {
         $set: {
-          'vendors.$.packages.$.pick_number': code,
-          'vendors.$.packages.$.items': items,
-          'vendors.$.packages.$.total': total,
+          'vendors.$[arrayVendor].packages.$[arrayPackage].pick_number': code,
+          'vendors.$[arrayVendor].packages.$[arrayPackage].items': items,
+          'vendors.$[arrayVendor].packages.$[arrayPackage].total': total,
         },
-        $push: { 'vendors.$.packages.statuses': statuses },
+        $push: {
+          'vendors.$[arrayVendor].packages.$[arrayPackage].statuses': statuses,
+        },
+      },
+      {
+        arrayFilters: [
+          { 'arrayVendor.vendorId': vendorId },
+          { 'arrayPackage._id': new mongoose.Types.ObjectId(id) },
+        ],
       },
     );
   }
 
   async packPackage(params: IPickPackPackage): Promise<any> {
-    const { id, code, items, statuses } = params;
+    const { id, code, items, statuses, vendorId } = params;
 
-    return this.model.updateOne(
+    return this.model.findOneAndUpdate(
       {
         $and: [
           {
@@ -46,10 +53,18 @@ export class PickPackService {
       },
       {
         $set: {
-          'vendors.$.packages.$.pack_number': code,
-          'vendors.$.packages.$.items': items,
+          'vendors.$[arrayVendor].packages.$[arrayPackage].pack_number': code,
+          'vendors.$[arrayVendor].packages.$[arrayPackage].items': items,
         },
-        $push: { 'vendors.$.packages.statuses': statuses },
+        $push: {
+          'vendors.$[arrayVendor].packages.$[arrayPackage].statuses': statuses,
+        },
+      },
+      {
+        arrayFilters: [
+          { 'arrayVendor.vendorId': vendorId },
+          { 'arrayPackage._id': new mongoose.Types.ObjectId(id) },
+        ],
       },
     );
   }

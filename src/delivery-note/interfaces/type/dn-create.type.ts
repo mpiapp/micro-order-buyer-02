@@ -2,7 +2,7 @@ import { IPurchaseOrderItem } from '../../../purchase-order/interfaces/type/IPur
 import { IStatus } from '../../../purchase-request/interfaces/type/IStatus.interface';
 
 export type IDnCreate = {
-  code_delivery_note: string;
+  code_delivery_note?: string;
   date: Date;
   buyerId: string;
   addressId: string;

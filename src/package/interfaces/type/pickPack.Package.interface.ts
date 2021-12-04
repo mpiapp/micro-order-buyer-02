@@ -3,6 +3,7 @@ import { IStatus } from '../../../purchase-request/interfaces/type/IStatus.inter
 
 export interface IPickPackPackage {
   id: string;
+  vendorId: string;
   code: string;
   items: IPurchaseOrderItem[];
   total: number;

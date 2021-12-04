@@ -2,16 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as mongoose from 'mongoose';
-import {
-  PO,
-  PODocument,
-} from './../../purchase-order/schemas/purchase-order.schema';
+import { Order, OrderDocument } from './../../database/schema/orders.schema';
 import { IOrderService } from '../interfaces/services/orders.service.interface';
 
 @Injectable()
 export class OrdersService implements IOrderService {
   constructor(
-    @InjectModel(PO.name) private readonly model: Model<PODocument>,
+    @InjectModel(Order.name) private readonly model: Model<OrderDocument>,
   ) {}
 
   async getOrderById(id: string): Promise<any> {
@@ -43,6 +40,9 @@ export class OrdersService implements IOrderService {
           lastStatus: {
             $last: '$statuses.name',
           },
+          grand_total: {
+            $sum: '$packages.total',
+          },
         },
       },
       {
@@ -53,11 +53,11 @@ export class OrdersService implements IOrderService {
     ]);
   }
 
-  async getOrders(vendorId: string, status: string): Promise<any[]> {
+  async getOrders(vendorId: string): Promise<any[]> {
     return this.model.aggregate([
       {
-        $addFields: {
-          'vendors._id': '$_id',
+        $match: {
+          isDeleted: false,
         },
       },
       {
@@ -70,6 +70,7 @@ export class OrdersService implements IOrderService {
               {
                 buyerId: '$buyerId',
                 addressId: '$addressId',
+                vendor_name: '$vendor_name',
                 date: '$date',
               },
               '$vendors',
@@ -82,12 +83,16 @@ export class OrdersService implements IOrderService {
           lastStatus: {
             $last: '$statuses.name',
           },
+          'packages.lastStatus': { $last: '$packages.statuses.name' },
+          grand_total: {
+            $sum: '$packages.total',
+          },
         },
       },
       {
         $match: {
           vendorId: vendorId,
-          lastStatus: status,
+          lastStatus: 'Waiting Down Payment',
         },
       },
     ]);

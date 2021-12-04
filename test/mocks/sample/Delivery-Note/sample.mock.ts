@@ -2,7 +2,8 @@ import { sampleItem } from '../Products/sample.item.mock';
 
 export const sampleDeliveryNote = {
   id: expect.any(String),
-  code_delivery_note: 'DN-001-001',
+  packageId: expect.any(String),
+  code_po: 'DN-001-001',
   buyerId: '617364617364617364617344',
   addressId: '617364617364617364617344',
   date: new Date('2021-10-18T11:55:47.143+00:00'),

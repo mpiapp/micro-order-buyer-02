@@ -227,11 +227,13 @@ describe('PurchaseRequestController', () => {
 
   it('should add Status Master PR', async () => {
     mockControllerPurchaseRequest.findById.mockImplementation(() => {
+      SampleCreate.statuses.push();
       return SampleCreate;
     });
     mockControllerPurchaseRequest.findByIdAndUpdate.mockImplementation(() => {
       return SampleCreate;
     });
+
     expect(
       await controller.PRApproval({
         ...MessageSample,

@@ -7,7 +7,6 @@ import { Helper } from './../utils/helper.utils';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration from './../config/configuration';
 import { sampleFullPackage } from './../../test/mocks/sample/Package/sample.full.data.mock';
-import { sampleMoveItem } from './../../test/mocks/sample/Package/sample.move.item.mock';
 import { PaginatePackageService } from './services/paginate-package.service';
 import { PickPackService } from './services/pickPack.service';
 import { samplePickPackPackage } from './../../test/mocks/sample/Package/sample.pick.mock';
@@ -19,6 +18,7 @@ const mockControllerPackage = {
   find: jest.fn().mockReturnValue(sampleAfterSplitPackage),
   aggregate: jest.fn().mockReturnValue(sampleFullPackage),
   updateOne: jest.fn().mockReturnValue(true),
+  findOneAndUpdate: jest.fn().mockReturnValue(true),
 };
 describe('PackageController', () => {
   let controller: PackageController;
@@ -61,6 +61,20 @@ describe('PackageController', () => {
         value: samplePickPackPackage,
       }),
     ).toEqual({
+      errors: false,
+      status: 406,
+      message: config.get<string>('messageBase.Package.check.Success'),
+    });
+  });
+
+  it('should be create pick freez', async () => {
+    mockControllerPackage.find.mockReturnValue(true);
+    expect(
+      await controller.pickPackage({
+        ...MessageSample,
+        value: samplePickPackPackage,
+      }),
+    ).toEqual({
       errors: null,
       status: 201,
       message: config.get<string>('messageBase.Package.pick.Success'),
@@ -72,9 +86,11 @@ describe('PackageController', () => {
       await controller.proofPackage({
         ...MessageSample,
         value: {
-          id: expect.any(String),
-          fileUrl: expect.any(String),
-          uploader: expect.any(String),
+          params: {
+            id: expect.any(String),
+            fileUrl: expect.any(String),
+            uploader: expect.any(String),
+          },
         },
       }),
     ).toEqual({
@@ -89,9 +105,11 @@ describe('PackageController', () => {
       await controller.approvalPackage({
         ...MessageSample,
         value: {
-          id: expect.any(String),
-          name: expect.any(String),
-          nominal: expect.any(Number),
+          params: {
+            id: expect.any(String),
+            name: expect.any(String),
+            nominal: expect.any(Number),
+          },
         },
       }),
     ).toEqual({
@@ -118,7 +136,13 @@ describe('PackageController', () => {
     expect(
       await controller.updatePackage({
         ...MessageSample,
-        value: sampleMoveItem,
+        value: {
+          params: {
+            id: expect.any(String),
+            vendorId: expect.any(String),
+            statuses: { name: 'testing', timestamp: new Date() },
+          },
+        },
       }),
     ).toEqual({
       errors: null,
@@ -188,11 +212,17 @@ describe('PackageController', () => {
   });
 
   it('should be update package Failed', async () => {
-    mockControllerPackage.updateOne.mockRejectedValue(new Error());
+    mockControllerPackage.findOneAndUpdate.mockRejectedValue(new Error());
     try {
       await controller.updatePackage({
         ...MessageSample,
-        value: sampleMoveItem,
+        value: {
+          params: {
+            id: expect.any(String),
+            vendorId: expect.any(String),
+            statuses: { name: 'testing', timestamp: new Date() },
+          },
+        },
       });
     } catch (error) {
       expect(error).toEqual({
@@ -204,6 +234,7 @@ describe('PackageController', () => {
   });
 
   it('should be create pick failed', async () => {
+    mockControllerPackage.findOneAndUpdate.mockRejectedValue(new Error());
     try {
       await controller.pickPackage({
         ...MessageSample,
@@ -238,9 +269,11 @@ describe('PackageController', () => {
       await controller.proofPackage({
         ...MessageSample,
         value: {
-          id: expect.any(String),
-          fileUrl: expect.any(String),
-          uploader: expect.any(String),
+          params: {
+            id: expect.any(String),
+            fileUrl: expect.any(String),
+            uploader: expect.any(String),
+          },
         },
       });
     } catch (error) {
@@ -257,9 +290,11 @@ describe('PackageController', () => {
       await controller.approvalPackage({
         ...MessageSample,
         value: {
-          id: expect.any(String),
-          name: expect.any(String),
-          nominal: expect.any(Number),
+          params: {
+            id: expect.any(String),
+            name: expect.any(String),
+            nominal: expect.any(Number),
+          },
         },
       });
     } catch (error) {
@@ -335,20 +370,6 @@ describe('PackageController', () => {
       page: 0,
       limit: 10,
       data: null,
-    });
-  });
-
-  it('should be create pick freez', async () => {
-    mockControllerPackage.find.mockReturnValue(true);
-    expect(
-      await controller.pickPackage({
-        ...MessageSample,
-        value: samplePickPackPackage,
-      }),
-    ).toEqual({
-      errors: true,
-      status: 406,
-      message: config.get<string>('messageBase.Package.check.Success'),
     });
   });
 });

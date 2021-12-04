@@ -14,7 +14,7 @@ async function bootstrap() {
           brokers: [process.env.KAFKA],
         },
         consumer: {
-          groupId: 'dev-order-service',
+          groupId: 'dev-orders-service',
         },
       },
     },

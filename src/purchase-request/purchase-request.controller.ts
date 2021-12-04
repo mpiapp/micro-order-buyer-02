@@ -248,6 +248,32 @@ export class PurchaseRequestController {
         'Open',
       );
 
+      let status;
+      /* istanbul ignore next */
+      if (rows.down_payment !== null) {
+        status = {
+          ...rows.statuses,
+          ...[
+            {
+              name: 'Waiting Down Payment',
+              timestamp: new Date(Date.now()),
+            },
+          ],
+        };
+      } else {
+        status = {
+          ...rows.statuses,
+          ...[
+            {
+              name: 'Active',
+              timestamp: new Date(Date.now()),
+            },
+          ],
+        };
+      }
+
+      rows.statuses = status;
+
       rows.packages = pack;
     }
 
