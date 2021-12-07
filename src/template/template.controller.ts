@@ -1,14 +1,11 @@
 import { Body, Controller, HttpStatus } from '@nestjs/common';
-import * as mongoose from 'mongoose';
 import { ConfigService } from '@nestjs/config';
 import { MessagePattern } from '@nestjs/microservices';
 import { ApiTags } from '@nestjs/swagger';
 import { BaseResponse } from './../config/interfaces/response.base.interface';
 import { TemplateCreateDto } from './dto/CreateTemplate.dto';
-import { ItemTemplateDto } from './dto/ItemTemplate.dto';
 import { ITemplateCreateAndUpdateResponse } from './interfaces/response/CreateAndUpdate.interface';
 import { ITemplateSearchAndListResponse } from './interfaces/response/SearchAndList.interface';
-import { TemplateItemsService } from './services/template-items.service';
 import { TemplateService } from './services/template.service';
 import { IncomingMessage } from './../config/interfaces/Income.interface';
 import { TemplateUpdateDto } from './dto/UpdateTemplate.dto';
@@ -19,7 +16,6 @@ import { ITemplatePaginateResponse } from './interfaces/response/Paginate.interf
 @Controller('template')
 export class TemplateController {
   constructor(
-    private readonly Items: TemplateItemsService,
     private readonly TemplateMaster: TemplateService,
     private readonly Config: ConfigService,
   ) {}
@@ -29,7 +25,6 @@ export class TemplateController {
     @Body() message: IncomingMessage<TemplateCreateDto>,
   ): Promise<ITemplateCreateAndUpdateResponse> {
     try {
-      const { value } = message;
       const save = await this.TemplateMaster.createTemplate(message.value);
       return {
         status: HttpStatus.CREATED,
@@ -82,95 +77,6 @@ export class TemplateController {
       return {
         status: HttpStatus.PRECONDITION_FAILED,
         message: this.Config.get<string>('messageBase.Template.delete.Failed'),
-        errors: error,
-      };
-    }
-  }
-
-  @MessagePattern('template.add.item')
-  async TemplateAddItem(
-    @Body() message: IncomingMessage<ItemTemplateDto>,
-  ): Promise<BaseResponse> {
-    const { id, ...product } = message.value;
-    const addQty = await this.Items.addItem(
-      {
-        $and: [
-          {
-            _id: new mongoose.Types.ObjectId(id),
-            'items.productId': product.productId,
-          },
-        ],
-      },
-      { $inc: { 'items.$.quantity': product.quantity } },
-    );
-    if (!addQty.matchedCount) {
-      await this.Items.addItem({ _id: id }, { $push: { items: product } });
-      return {
-        status: HttpStatus.CREATED,
-        message: this.Config.get<string>('messageBase.Items.add.Success'),
-        errors: null,
-      };
-    }
-
-    return {
-      status: HttpStatus.CREATED,
-      message: this.Config.get<string>('messageBase.Items.add.Success'),
-      errors: null,
-    };
-  }
-
-  @MessagePattern('template.update.item')
-  async TemplateUpdateItem(
-    @Body() message: IncomingMessage<ItemTemplateDto>,
-  ): Promise<BaseResponse> {
-    try {
-      const { id, ...product } = message.value;
-      await this.Items.addItem(
-        {
-          $and: [
-            {
-              _id: new mongoose.Types.ObjectId(id),
-              'items.productId': product.productId,
-            },
-          ],
-        },
-        { $inc: { 'items.$.quantity': product.quantity } },
-      );
-
-      return {
-        status: HttpStatus.OK,
-        message: this.Config.get<string>('messageBase.Items.update.Success'),
-        errors: null,
-      };
-    } catch (error) {
-      return {
-        status: HttpStatus.PRECONDITION_FAILED,
-        message: this.Config.get<string>('messageBase.Items.update.Failed'),
-        errors: error,
-      };
-    }
-  }
-
-  @MessagePattern('template.remove.item')
-  async TemplateRemoveItem(
-    @Body() message: IncomingMessage<ItemTemplateDto>,
-  ): Promise<BaseResponse> {
-    try {
-      const { id, ...product } = message.value;
-      await this.Items.removeItem(
-        { _id: new mongoose.Types.ObjectId(id) },
-        { $pull: { items: { productId: product.productId } } },
-      );
-
-      return {
-        status: HttpStatus.OK,
-        message: this.Config.get<string>('messageBase.Items.remove.Success'),
-        errors: null,
-      };
-    } catch (error) {
-      return {
-        status: HttpStatus.PRECONDITION_FAILED,
-        message: this.Config.get<string>('messageBase.Items.remove.Failed'),
         errors: error,
       };
     }

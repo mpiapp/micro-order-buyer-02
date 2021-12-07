@@ -36,7 +36,9 @@ export const mockControllerTemplate = {
   updateOne: jest.fn().mockImplementation(() => {
     return true;
   }),
-  find: jest.fn().mockReturnValue([SampleTemplateCreate]),
+  find: jest.fn(() => ({
+    sort: jest.fn(() => [SampleTemplateCreate]),
+  })),
   findById: jest.fn().mockReturnValue(SampleTemplateCreate),
   aggregate: jest.fn().mockReturnValue(SampleTemplateCreate),
 };

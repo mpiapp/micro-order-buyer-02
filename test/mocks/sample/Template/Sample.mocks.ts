@@ -1,6 +1,7 @@
+import { TemplateCreateDto } from './../../../../src/template/dto/CreateTemplate.dto';
 import { sampleItem } from '../Products/sample.item.mock';
 
-export const SampleTemplateCreate = {
+export const SampleTemplateCreateOld = {
   name: 'Template A',
   buyerId: '617364617364617364617344',
   items: [sampleItem, sampleItem],
@@ -16,5 +17,34 @@ export const SampleTemplateCreate = {
 export const SampleTemplateUpdate = {
   name: 'Template A',
   id: expect.any(String),
-  items: [sampleItem, sampleItem],
+  vendors: [
+    {
+      vendorId: expect.any(String),
+      packages: [
+        {
+          items: [sampleItem, sampleItem],
+          total: 0,
+        },
+      ],
+    },
+  ],
+  total: 0,
+};
+
+export const SampleTemplateCreate: TemplateCreateDto = {
+  name: 'Template A',
+  buyerId: '617364617364617364617344',
+  vendors: [
+    {
+      vendorId: expect.any(String),
+      packages: [
+        {
+          items: [sampleItem, sampleItem],
+          total: 0,
+        },
+      ],
+    },
+  ],
+  total: 0,
+  createdBy: 'Xxx Object Id',
 };

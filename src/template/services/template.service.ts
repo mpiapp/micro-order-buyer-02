@@ -29,7 +29,9 @@ export class TemplateService implements ICreateTemplate, IDeleteTemplate {
   }
 
   async listTemplate(idBuyer: string): Promise<Template[]> {
-    return this.model.find({ buyerId: idBuyer, isDeleted: false });
+    return this.model
+      .find({ buyerId: idBuyer, isDeleted: false })
+      .sort({ createdAt: -1 });
   }
 
   async getByIdTemplate(id: string): Promise<Template> {
@@ -37,13 +39,15 @@ export class TemplateService implements ICreateTemplate, IDeleteTemplate {
   }
 
   async searchTemplate(search: string): Promise<Template[]> {
-    return this.model.find({
-      name: { $regex: search },
-      createdAt: {
-        $gte: moment(new Date(search)).startOf('day').toDate(),
-        $lte: moment(new Date(search)).endOf('day').toDate(),
-      },
-    });
+    return this.model
+      .find({
+        name: { $regex: search },
+        createdAt: {
+          $gte: moment(new Date(search)).startOf('day').toDate(),
+          $lte: moment(new Date(search)).endOf('day').toDate(),
+        },
+      })
+      .sort({ createdAt: -1 });
   }
 
   async getPaginate(params: TBasePaginate): Promise<any> {
@@ -55,6 +59,7 @@ export class TemplateService implements ICreateTemplate, IDeleteTemplate {
           isDeleted: false,
         },
       },
+      { $sort: { createdAt: -1 } },
       {
         $facet: {
           metadata: [

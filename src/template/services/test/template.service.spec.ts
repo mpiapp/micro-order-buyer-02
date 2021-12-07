@@ -2,7 +2,10 @@ import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Template } from './../../schemas/template.schema';
 import { TemplateService } from '../template.service';
-import { SampleTemplateCreate } from './../../../../test/mocks/sample/Template/Sample.mocks';
+import {
+  SampleTemplateCreate,
+  SampleTemplateUpdate,
+} from './../../../../test/mocks/sample/Template/Sample.mocks';
 import { mockServiceTemplate } from './../../../../test/mocks/services/Template.mocks';
 
 describe('TemplateService', () => {
@@ -33,12 +36,9 @@ describe('TemplateService', () => {
   });
 
   it('should be update template', async () => {
-    expect(
-      await service.updateTemplate({
-        id: expect.any(String),
-        ...SampleTemplateCreate,
-      }),
-    ).toEqual('617364617364617364617344');
+    expect(await service.updateTemplate(SampleTemplateUpdate)).toEqual(
+      '617364617364617364617344',
+    );
   });
 
   it('should be delete template', async () => {

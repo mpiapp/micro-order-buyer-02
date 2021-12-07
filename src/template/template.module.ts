@@ -4,7 +4,6 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { LoggerModule } from 'nestjs-pino';
 import configuration from './../config/configuration';
 import { Template, TemplateSchema } from './schemas/template.schema';
-import { TemplateItemsService } from './services/template-items.service';
 import { TemplateService } from './services/template.service';
 import { TemplateController } from './template.controller';
 import * as pino from 'pino';
@@ -25,7 +24,7 @@ const logger = pino(dest);
     }),
     LoggerModule.forRoot({ pinoHttp: { logger } }),
   ],
-  providers: [TemplateService, TemplateItemsService],
+  providers: [TemplateService],
   controllers: [TemplateController],
 })
 export class TemplateModule {}

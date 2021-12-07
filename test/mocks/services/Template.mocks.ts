@@ -12,7 +12,9 @@ export const mockServiceTemplate = {
       id: expect.any(String),
     };
   }),
-  find: jest.fn().mockResolvedValue([SampleTemplateCreate]),
+  find: jest.fn(() => ({
+    sort: jest.fn(() => [SampleTemplateCreate]),
+  })),
   findById: jest.fn().mockResolvedValue(SampleTemplateCreate),
   aggregate: jest.fn().mockReturnValue([SampleTemplateCreate]),
 };

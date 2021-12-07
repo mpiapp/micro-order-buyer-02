@@ -2,13 +2,11 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import configuration from './../config/configuration';
-import { sampleItem } from './../../test/mocks/sample/Products/sample.item.mock';
 import {
   SampleTemplateCreate,
   SampleTemplateUpdate,
 } from './../../test/mocks/sample/Template/Sample.mocks';
 import { Template } from './schemas/template.schema';
-import { TemplateItemsService } from './services/template-items.service';
 import { TemplateService } from './services/template.service';
 import { TemplateController } from './template.controller';
 import { mockControllerTemplate } from './../../test/mocks/services/Controller.mocks';
@@ -30,7 +28,6 @@ describe('TemplateController', () => {
       controllers: [TemplateController],
       providers: [
         TemplateService,
-        TemplateItemsService,
         {
           provide: getModelToken(Template.name),
           useValue: mockControllerTemplate,
@@ -142,93 +139,6 @@ describe('TemplateController', () => {
     }
   });
 
-  it('should update add Item template Success', async () => {
-    expect(
-      await controller.TemplateAddItem({
-        ...MessageSample,
-        value: { id: expect.any(String), ...sampleItem },
-      }),
-    ).toEqual({
-      errors: null,
-      message: config.get('messageBase.Items.add.Success'),
-      status: 201,
-    });
-  });
-
-  it('should update change qty Item template Success', async () => {
-    expect(
-      await controller.TemplateUpdateItem({
-        ...MessageSample,
-        value: { id: expect.any(String), ...sampleItem },
-      }),
-    ).toEqual({
-      errors: null,
-      message: config.get('messageBase.Items.update.Success'),
-      status: 200,
-    });
-  });
-
-  it('should update remove Item Template Success', async () => {
-    expect(
-      await controller.TemplateRemoveItem({
-        ...MessageSample,
-        value: { id: expect.any(String), ...sampleItem },
-      }),
-    ).toEqual({
-      errors: null,
-      message: config.get('messageBase.Items.remove.Success'),
-      status: 200,
-    });
-  });
-
-  it('should update add Item Template Failed', async () => {
-    mockControllerTemplate.updateOne.mockImplementation(() => {
-      return false;
-    });
-    try {
-      await controller.TemplateAddItem({
-        ...MessageSample,
-        value: { id: expect.any(String), ...sampleItem },
-      });
-    } catch (error) {
-      expect(error).toEqual(error);
-    }
-  });
-
-  it('should update change qty Item template Failed', async () => {
-    mockControllerTemplate.updateOne.mockImplementation(() => {
-      throw new Error();
-    });
-
-    try {
-      await controller.TemplateUpdateItem({
-        ...MessageSample,
-        value: { id: expect.any(String), ...sampleItem },
-      });
-    } catch (error) {
-      expect(error).toEqual({
-        errors: error,
-        message: config.get('messageBase.Items.update.Failed'),
-        status: 412,
-      });
-    }
-  });
-
-  it('should update remove Item Template Failed', async () => {
-    try {
-      await controller.TemplateRemoveItem({
-        ...MessageSample,
-        value: { id: expect.any(String), ...sampleItem },
-      });
-    } catch (error) {
-      expect(error).toEqual({
-        errors: error,
-        message: config.get('messageBase.Items.remove.Failed'),
-        status: 412,
-      });
-    }
-  });
-
   it('should get list Template Success', async () => {
     expect(
       await controller.TemplateGetList({
@@ -323,40 +233,6 @@ describe('TemplateController', () => {
         data: null,
       });
     }
-  });
-
-  it('should update add Item Template PR Failed', async () => {
-    mockControllerTemplate.updateOne.mockImplementation(() => {
-      return false;
-    });
-    expect(
-      await controller.TemplateAddItem({
-        ...MessageSample,
-        value: { id: expect.any(String), ...sampleItem },
-      }),
-    ).toEqual({
-      errors: null,
-      message: config.get('messageBase.Items.add.Success'),
-      status: 201,
-    });
-  });
-
-  it('should update add Item Template PR Failed', async () => {
-    mockControllerTemplate.updateOne.mockImplementation(() => {
-      return {
-        matchedCount: 1,
-      };
-    });
-    expect(
-      await controller.TemplateAddItem({
-        ...MessageSample,
-        value: { id: expect.any(String), ...sampleItem },
-      }),
-    ).toEqual({
-      errors: null,
-      message: config.get('messageBase.Items.add.Success'),
-      status: 201,
-    });
   });
 
   it('should be paginate Template', async () => {
