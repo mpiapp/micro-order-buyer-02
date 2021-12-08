@@ -8,7 +8,10 @@ import { IUpdateDeliveryNote } from '../interfaces/services/UpdateDeliveryNoteSe
 import { IDnCreate } from '../interfaces/type/dn-create.type';
 import { TPaginate } from '../interfaces/type/dn-paginate.type';
 import { IDnUpdate } from '../interfaces/type/dn-update.type';
-import { DN, DNDocument } from '../schemas/delivery-note.schema';
+import {
+  DeliveryNote,
+  DNDocument,
+} from './../../database/schema/delivery-note.schema';
 
 @Injectable()
 export class DeliveryNoteService
@@ -19,24 +22,26 @@ export class DeliveryNoteService
     IDeleteDeliveryNote
 {
   constructor(
-    @InjectModel(DN.name) private readonly model: Model<DNDocument>,
+    @InjectModel(DeliveryNote.name) private readonly model: Model<DNDocument>,
   ) {}
 
-  async create(params: IDnCreate): Promise<DN> {
+  async create(params: IDnCreate): Promise<DeliveryNote> {
     return this.model.create(params);
   }
 
-  async getOne(id: string): Promise<DN> {
+  async getOne(id: string): Promise<DeliveryNote> {
     return this.model.findById(id);
   }
 
-  async getAll(vendor: string): Promise<DN[]> {
-    return this.model.find({ vendorId: vendor, isDeleted: false });
+  async getAll(vendor: string): Promise<DeliveryNote[]> {
+    return this.model
+      .find({ 'vendor._id': vendor, isDeleted: false })
+      .sort({ createdAt: -1 });
   }
 
   async getCount(SearchCode: string): Promise<number> {
     const getDoc = await this.model.find({
-      code: { $regex: SearchCode, $options: 'i' },
+      'delivery.code': { $regex: SearchCode, $options: 'i' },
     });
     return getDoc.length > 0 ? getDoc.length : 0;
   }
@@ -46,10 +51,11 @@ export class DeliveryNoteService
     return this.model.aggregate([
       {
         $match: {
-          vendorId: keyId,
+          'vendor._id': keyId,
           isDeleted: false,
         },
       },
+      { $sort: { createdAt: -1 } },
       {
         $facet: {
           metadata: [
@@ -70,11 +76,11 @@ export class DeliveryNoteService
     ]);
   }
 
-  async update(id: string, params: IDnUpdate): Promise<DN> {
+  async update(id: string, params: IDnUpdate): Promise<DeliveryNote> {
     return this.model.findByIdAndUpdate(id, params);
   }
 
-  async delete(id: string): Promise<DN> {
+  async delete(id: string): Promise<DeliveryNote> {
     return this.model.findByIdAndUpdate(id, { isDeleted: true });
   }
 }

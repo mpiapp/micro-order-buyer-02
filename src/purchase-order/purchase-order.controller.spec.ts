@@ -95,13 +95,6 @@ describe('PurchaseOrderController', () => {
   });
 
   it('should be approval items master PO', async () => {
-    mockControllerPurchaseOrder.findByIdAndUpdate.mockImplementation(() => {
-      return {
-        ...sampleDataCreatePO,
-        isDelete: true,
-      };
-    });
-
     expect(
       await controller.POItemApprove({
         ...MessageSample,
@@ -115,13 +108,6 @@ describe('PurchaseOrderController', () => {
   });
 
   it('should be rejected items master PO', async () => {
-    mockControllerPurchaseOrder.findByIdAndUpdate.mockImplementation(() => {
-      return {
-        ...sampleDataCreatePO,
-        isDelete: true,
-      };
-    });
-
     expect(
       await controller.POItemReject({
         ...MessageSample,

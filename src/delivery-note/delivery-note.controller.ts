@@ -106,7 +106,7 @@ export class DeliveryNoteController {
     @Body() message: IncomingMessage<{ create: DeliveryNoteCreateDto }>,
   ): Promise<BaseResponse> {
     try {
-      const { code_po } = message.value.create;
+      const { code_po, delivery } = message.value.create;
       const searchCode = `${this.Config.get(
         'initialCode.DeliveryNote.code',
       )}-${code_po.slice(-3)}`;
@@ -119,8 +119,9 @@ export class DeliveryNoteController {
 
       await this.dnService.create({
         ...message.value.create,
-        code_delivery_note: code,
+        ...{ ...delivery, code: code },
       });
+
       return {
         status: HttpStatus.CREATED,
         message: this.Config.get<string>(

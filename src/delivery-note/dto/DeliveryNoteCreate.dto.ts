@@ -1,9 +1,21 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsArray, IsDate, IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsDate,
+  IsNotEmpty,
+  IsObject,
+  IsString,
+} from 'class-validator';
 import { ItemPRDto } from 'src/purchase-request/dto/Items.dto';
 import { IStatus } from 'src/purchase-request/interfaces/type/IStatus.interface';
-import { IDnCreate } from '../interfaces/type/dn-create.type';
+import {
+  DNBuyer,
+  DNDelivery,
+  DNReference,
+  DNVendor,
+  IDnCreate,
+} from '../interfaces/type/dn-create.type';
 
 export class DeliveryNoteCreateDto implements IDnCreate {
   @ApiProperty()
@@ -11,21 +23,17 @@ export class DeliveryNoteCreateDto implements IDnCreate {
   @IsNotEmpty()
   code_po: string;
   @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
-  buyerId: string;
+  @IsObject()
+  buyer: DNBuyer;
   @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
-  addressId: string;
+  @IsObject()
+  delivery: DNDelivery;
   @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
-  vendorId: string;
+  @IsObject()
+  vendor: DNVendor;
   @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
-  orderId: string;
+  @IsObject()
+  reference_doc: DNReference;
   @ApiProperty()
   @IsDate()
   @Type(() => Date)

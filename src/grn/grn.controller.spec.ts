@@ -1,7 +1,7 @@
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
-import { DN } from './../delivery-note/schemas/delivery-note.schema';
+import { DeliveryNote } from './../database/schema/delivery-note.schema';
 import { Helper } from './../utils/helper.utils';
 import configuration from './../config/configuration';
 import { GrnController } from './grn.controller';
@@ -28,7 +28,7 @@ describe('GrnController', () => {
         GrnService,
         Helper,
         {
-          provide: getModelToken(DN.name),
+          provide: getModelToken(DeliveryNote.name),
           useValue: mockGrnController,
         },
       ],
@@ -81,17 +81,6 @@ describe('GrnController', () => {
         message: config.get<string>('messageBase.GRN.One.Failed'),
       });
     }
-  });
-
-  it('should be getAll Good Receive note', async () => {
-    expect(
-      await controller.GRNList({ ...MessageSample, value: expect.any(String) }),
-    ).toEqual({
-      errors: null,
-      status: 200,
-      data: [sampleGRN],
-      message: config.get<string>('messageBase.GRN.All.Success'),
-    });
   });
 
   it('should be get Paginate Good Receive note', async () => {
@@ -258,5 +247,20 @@ describe('GrnController', () => {
         value: 'KPJ-01-01-00001-001',
       }),
     ).toEqual('GRN-001-001');
+  });
+
+  it('should be getAll Good Receive note', async () => {
+    jest.spyOn(mockGrnController, 'find').mockImplementation(() => ({
+      sort: jest.fn(() => [sampleGRN]),
+    }));
+
+    expect(
+      await controller.GRNList({ ...MessageSample, value: expect.any(String) }),
+    ).toEqual({
+      errors: null,
+      status: 200,
+      data: [sampleGRN],
+      message: config.get<string>('messageBase.GRN.All.Success'),
+    });
   });
 });

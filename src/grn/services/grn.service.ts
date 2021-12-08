@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import {
-  DN,
+  DeliveryNote,
   DNDocument,
-} from './../../delivery-note/schemas/delivery-note.schema';
+} from './../../database/schema/delivery-note.schema';
 import { TGrnPaginate } from '../interfaces/types/grn-paginate.type';
 import { TGrnUpdate } from '../interfaces/types/grn-update.type';
 import { IStatus } from './../../purchase-request/interfaces/type/IStatus.interface';
@@ -12,14 +12,17 @@ import { IStatus } from './../../purchase-request/interfaces/type/IStatus.interf
 @Injectable()
 export class GrnService {
   constructor(
-    @InjectModel(DN.name) private readonly grnModel: Model<DNDocument>,
+    @InjectModel(DeliveryNote.name)
+    private readonly grnModel: Model<DNDocument>,
   ) {}
 
-  async getAll(id: string): Promise<DN[]> {
-    return this.grnModel.find({ buyerId: id, isDeleted: false });
+  async getAll(id: string): Promise<DeliveryNote[]> {
+    return this.grnModel
+      .find({ 'buyer._id': id, isDeleted: false })
+      .sort({ createdAt: -1 });
   }
 
-  async getOne(id: string): Promise<DN> {
+  async getOne(id: string): Promise<DeliveryNote> {
     return this.grnModel.findById(id);
   }
 
@@ -28,10 +31,11 @@ export class GrnService {
     return this.grnModel.aggregate([
       {
         $match: {
-          buyerId: keyId,
+          'buyer._id': keyId,
           isDeleted: false,
         },
       },
+      { $sort: { createdAt: -1 } },
       {
         $facet: {
           metadata: [
@@ -52,7 +56,7 @@ export class GrnService {
     ]);
   }
 
-  async updateGRN(id: string, params: TGrnUpdate): Promise<DN> {
+  async updateGRN(id: string, params: TGrnUpdate): Promise<DeliveryNote> {
     return this.grnModel.findByIdAndUpdate(id, {
       $set: params,
     });
@@ -60,12 +64,12 @@ export class GrnService {
 
   async getCount(SearchCode: string): Promise<number> {
     const getDoc = await this.grnModel.find({
-      code: { $regex: SearchCode, $options: 'i' },
+      'received.code': { $regex: SearchCode, $options: 'i' },
     });
     return getDoc.length > 0 ? getDoc.length : 0;
   }
 
-  async rejectGRN(id: string, params: IStatus): Promise<DN> {
+  async rejectGRN(id: string, params: IStatus): Promise<DeliveryNote> {
     return this.grnModel.findByIdAndUpdate(id, {
       $push: { statuses: params },
     });

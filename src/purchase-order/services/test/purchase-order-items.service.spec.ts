@@ -81,7 +81,7 @@ describe('PurchaseOrderItemsService', () => {
     });
   });
 
-  it('should be reject change items from vendor', async () => {
+  it('should be reject change items from vendor ', async () => {
     POItemMOck.findOneAndUpdate.mockReturnValue({
       ...sampleItemBaseChange,
       statuses: [

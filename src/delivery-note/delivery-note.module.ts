@@ -4,7 +4,10 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Helper } from './../utils/helper.utils';
 import configuration from './../config/configuration';
 import { DeliveryNoteController } from './delivery-note.controller';
-import { DN, DNSchema } from './schemas/delivery-note.schema';
+import {
+  DeliveryNote,
+  DNSchema,
+} from './../database/schema/delivery-note.schema';
 import { DeliveryNoteService } from './services/delivery-note.service';
 import * as pino from 'pino';
 import { LoggerModule } from 'nestjs-pino';
@@ -14,7 +17,7 @@ const logger = pino(dest);
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: DN.name, schema: DNSchema }]),
+    MongooseModule.forFeature([{ name: DeliveryNote.name, schema: DNSchema }]),
     ConfigModule.forRoot({
       load: [configuration],
     }),

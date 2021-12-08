@@ -1,6 +1,6 @@
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
-import { DN } from './../../../delivery-note/schemas/delivery-note.schema';
+import { DeliveryNote } from './../../../database/schema/delivery-note.schema';
 import { GrnService } from '../grn.service';
 import { mockGRNService } from './../../../../test/mocks/services/GRN.mocks';
 import { sampleGRN } from './../../../../test/mocks/sample/GoodReceiveNote/Sample.Data.mocks';
@@ -13,7 +13,7 @@ describe('GrnService', () => {
       providers: [
         GrnService,
         {
-          provide: getModelToken(DN.name),
+          provide: getModelToken(DeliveryNote.name),
           useValue: mockGRNService,
         },
       ],
@@ -24,10 +24,6 @@ describe('GrnService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined();
-  });
-
-  it('should be getAll grn', async () => {
-    expect(await service.getAll(expect.any(String))).toEqual([sampleGRN]);
   });
 
   it('should be getOne grn', async () => {
@@ -60,5 +56,12 @@ describe('GrnService', () => {
         timestamp: new Date(),
       }),
     ).toEqual(sampleGRN);
+  });
+
+  it('should be getAll grn', async () => {
+    jest.spyOn(mockGRNService, 'find').mockImplementation(() => ({
+      sort: jest.fn(() => [sampleGRN]),
+    }));
+    expect(await service.getAll(expect.any(String))).toEqual([sampleGRN]);
   });
 });

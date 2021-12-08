@@ -2,8 +2,11 @@ import { GRNUpdateDto } from './../../../../src/grn/dto/Update.dto';
 import { sampleItem } from '../Products/sample.item.mock';
 
 export const sampleGRN: GRNUpdateDto = {
-  code_good_received_note: 'GRN-001-001',
-  receivedUserId: '1231212312412412312',
+  received: {
+    code: 'GRN-001-001',
+    date: new Date(),
+    name: '1231212312412412312',
+  },
   items: [
     {
       ...sampleItem,

@@ -4,10 +4,13 @@ import { Test, TestingModule } from '@nestjs/testing';
 import configuration from './../config/configuration';
 import { mockDeliveryNoteService } from './../../test/mocks/services/DN.mocks';
 import { DeliveryNoteController } from './delivery-note.controller';
-import { DN } from './schemas/delivery-note.schema';
+import { DeliveryNote } from './../database/schema/delivery-note.schema';
 import { DeliveryNoteService } from './services/delivery-note.service';
 import { Helper } from './../utils/helper.utils';
-import { sampleDeliveryNote } from './../../test/mocks/sample/Delivery-Note/sample.mock';
+import {
+  sampleDeliveryNote,
+  sampleDeliveryNoteControllerNew,
+} from './../../test/mocks/sample/Delivery-Note/sample.mock';
 import { CacheModule } from '@nestjs/common';
 import { MessageSample } from './../../test/mocks/sample/message/sample.message.mock';
 
@@ -32,7 +35,7 @@ describe('DeliveryNoteController', () => {
         DeliveryNoteService,
         Helper,
         {
-          provide: getModelToken(DN.name),
+          provide: getModelToken(DeliveryNote.name),
           useValue: mockDeliveryNoteController,
         },
       ],
@@ -59,7 +62,7 @@ describe('DeliveryNoteController', () => {
     expect(
       await controller.DeliveryNoteCreate({
         ...MessageSample,
-        value: { create: sampleDeliveryNote },
+        value: { create: sampleDeliveryNoteControllerNew },
       }),
     ).toEqual({
       errors: null,
@@ -74,7 +77,7 @@ describe('DeliveryNoteController', () => {
     try {
       await controller.DeliveryNoteCreate({
         ...MessageSample,
-        value: { create: sampleDeliveryNote },
+        value: { create: sampleDeliveryNoteControllerNew },
       });
     } catch (error) {
       expect(error).toEqual({
@@ -116,21 +119,6 @@ describe('DeliveryNoteController', () => {
       });
     }
   });
-
-  it('should be getAll delivery note', async () => {
-    expect(
-      await controller.DeliveryNoteList({
-        ...MessageSample,
-        value: expect.any(String),
-      }),
-    ).toEqual({
-      errors: null,
-      status: 200,
-      data: [sampleDeliveryNote],
-      message: config.get<string>('messageBase.DeliveryNote.All.Success'),
-    });
-  });
-
   it('should be get Paginate delivery note', async () => {
     mockDeliveryNoteController.aggregate.mockReturnValue([
       { data: [sampleDeliveryNote], metadata: [{ total: 1 }] },
@@ -299,5 +287,22 @@ describe('DeliveryNoteController', () => {
         value: 'KPJ-01-01-00001-001',
       }),
     ).toEqual('DN-001-001');
+  });
+
+  it('should be getAll delivery note', async () => {
+    jest.spyOn(mockDeliveryNoteController, 'find').mockImplementation(() => ({
+      sort: jest.fn(() => [sampleDeliveryNote]),
+    }));
+    expect(
+      await controller.DeliveryNoteList({
+        ...MessageSample,
+        value: expect.any(String),
+      }),
+    ).toEqual({
+      errors: null,
+      status: 200,
+      data: [sampleDeliveryNote],
+      message: config.get<string>('messageBase.DeliveryNote.All.Success'),
+    });
   });
 });

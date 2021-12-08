@@ -1,9 +1,12 @@
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
-import { DN } from './../../schemas/delivery-note.schema';
+import { DeliveryNote } from './../../../database/schema/delivery-note.schema';
 import { DeliveryNoteService } from '../delivery-note.service';
 import { mockDeliveryNoteService } from './../../../../test/mocks/services/DN.mocks';
-import { sampleDeliveryNote } from './../../../../test/mocks/sample/Delivery-Note/sample.mock';
+import {
+  sampleDeliveryNote,
+  sampleDeliveryNoteNew,
+} from './../../../../test/mocks/sample/Delivery-Note/sample.mock';
 
 describe('DeliveryNoteService', () => {
   let service: DeliveryNoteService;
@@ -13,7 +16,7 @@ describe('DeliveryNoteService', () => {
       providers: [
         DeliveryNoteService,
         {
-          provide: getModelToken(DN.name),
+          provide: getModelToken(DeliveryNote.name),
           useValue: mockDeliveryNoteService,
         },
       ],
@@ -27,8 +30,8 @@ describe('DeliveryNoteService', () => {
   });
 
   it('should be create', async () => {
-    expect(await service.create(sampleDeliveryNote)).toEqual(
-      sampleDeliveryNote,
+    expect(await service.create(sampleDeliveryNoteNew)).toEqual(
+      sampleDeliveryNoteNew,
     );
   });
 
@@ -36,12 +39,6 @@ describe('DeliveryNoteService', () => {
     expect(await service.getOne(expect.any(String))).toEqual(
       sampleDeliveryNote,
     );
-  });
-
-  it('should be get all delivery note ', async () => {
-    expect(await service.getAll(expect.any(String))).toEqual([
-      sampleDeliveryNote,
-    ]);
   });
 
   it('should be get paginate delivery note ', async () => {
@@ -78,5 +75,14 @@ describe('DeliveryNoteService', () => {
     expect(await service.delete(expect.any(String))).toEqual(
       sampleDeliveryNote,
     );
+  });
+
+  it('should be get all delivery note ', async () => {
+    jest.spyOn(mockDeliveryNoteService, 'find').mockImplementation(() => ({
+      sort: jest.fn(() => [sampleDeliveryNoteNew]),
+    }));
+    expect(await service.getAll(expect.any(String))).toEqual([
+      sampleDeliveryNoteNew,
+    ]);
   });
 });
