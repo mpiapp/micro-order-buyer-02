@@ -9,7 +9,7 @@ describe('Create PR Dto', () => {
 
   it('validate element DTO', async () => {
     validate(classes).then((errors) => {
-      expect(errors.length).toEqual(19);
+      expect(errors.length).toEqual(18);
     });
   });
 });

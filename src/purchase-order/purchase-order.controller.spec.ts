@@ -9,6 +9,7 @@ import { PurchaseOrderService } from './services/purchase-order.service';
 import { CacheModule } from '@nestjs/common';
 import { Order } from './../database/schema/orders.schema';
 import { MessageSample } from './../../test/mocks/sample/message/sample.message.mock';
+import { PurchaseOrderItemsService } from './services/purchase-order-items.service';
 
 describe('PurchaseOrderController', () => {
   let controller: PurchaseOrderController;
@@ -21,6 +22,7 @@ describe('PurchaseOrderController', () => {
       providers: [
         PurchaseOrderService,
         Helper,
+        PurchaseOrderItemsService,
         {
           provide: getModelToken(Order.name),
           useValue: mockControllerPurchaseOrder,
@@ -89,6 +91,46 @@ describe('PurchaseOrderController', () => {
       errors: null,
       status: 200,
       message: config.get<string>('messageBase.PurchaseOrder.delete.Success'),
+    });
+  });
+
+  it('should be approval items master PO', async () => {
+    mockControllerPurchaseOrder.findByIdAndUpdate.mockImplementation(() => {
+      return {
+        ...sampleDataCreatePO,
+        isDelete: true,
+      };
+    });
+
+    expect(
+      await controller.POItemApprove({
+        ...MessageSample,
+        value: expect.any(String),
+      }),
+    ).toEqual({
+      errors: null,
+      status: 200,
+      message: config.get<string>('messageBase.PurchaseOrder.approved.Success'),
+    });
+  });
+
+  it('should be rejected items master PO', async () => {
+    mockControllerPurchaseOrder.findByIdAndUpdate.mockImplementation(() => {
+      return {
+        ...sampleDataCreatePO,
+        isDelete: true,
+      };
+    });
+
+    expect(
+      await controller.POItemReject({
+        ...MessageSample,
+        value: expect.any(String),
+      }),
+    ).toEqual({
+      errors: null,
+      status: 200,
+      message: config.get<string>('messageBase.PurchaseOrder.rejected.Success'),
     });
   });
 
@@ -198,6 +240,31 @@ describe('PurchaseOrderController', () => {
     );
     try {
       await controller.PODelete({
+        ...MessageSample,
+        value: expect.any(String),
+      });
+    } catch (error) {
+      expect(error).toBe(error);
+    }
+  });
+
+  it('should Approved PO Failed', async () => {
+    mockControllerPurchaseOrder.findOneAndUpdate.mockRejectedValue(
+      new Error('error'),
+    );
+    try {
+      await controller.POItemApprove({
+        ...MessageSample,
+        value: expect.any(String),
+      });
+    } catch (error) {
+      expect(error).toBe(error);
+    }
+  });
+
+  it('should Rejected PO Failed', async () => {
+    try {
+      await controller.POItemReject({
         ...MessageSample,
         value: expect.any(String),
       });

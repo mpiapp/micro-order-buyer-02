@@ -6,7 +6,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { MessagePattern } from '@nestjs/microservices';
+import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
 import { ApiTags } from '@nestjs/swagger';
 import { IncomingMessage } from './../config/interfaces/Income.interface';
 import { BaseResponse } from './../config/interfaces/response.base.interface';
@@ -14,6 +14,8 @@ import { POPaginateDto } from './dto/Paginate.dto';
 import { IPurchaseOrdersResponse } from './interfaces/response/Many.interface';
 import { IPurchaseOrderPaginateResponse } from './interfaces/response/Paginate.interface';
 import { IPurchaseOrderResponse } from './interfaces/response/Single.interface';
+import { TChangeItems } from './interfaces/type/TChangeItems.type';
+import { PurchaseOrderItemsService } from './services/purchase-order-items.service';
 import { PurchaseOrderService } from './services/purchase-order.service';
 
 @ApiTags('Purchase Orders')
@@ -22,6 +24,7 @@ export class PurchaseOrderController {
   constructor(
     private readonly POMaster: PurchaseOrderService,
     private readonly Config: ConfigService,
+    private readonly Items: PurchaseOrderItemsService,
   ) {}
 
   @UseInterceptors(CacheInterceptor)
@@ -150,6 +153,54 @@ export class PurchaseOrderController {
         status: HttpStatus.PRECONDITION_FAILED,
         message: this.Config.get<string>(
           'messageBase.PurchaseOrder.delete.Failed',
+        ),
+        errors: error,
+      };
+    }
+  }
+
+  @EventPattern('purchase.order.items.approved')
+  async POItemApprove(
+    @Payload() message: IncomingMessage<TChangeItems>,
+  ): Promise<BaseResponse> {
+    try {
+      await this.Items.changeApprove(message.value);
+      return {
+        status: HttpStatus.OK,
+        message: this.Config.get<string>(
+          'messageBase.PurchaseOrder.approved.Success',
+        ),
+        errors: null,
+      };
+    } catch (error) {
+      return {
+        status: HttpStatus.PRECONDITION_FAILED,
+        message: this.Config.get<string>(
+          'messageBase.PurchaseOrder.approved.Failed',
+        ),
+        errors: error,
+      };
+    }
+  }
+
+  @EventPattern('purchase.order.items.rejected')
+  async POItemReject(
+    @Payload() message: IncomingMessage<TChangeItems>,
+  ): Promise<BaseResponse> {
+    try {
+      await this.Items.changeRejected(message.value);
+      return {
+        status: HttpStatus.OK,
+        message: this.Config.get<string>(
+          'messageBase.PurchaseOrder.rejected.Success',
+        ),
+        errors: null,
+      };
+    } catch (error) {
+      return {
+        status: HttpStatus.PRECONDITION_FAILED,
+        message: this.Config.get<string>(
+          'messageBase.PurchaseOrder.rejected.Failed',
         ),
         errors: error,
       };

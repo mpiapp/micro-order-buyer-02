@@ -8,6 +8,7 @@ import { Helper } from './../utils/helper.utils';
 import { LoggerModule } from 'nestjs-pino';
 import * as pino from 'pino';
 import { Order, OrderSchema } from './../database/schema/orders.schema';
+import { PurchaseOrderItemsService } from './services/purchase-order-items.service';
 
 const dest = pino.extreme();
 const logger = pino(dest);
@@ -23,7 +24,7 @@ const logger = pino(dest);
     }),
     LoggerModule.forRoot({ pinoHttp: { logger } }),
   ],
-  providers: [PurchaseOrderService, Helper],
+  providers: [PurchaseOrderService, Helper, PurchaseOrderItemsService],
   controllers: [PurchaseOrderController],
 })
 export class PurchaseOrderModule {}

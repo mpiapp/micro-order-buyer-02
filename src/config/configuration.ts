@@ -111,6 +111,14 @@ export default () => ({
         Success: 'Delete Purchase Order Success',
         Failed: 'Delete Purchase Order Failed',
       },
+      approved: {
+        Success: 'Change Items Approved Success',
+        Failed: 'Change Items Approved Failed',
+      },
+      rejected: {
+        Success: 'Change Items Rejected Success',
+        Failed: 'Change Items Rejected Success',
+      },
     },
     Template: {
       All: {
