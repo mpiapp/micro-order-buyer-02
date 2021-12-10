@@ -4,9 +4,10 @@ import { Model } from 'mongoose';
 import {
   DeliveryNote,
   DNDocument,
-} from 'src/database/schema/delivery-note.schema';
-import { TGrnPaginate } from '../interfaces/types/grn-paginate.type';
-import { TGrnUpdate } from '../interfaces/types/grn-update.type';
+} from './../../../../database/schema/delivery-note.schema';
+import { IStatus } from 'src/microservice/orders/purchase-request/interfaces/type/IStatus.interface';
+import { TGrnPaginate } from './../interfaces/types/grn-paginate.type';
+import { TGrnUpdate } from './../interfaces/types/grn-update.type';
 
 @Injectable()
 export class GrnService {

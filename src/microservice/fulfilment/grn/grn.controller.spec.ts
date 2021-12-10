@@ -1,15 +1,15 @@
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
+import { DeliveryNote } from './../../../database/schema/delivery-note.schema';
+import { Helper } from './../../../utils/helper.utils';
+import configuration from './../../../config/configuration';
 import { GrnController } from './grn.controller';
 import { GrnService } from './services/grn.service';
+import { mockGrnController } from './../../../../test/mocks/services/Controller.mocks';
+import { sampleGRN } from './../../../../test/mocks/sample/GoodReceiveNote/Sample.Data.mocks';
 import { CacheModule } from '@nestjs/common';
-import configuration from 'src/config/configuration';
-import { DeliveryNote } from 'src/database/schema/delivery-note.schema';
-import { Helper } from 'src/utils/helper.utils';
-import { mockGrnController } from 'test/mocks/services/Controller.mocks';
-import { MessageSample } from 'test/mocks/sample/message/sample.message.mock';
-import { sampleGRN } from 'test/mocks/sample/GoodReceiveNote/Sample.Data.mocks';
+import { MessageSample } from './../../../../test/mocks/sample/message/sample.message.mock';
 
 describe('GrnController', () => {
   let controller: GrnController;
@@ -38,7 +38,7 @@ describe('GrnController', () => {
     config = module.get<ConfigService>(ConfigService);
   });
 
-  it('should be defined', () => {
+  it('should be ddefined', () => {
     expect(controller).toBeDefined();
   });
 

@@ -1,9 +1,9 @@
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
-import { DeliveryNote } from 'src/database/schema/delivery-note.schema';
-import { sampleGRN } from 'test/mocks/sample/GoodReceiveNote/Sample.Data.mocks';
-import { mockGRNService } from 'test/mocks/services/GRN.mocks';
-import { GrnService } from '../grn.service';
+import { DeliveryNote } from './../../../../../database/schema/delivery-note.schema';
+import { GrnService } from './../grn.service';
+import { mockGRNService } from './../../../../../../test/mocks/services/GRN.mocks';
+import { sampleGRN } from './../../../../../../test/mocks/sample/GoodReceiveNote/Sample.Data.mocks';
 
 describe('GrnService', () => {
   let service: GrnService;
