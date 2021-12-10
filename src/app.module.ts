@@ -13,6 +13,7 @@ import { BugsnagModule } from '@nkaurelien/nest-bugsnag';
 import bugsnagPluginExpress from '@bugsnag/plugin-express';
 import { OrdersModules } from './microservice/orders';
 import { FulfillmentModules } from './microservice/fulfilment';
+import { StatusModule } from './microservice/status/status.module';
 
 @Global()
 @Module({
@@ -33,6 +34,7 @@ import { FulfillmentModules } from './microservice/fulfilment';
     LoggerModule.forRoot(),
     ...OrdersModules,
     ...FulfillmentModules,
+    StatusModule,
   ],
   controllers: [],
   providers: [],
