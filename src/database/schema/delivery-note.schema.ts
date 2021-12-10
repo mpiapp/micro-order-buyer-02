@@ -74,9 +74,9 @@ class Delivery {
   @Prop()
   despatch_date: Date;
   @Prop()
-  awb: string;
+  awb?: string;
   @Prop()
-  method: string;
+  method?: string;
   @Prop(ShippingAddress)
   shipping_address: ShippingAddress;
 }

@@ -170,13 +170,47 @@ class Package {
 }
 
 @Schema()
+class Vendor {
+  @Prop()
+  _id: string;
+  @Prop()
+  name: string;
+  @Prop()
+  address: string;
+  @Prop()
+  phone: string;
+}
+
+@Schema()
+class Buyer {
+  @Prop()
+  _id: string;
+  @Prop()
+  name: string;
+  @Prop()
+  address: string;
+  @Prop()
+  phone: string;
+}
+
+@Schema()
+class ShippingAddress {
+  @Prop()
+  _id: string;
+  @Prop()
+  address: string;
+  @Prop()
+  zip_code: number;
+  @Prop()
+  phone: string;
+}
+
+@Schema()
 class Vendors {
   @Prop()
   code_po: string;
-  @Prop()
-  vendorId: string;
-  @Prop()
-  vendor_name: string;
+  @Prop(Vendor)
+  vendor: Vendor;
   @Prop()
   down_payment?: number;
   @Prop(ProofPayment)
@@ -205,10 +239,10 @@ export class Order {
   code_pr: string;
   @Prop({ type: Date })
   date: Date;
-  @Prop({ type: String, required: true })
-  buyerId: string;
-  @Prop({ type: String, required: true })
-  addressId: string;
+  @Prop(Buyer)
+  buyer: Buyer;
+  @Prop(ShippingAddress)
+  address: ShippingAddress;
   @Prop([Vendors])
   vendors: [Vendors];
   @Prop({ min: 0, required: true })

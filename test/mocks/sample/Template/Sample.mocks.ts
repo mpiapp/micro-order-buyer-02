@@ -1,4 +1,3 @@
-import { TemplateCreateDto } from './../../../../src/template/dto/CreateTemplate.dto';
 import { sampleItem } from '../Products/sample.item.mock';
 
 export const SampleTemplateCreateOld = {
@@ -31,7 +30,7 @@ export const SampleTemplateUpdate = {
   total: 0,
 };
 
-export const SampleTemplateCreate: TemplateCreateDto = {
+export const SampleTemplateCreate = {
   name: 'Template A',
   buyerId: '617364617364617364617344',
   vendors: [

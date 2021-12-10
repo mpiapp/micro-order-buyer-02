@@ -1,6 +1,4 @@
-import { ItemPRDto } from './../../../../src/purchase-request/dto/Items.dto';
-
-export const sampleItem: ItemPRDto = {
+export const sampleItem = {
   productId: expect.any(String),
   vendorId: expect.any(String),
   vendor_name: 'Heaney - Lind',

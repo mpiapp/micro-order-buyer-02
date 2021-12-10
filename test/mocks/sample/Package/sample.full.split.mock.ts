@@ -1,7 +1,6 @@
 import { sampleItem } from '../Products/sample.item.mock';
-import { IPackage } from './../../../../src/purchase-order/interfaces/type/IPOPackage.interface';
 
-export const splitPackageSample: IPackage[] = [
+export const splitPackageSample = [
   {
     code_package: '001',
     items: [sampleItem, sampleItem],

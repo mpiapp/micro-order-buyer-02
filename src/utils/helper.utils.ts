@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { IGenerateCode } from './../purchase-order/interfaces/type/IPOGenerate.interface';
+import { IGenerateCode } from 'src/microservice/orders/purchase-order/interfaces/type/IPOGenerate.interface';
 import configuration from './../config/configuration';
 
 @Module({

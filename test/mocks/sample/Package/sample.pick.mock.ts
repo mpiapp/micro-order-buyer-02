@@ -1,6 +1,4 @@
-import { ItemPackageDto } from './../../../../src/package/dto/PIckItems.dto';
-
-const sampleItemPackage: ItemPackageDto = {
+const sampleItemPackage = {
   productId: expect.any(String),
   vendorId: expect.any(String),
   vendor_name: 'Heaney - Lind',
