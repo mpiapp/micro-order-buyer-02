@@ -1,16 +1,16 @@
 import { CacheModule, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Helper } from './../../../utils/helper.utils';
-import configuration from './../../../config/configuration';
 import { DeliveryNoteController } from './delivery-note.controller';
-import {
-  DeliveryNote,
-  DNSchema,
-} from './../../../database/schema/delivery-note.schema';
 import { DeliveryNoteService } from './services/delivery-note.service';
 import * as pino from 'pino';
 import { LoggerModule } from 'nestjs-pino';
+import configuration from 'src/config/configuration';
+import { Helper } from 'src/utils/helper.utils';
+import {
+  DeliveryNote,
+  DNSchema,
+} from 'src/database/schema/delivery-note.schema';
 
 const dest = pino.extreme();
 const logger = pino(dest);

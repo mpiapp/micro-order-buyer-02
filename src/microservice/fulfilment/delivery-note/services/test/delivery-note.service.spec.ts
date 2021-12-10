@@ -1,12 +1,12 @@
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
+import { DeliveryNote } from './../../../../../database/schema/delivery-note.schema';
 import { DeliveryNoteService } from './../delivery-note.service';
 import { mockDeliveryNoteService } from './../../../../../../test/mocks/services/DN.mocks';
 import {
   sampleDeliveryNote,
   sampleDeliveryNoteNew,
 } from './../../../../../../test/mocks/sample/Delivery-Note/sample.mock';
-import { DeliveryNote } from 'src/database/schema/delivery-note.schema';
 
 describe('DeliveryNoteService', () => {
   let service: DeliveryNoteService;
