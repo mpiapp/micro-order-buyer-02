@@ -1,14 +1,14 @@
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
-import { Helper } from './../utils/helper.utils';
-import { sampleDataCreatePO } from './../../test/mocks/sample/Purchase-Order/sample.data.search.mock';
-import { mockControllerPurchaseOrder } from './../../test/mocks/services/Controller.mocks';
+import { Helper } from './../../../utils/helper.utils';
+import { sampleDataCreatePO } from './../../../../test/mocks/sample/Purchase-Order/sample.data.search.mock';
+import { mockControllerPurchaseOrder } from './../../../../test/mocks/services/Controller.mocks';
 import { PurchaseOrderController } from './purchase-order.controller';
 import { PurchaseOrderService } from './services/purchase-order.service';
 import { CacheModule } from '@nestjs/common';
-import { Order } from './../database/schema/orders.schema';
-import { MessageSample } from './../../test/mocks/sample/message/sample.message.mock';
+import { Order } from './../../../database/schema/orders.schema';
+import { MessageSample } from './../../../../test/mocks/sample/message/sample.message.mock';
 import { PurchaseOrderItemsService } from './services/purchase-order-items.service';
 
 describe('PurchaseOrderController', () => {

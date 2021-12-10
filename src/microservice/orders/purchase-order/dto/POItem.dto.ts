@@ -7,8 +7,8 @@ import {
   IsString,
   Min,
 } from 'class-validator';
+import { Items } from './../../../product/items/dto/Items.dto';
 import { StatusDto } from './../../purchase-request/dto/Status.dto';
-import { Items } from './../../items/dto/Items.dto';
 
 export class PurchaseOrderItemDto extends Items {
   @ApiProperty()

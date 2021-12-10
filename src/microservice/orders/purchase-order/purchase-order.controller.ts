@@ -8,8 +8,8 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
 import { ApiTags } from '@nestjs/swagger';
-import { IncomingMessage } from './../config/interfaces/Income.interface';
-import { BaseResponse } from './../config/interfaces/response.base.interface';
+import { IncomingMessage } from './../../../config/interfaces/Income.interface';
+import { BaseResponse } from './../../../config/interfaces/response.base.interface';
 import { POPaginateDto } from './dto/Paginate.dto';
 import { IPurchaseOrdersResponse } from './interfaces/response/Many.interface';
 import { IPurchaseOrderPaginateResponse } from './interfaces/response/Paginate.interface';

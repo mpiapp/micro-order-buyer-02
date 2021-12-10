@@ -7,9 +7,9 @@ import {
   IsString,
   Min,
 } from 'class-validator';
-import { IStatus } from 'src/purchase-request/interfaces/type/IStatus.interface';
-import { IPurchaseOrder } from '../interfaces/type/IPOcreate.interface';
-import { IPurchaseOrderVendors } from '../interfaces/type/IPOVendor.interface';
+import { IStatus } from './../../purchase-request/interfaces/type/IStatus.interface';
+import { IPurchaseOrder } from './../interfaces/type/IPOcreate.interface';
+import { IPurchaseOrderVendors } from './../interfaces/type/IPOVendor.interface';
 
 export class POCreateDto implements IPurchaseOrder {
   @ApiProperty()

@@ -1,8 +1,8 @@
 import { classToPlain } from 'class-transformer';
 import { validate } from 'class-validator';
-import { POCreateDto } from '../POCreate.dto';
-import { PurchaseOrderItemDto } from '../POItem.dto';
-import { PRMoveDto } from '../PRMove.dto';
+import { POCreateDto } from './../POCreate.dto';
+import { PurchaseOrderItemDto } from './../POItem.dto';
+import { PRMoveDto } from './../PRMove.dto';
 describe('PO Item Dto', () => {
   let classes;
   beforeEach(() => {

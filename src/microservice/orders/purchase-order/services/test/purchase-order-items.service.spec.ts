@@ -1,8 +1,8 @@
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PurchaseOrderItemsService } from '../purchase-order-items.service';
-import { sampleItemBaseChange } from './../../../../test/mocks/sample/Items/sample.base.mock';
-import { Order } from './../../../database/schema/orders.schema';
+import { sampleItemBaseChange } from './../../../../../../test/mocks/sample/Items/sample.base.mock';
+import { Order } from './../../../../../database/schema/orders.schema';
 
 const POItemMOck = {
   findOneAndUpdate: jest.fn().mockReturnValue({

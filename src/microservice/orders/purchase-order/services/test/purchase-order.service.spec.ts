@@ -1,9 +1,9 @@
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PurchaseOrderService } from '../purchase-order.service';
-import { mockPurchaseOrder } from './../../../../test/mocks/services/PO.mocks';
-import { sampleDataCreatePO } from './../../../../test/mocks/sample/Purchase-Order/sample.data.search.mock';
-import { Order } from './../../../database/schema/orders.schema';
+import { mockPurchaseOrder } from './../../../../../../test/mocks/services/PO.mocks';
+import { sampleDataCreatePO } from './../../../../../../test/mocks/sample/Purchase-Order/sample.data.search.mock';
+import { Order } from './../../../../../database/schema/orders.schema';
 
 describe('PurchaseOrderService', () => {
   let service: PurchaseOrderService;

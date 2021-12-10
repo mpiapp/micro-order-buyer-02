@@ -1,9 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Order, OrderDocument } from './../../database/schema/orders.schema';
+import {
+  Order,
+  OrderDocument,
+} from './../../../../database/schema/orders.schema';
 import * as mongoose from 'mongoose';
-import { TChangeItems } from '../interfaces/type/TChangeItems.type';
+import { TChangeItems } from './../interfaces/type/TChangeItems.type';
 
 @Injectable()
 export class PurchaseOrderItemsService {

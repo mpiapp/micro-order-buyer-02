@@ -1,9 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Order, OrderDocument } from './../../database/schema/orders.schema';
-import { IDeletePurchaseOrder } from '../interfaces/services/DeletePurchaseOrder.interface';
-import { TBasePaginate } from './../../config/type/BasePaginate.type';
+import {
+  Order,
+  OrderDocument,
+} from './../../../../database/schema/orders.schema';
+import { IDeletePurchaseOrder } from './../interfaces/services/DeletePurchaseOrder.interface';
+import { TBasePaginate } from './../../../../config/type/BasePaginate.type';
 
 @Injectable()
 export class PurchaseOrderService implements IDeletePurchaseOrder {
