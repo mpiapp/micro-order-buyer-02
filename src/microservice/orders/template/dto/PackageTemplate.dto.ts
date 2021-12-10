@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsNumber, Min } from 'class-validator';
-import { Items } from './../../items/dto/Items.dto';
+import { Items } from './../../../product/items/dto/Items.dto';
 
 export class PackageTemplateDto {
   @ApiProperty()
