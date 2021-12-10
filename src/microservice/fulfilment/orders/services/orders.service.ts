@@ -2,8 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as mongoose from 'mongoose';
-import { Order, OrderDocument } from './../../database/schema/orders.schema';
-import { IOrderService } from '../interfaces/services/orders.service.interface';
+import {
+  Order,
+  OrderDocument,
+} from './../../../../database/schema/orders.schema';
+import { IOrderService } from './../interfaces/services/orders.service.interface';
 
 @Injectable()
 export class OrdersService implements IOrderService {

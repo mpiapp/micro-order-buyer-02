@@ -2,8 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { IPaginate } from './../../package/interfaces/type/Paginate.interface';
-import { Order, OrderDocument } from './../../database/schema/orders.schema';
-import { IOrderPaginateService } from '../interfaces/services/orders.paginate.interface';
+import {
+  Order,
+  OrderDocument,
+} from './../../../../database/schema/orders.schema';
+import { IOrderPaginateService } from './../interfaces/services/orders.paginate.interface';
 
 @Injectable()
 export class OrderPaginateService implements IOrderPaginateService {

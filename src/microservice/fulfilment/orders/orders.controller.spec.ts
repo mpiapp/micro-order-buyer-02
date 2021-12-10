@@ -1,13 +1,13 @@
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
-import { Helper } from './../utils/helper.utils';
-import configuration from './../config/configuration';
+import { Helper } from './../../../utils/helper.utils';
+import configuration from './../../../config/configuration';
 import { OrdersController } from './orders.controller';
 import { OrderPaginateService } from './services/order-paginate.service';
 import { OrdersService } from './services/orders.service';
 import { getModelToken } from '@nestjs/mongoose';
-import { sampleFullPackage } from './../../test/mocks/sample/Package/sample.full.data.mock';
-import { Order } from './../database/schema/orders.schema';
+import { sampleFullPackage } from './../../../../test/mocks/sample/Package/sample.full.data.mock';
+import { Order } from './../../../database/schema/orders.schema';
 
 const mockControllerOrders = {
   aggregate: jest.fn().mockReturnValue(sampleFullPackage),

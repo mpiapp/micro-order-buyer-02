@@ -1,8 +1,8 @@
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
-import { Order } from './../../../database/schema/orders.schema';
-import { samplePaginate } from './../../../../test/mocks/sample/Package/sample.paginate.mock';
-import { OrderPaginateService } from '../order-paginate.service';
+import { Order } from './../../../../../database/schema/orders.schema';
+import { samplePaginate } from './../../../../../../test/mocks/sample/Package/sample.paginate.mock';
+import { OrderPaginateService } from './../order-paginate.service';
 
 const mockOrderPaginate = {
   aggregate: jest.fn().mockReturnValue(samplePaginate),

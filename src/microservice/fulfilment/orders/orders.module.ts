@@ -2,11 +2,11 @@ import { Module } from '@nestjs/common';
 import { OrdersService } from './services/orders.service';
 import { OrdersController } from './orders.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Order, OrderSchema } from './../database/schema/orders.schema';
+import { Order, OrderSchema } from './../../../database/schema/orders.schema';
 import { ConfigModule } from '@nestjs/config';
-import configuration from './../config/configuration';
+import configuration from './../../../config/configuration';
 import { OrderPaginateService } from './services/order-paginate.service';
-import { Helper } from './../utils/helper.utils';
+import { Helper } from './../../../utils/helper.utils';
 
 @Module({
   imports: [

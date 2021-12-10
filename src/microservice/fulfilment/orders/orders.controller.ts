@@ -2,7 +2,7 @@ import { Body, Controller, HttpStatus, Query } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { MessagePattern } from '@nestjs/microservices';
 import { ApiTags } from '@nestjs/swagger';
-import { Helper } from './../utils/helper.utils';
+import { Helper } from './../../../utils/helper.utils';
 import { IdPackage } from './../package/dto/IdPackage.dto';
 import { PaginateDto } from './../package/dto/Paginate.dto';
 import { IOrdersResponse } from './interfaces/response/Many.interface';
@@ -10,7 +10,7 @@ import { IOrderPaginateResponse } from './interfaces/response/Paginate.interface
 import { IOrderResponse } from './interfaces/response/Single.interface';
 import { OrderPaginateService } from './services/order-paginate.service';
 import { OrdersService } from './services/orders.service';
-import { IncomingMessage } from './../config/interfaces/Income.interface';
+import { IncomingMessage } from './../../../config/interfaces/Income.interface';
 
 @ApiTags('Order-Fulfillment')
 @Controller('orders')
