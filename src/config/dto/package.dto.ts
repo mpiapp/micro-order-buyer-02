@@ -8,7 +8,7 @@ import {
   MaxLength,
   Min,
 } from 'class-validator';
-import { Items } from 'src/items/dto/Items.dto';
+import { Items } from 'src/microservice/product/items/dto/Items.dto';
 import { StatusDto } from './Status.dto';
 
 export class PackageDto {

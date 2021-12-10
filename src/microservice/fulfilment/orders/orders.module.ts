@@ -18,4 +18,4 @@ import { Helper } from './../../../utils/helper.utils';
   providers: [OrdersService, OrderPaginateService, Helper],
   controllers: [OrdersController],
 })
-export class OrdersModule {}
+export class OrderModule {}
