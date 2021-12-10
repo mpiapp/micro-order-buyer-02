@@ -1,9 +1,9 @@
 import { classToPlain } from 'class-transformer';
 import { validate } from 'class-validator';
-import { PRCreateDto } from '../CreatePR.dto';
-import { ItemPRDto } from '../Items.dto';
-import { StatusDto } from '../Status.dto';
-import { PRUpdateDto } from '../UpdatePR.dto';
+import { PRCreateDto } from './../CreatePR.dto';
+import { ItemPRDto } from './../Items.dto';
+import { StatusDto } from './../Status.dto';
+import { PRUpdateDto } from './../UpdatePR.dto';
 
 describe('Create PR Dto', () => {
   let classes;

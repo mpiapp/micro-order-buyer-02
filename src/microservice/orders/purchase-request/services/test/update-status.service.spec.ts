@@ -1,9 +1,9 @@
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
-import { Order } from './../../../database/schema/orders.schema';
-import { mockPurchaseRequest } from '../../../../test/mocks/services/PR.mocks';
-import { UpdateStatusService } from '../update-status.service';
-import { sampleStatus } from './../../../../test/mocks/sample/Status/sample.data.mocks';
+import { Order } from './../../../../../database/schema/orders.schema';
+import { mockPurchaseRequest } from './../../../../../../test/mocks/services/PR.mocks';
+import { UpdateStatusService } from './../update-status.service';
+import { sampleStatus } from './../../../../../../test/mocks/sample/Status/sample.data.mocks';
 
 describe('UpdateStatusServiceService', () => {
   let service: UpdateStatusService;

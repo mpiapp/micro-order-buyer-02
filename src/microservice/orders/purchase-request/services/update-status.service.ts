@@ -3,7 +3,10 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { StatusDto } from '../dto/Status.dto';
 import { IUpdateStatusPurchaseRequest } from './../interfaces/services/UpdateStatusPurchaseRequest.interface';
-import { Order, OrderDocument } from './../../database/schema/orders.schema';
+import {
+  Order,
+  OrderDocument,
+} from './../../../../database/schema/orders.schema';
 
 @Injectable()
 export class UpdateStatusService implements IUpdateStatusPurchaseRequest {

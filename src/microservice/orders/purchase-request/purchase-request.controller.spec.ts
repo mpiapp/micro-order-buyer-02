@@ -1,19 +1,19 @@
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
-import { SampleCreate } from './../../test/mocks/sample/Purchase-Request/sample.data.create.mock';
-import { mockControllerPurchaseRequest } from '../../test/mocks/services/Controller.mocks';
+import { SampleCreate } from './../../../../test/mocks/sample/Purchase-Request/sample.data.create.mock';
+import { mockControllerPurchaseRequest } from './../../../../test/mocks/services/Controller.mocks';
 import { PurchaseRequestController } from './purchase-request.controller';
-import { Order } from './../database/schema/orders.schema';
+import { Order } from './../../../database/schema/orders.schema';
 import { PurchaseRequestService } from './services/purchase-request.service';
 import { GenerateService } from './services/generate.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { SampleUpdate } from './../../test/mocks/sample/Purchase-Request/sample.data.update.mock';
-import configuration from './../config/configuration';
-import { sampleStatus } from './../../test/mocks/sample/Status/sample.data.mocks';
+import { SampleUpdate } from './../../../../test/mocks/sample/Purchase-Request/sample.data.update.mock';
+import configuration from './../../../config/configuration';
+import { sampleStatus } from './../../../../test/mocks/sample/Status/sample.data.mocks';
 import { UpdateStatusService } from './services/update-status.service';
-import { Helper } from './../utils/helper.utils';
+import { Helper } from './../../../utils/helper.utils';
 import { CacheModule } from '@nestjs/common';
-import { MessageSample } from './../../test/mocks/sample/message/sample.message.mock';
+import { MessageSample } from './../../../../test/mocks/sample/message/sample.message.mock';
 
 describe('PurchaseRequestController', () => {
   let controller: PurchaseRequestController;

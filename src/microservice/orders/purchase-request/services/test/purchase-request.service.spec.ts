@@ -1,10 +1,10 @@
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
-import { SampleCreate } from '../../../../test/mocks/sample/Purchase-Request/sample.data.create.mock';
-import { SampleUpdate } from '../../../../test/mocks/sample/Purchase-Request/sample.data.update.mock';
-import { mockPurchaseRequest } from '../../../../test/mocks/services/PR.mocks';
-import { PurchaseRequestService } from '../purchase-request.service';
-import { Order } from './../../../database/schema/orders.schema';
+import { SampleCreate } from './../../../../../../test/mocks/sample/Purchase-Request/sample.data.create.mock';
+import { SampleUpdate } from './../../../../../../test/mocks/sample/Purchase-Request/sample.data.update.mock';
+import { mockPurchaseRequest } from './../../../../../../test/mocks/services/PR.mocks';
+import { PurchaseRequestService } from './../purchase-request.service';
+import { Order } from './../../../../../database/schema/orders.schema';
 
 describe('PurchaseRequestService', () => {
   let service: PurchaseRequestService;

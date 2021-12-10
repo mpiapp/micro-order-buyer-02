@@ -1,4 +1,4 @@
-import { Order } from './../../../database/schema/orders.schema';
+import { Order } from './../../../../../database/schema/orders.schema';
 
 export interface ISearchPurchaseRequest {
   searchPurchaseRequest(code: string): Promise<Order[]>;
