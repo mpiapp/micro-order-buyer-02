@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsNumber } from 'class-validator';
-import { Items } from './../../items/dto/Items.dto';
+import { Items } from './../../../product/items/dto/Items.dto';
 
 export class ItemPackageDto extends Items {
   @ApiProperty()

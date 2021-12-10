@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsNotEmpty, IsString } from 'class-validator';
-import { ItemPRDto } from './../../purchase-request/dto/Items.dto';
-import { IPackage } from './../../purchase-order/interfaces/type/IPOPackage.interface';
-import { StatusDto } from './../../purchase-request/dto/Status.dto';
+import { StatusDto } from './../../../../config/dto/Status.dto';
+import { IPackage } from './../../../orders/purchase-order/interfaces/type/IPOPackage.interface';
+import { ItemPRDto } from './../../../orders/purchase-request/dto/Items.dto';
 
 export class PackageDto implements IPackage {
   @ApiProperty()

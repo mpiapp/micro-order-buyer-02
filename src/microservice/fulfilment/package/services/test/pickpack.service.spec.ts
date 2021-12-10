@@ -1,7 +1,7 @@
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
-import { PickPackService } from '../pickpack.service';
-import { Order } from '../../../database/schema/orders.schema';
+import { PickPackService } from './../pickpack.service';
+import { Order } from '../../../../../database/schema/orders.schema';
 
 const mockpickPack = {
   updateOne: jest.fn().mockImplementation(() => {

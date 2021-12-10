@@ -2,8 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as mongoose from 'mongoose';
-import { IPickPackPackage } from '../interfaces/type/pickPack.Package.interface';
-import { Order, OrderDocument } from '../../database/schema/orders.schema';
+import { IPickPackPackage } from './../interfaces/type/pickPack.Package.interface';
+import {
+  Order,
+  OrderDocument,
+} from './../../../../database/schema/orders.schema';
 
 @Injectable()
 export class PickPackService {

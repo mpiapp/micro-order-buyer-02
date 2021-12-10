@@ -3,11 +3,11 @@ import { PackageService } from './services/package.service';
 import { PackageController } from './package.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
-import configuration from './../config/configuration';
+import configuration from './../../../config/configuration';
 import { PaginatePackageService } from './services/paginate-package.service';
-import { Helper } from './../utils/helper.utils';
+import { Helper } from './../../../utils/helper.utils';
 import { PickPackService } from './services/pickpack.service';
-import { Order, OrderSchema } from './../database/schema/orders.schema';
+import { Order, OrderSchema } from './../../../database/schema/orders.schema';
 import { ProofPaymentService } from './services/proof.payment.package.service';
 
 @Module({

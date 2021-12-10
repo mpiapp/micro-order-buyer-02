@@ -2,10 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as mongoose from 'mongoose';
-import { Order, OrderDocument } from './../../database/schema/orders.schema';
-import { ProofOfPaymentDto } from '../dto/Proof.Payment.dto';
+import {
+  Order,
+  OrderDocument,
+} from './../../../../database/schema/orders.schema';
+import { ProofOfPaymentDto } from './../dto/Proof.Payment.dto';
 import { now } from 'moment';
-import { ApprovalOfPaymentDto } from '../dto/Approval.Payment.dto';
+import { ApprovalOfPaymentDto } from './../dto/Approval.Payment.dto';
 
 @Injectable()
 export class ProofPaymentService {

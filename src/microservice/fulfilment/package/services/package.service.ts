@@ -2,10 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as mongoose from 'mongoose';
-import { IPackage } from './../../purchase-order/interfaces/type/IPOPackage.interface';
-import { ItemTemplateDto } from 'src/template/dto/ItemTemplate.dto';
-import { Order, OrderDocument } from './../../database/schema/orders.schema';
-import { PackageStatusDto } from '../dto/PackageSattus.dto';
+import {
+  Order,
+  OrderDocument,
+} from './../../../../database/schema/orders.schema';
+import { PackageStatusDto } from './../dto/PackageSattus.dto';
+import { IPackage } from './../../../orders/purchase-order/interfaces/type/IPOPackage.interface';
+import { ItemTemplateDto } from './../../../orders/template/dto/ItemTemplate.dto';
 
 @Injectable()
 export class PackageService {

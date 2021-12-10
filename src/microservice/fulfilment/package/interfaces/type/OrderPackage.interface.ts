@@ -1,5 +1,5 @@
-import { IPackage } from './../../../purchase-order/interfaces/type/IPOPackage.interface';
-import { IStatus } from './../../../purchase-request/interfaces/type/IStatus.interface';
+import { IPackage } from './../../../../orders/purchase-order/interfaces/type/IPOPackage.interface';
+import { IStatus } from './../../../../orders/purchase-request/interfaces/type/IStatus.interface';
 
 export interface IOrderPackage {
   _id: string;

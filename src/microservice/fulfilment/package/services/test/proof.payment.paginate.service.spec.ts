@@ -1,7 +1,7 @@
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
-import { Order } from '../../../database/schema/orders.schema';
-import { ProofPaymentService } from '../proof.payment.package.service';
+import { Order } from './../../../../../database/schema/orders.schema';
+import { ProofPaymentService } from './../proof.payment.package.service';
 
 const mockProofPayment = {
   updateOne: jest.fn().mockImplementation(() => {

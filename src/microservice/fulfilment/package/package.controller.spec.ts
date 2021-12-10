@@ -1,18 +1,18 @@
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
-import { sampleAfterSplitPackage } from './../../test/mocks/sample/Package/sample.after.split.mock';
+import { sampleAfterSplitPackage } from './../../../../test/mocks/sample/Package/sample.after.split.mock';
 import { PackageController } from './package.controller';
 import { PackageService } from './services/package.service';
-import { Helper } from './../utils/helper.utils';
+import { Helper } from './../../../utils/helper.utils';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import configuration from './../config/configuration';
-import { sampleFullPackage } from './../../test/mocks/sample/Package/sample.full.data.mock';
+import configuration from './../../../config/configuration';
+import { sampleFullPackage } from './../../../../test/mocks/sample/Package/sample.full.data.mock';
 import { PaginatePackageService } from './services/paginate-package.service';
 import { PickPackService } from './services/pickPack.service';
-import { samplePickPackPackage } from './../../test/mocks/sample/Package/sample.pick.mock';
-import { Order } from './../database/schema/orders.schema';
+import { samplePickPackPackage } from './../../../../test/mocks/sample/Package/sample.pick.mock';
+import { Order } from './../../../database/schema/orders.schema';
 import { ProofPaymentService } from './services/proof.payment.package.service';
-import { MessageSample } from './../../test/mocks/sample/message/sample.message.mock';
+import { MessageSample } from './../../../../test/mocks/sample/message/sample.message.mock';
 
 const mockControllerPackage = {
   find: jest.fn().mockReturnValue(sampleAfterSplitPackage),
