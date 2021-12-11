@@ -1,17 +1,21 @@
 import { OrderCreateDto } from './../../../../src/config/dto/order-create.dto';
-import { SampleBuyer } from '../Buyer/sample.buyer.mock';
 import { sampleItem } from '../Products/sample.item.mock';
 import { SampleCode } from './sample.code.mock';
+import {
+  sampleAddress,
+  sampleBuyer,
+  sampleVendor,
+} from '../Delivery-Note/sample.mock';
 
 export const SampleCreate: OrderCreateDto = {
-  code_pr: SampleCode,
-  buyerId: SampleBuyer.id,
-  addressId: '617364617364617364617344',
+  code: SampleCode,
+  buyer: sampleBuyer,
+  address: sampleAddress,
   date: new Date('2021-10-10'),
   vendors: [
     {
       code_po: 'KPJ-12-10-00001-001',
-      vendorId: expect.any(String),
+      vendor: sampleVendor,
       packages: [
         {
           code_package: 'KPJ-12-10-00001-001-001',
@@ -30,12 +34,35 @@ export const SampleCreate: OrderCreateDto = {
     },
   ],
   total: 0,
-  statuses: [
+  createdBy: 'Xxx Object Id',
+};
+
+export const SampleCreateService = {
+  code_pr: SampleCode,
+  buyer: sampleBuyer,
+  address: sampleAddress,
+  date: new Date('2021-10-10'),
+  vendors: [
     {
-      id: expect.any(String),
-      name: 'Open',
-      timestamp: new Date('2021-10-10 20:00'),
+      code_po: 'KPJ-12-10-00001-001',
+      vendor: sampleVendor,
+      packages: [
+        {
+          code_package: 'KPJ-12-10-00001-001-001',
+          items: [sampleItem, sampleItem],
+          payment_terms: null,
+          tax: 100,
+          total: 0,
+          statuses: [
+            {
+              name: 'Open',
+              timestamp: new Date('2021-10-10 20:00'),
+            },
+          ],
+        },
+      ],
     },
   ],
+  total: 0,
   createdBy: 'Xxx Object Id',
 };

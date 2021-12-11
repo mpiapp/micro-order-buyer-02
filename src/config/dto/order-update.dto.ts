@@ -3,11 +3,12 @@ import {
   IsArray,
   IsNotEmpty,
   IsNumber,
+  IsObject,
   IsOptional,
   IsString,
   Min,
 } from 'class-validator';
-import { StatusDto } from './Status.dto';
+import { ShippingAddressDto } from './address.dto';
 import { VendorOrderDto } from './vendor-order.dto';
 
 export class OrderUpdateDto {
@@ -17,7 +18,8 @@ export class OrderUpdateDto {
   id: string;
   @ApiProperty()
   @IsOptional()
-  addressId: string;
+  @IsObject()
+  address: ShippingAddressDto;
   @ApiProperty()
   @IsArray()
   @IsOptional()
@@ -26,8 +28,4 @@ export class OrderUpdateDto {
   @IsNumber()
   @Min(0)
   total: number;
-  @ApiProperty()
-  @IsArray()
-  @IsOptional()
-  statuses: StatusDto[];
 }

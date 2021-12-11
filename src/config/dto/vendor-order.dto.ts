@@ -1,6 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import {
+  IsArray,
+  IsNotEmpty,
+  IsObject,
+  IsString,
+  MaxLength,
+} from 'class-validator';
 import { PackageDto } from './Package.dto';
+import { VendorDto } from './vendor.dto';
 
 export class VendorOrderDto {
   @ApiProperty()
@@ -9,8 +16,8 @@ export class VendorOrderDto {
   @MaxLength(50)
   code_po: string;
   @ApiProperty()
-  @IsString()
-  vendorId?: string;
+  @IsObject()
+  vendor: VendorDto;
   @ApiProperty()
   @IsArray()
   packages: PackageDto[];

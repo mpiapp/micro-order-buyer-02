@@ -5,27 +5,29 @@ import {
   IsDate,
   IsNotEmpty,
   IsNumber,
+  IsObject,
   MaxLength,
   Min,
 } from 'class-validator';
-import { StatusDto } from './Status.dto';
+import { ShippingAddressDto } from './address.dto';
+import { BuyerDto } from './buyer.dto';
 import { VendorOrderDto } from './vendor-order.dto';
 
 export class OrderCreateDto {
   @ApiProperty()
   @IsNotEmpty()
   @MaxLength(50)
-  code_pr: string;
+  code: string;
   @ApiProperty()
   @IsDate()
   @Type(() => Date)
   date: Date;
   @ApiProperty()
-  @IsNotEmpty()
-  buyerId: string;
+  @IsObject()
+  buyer: BuyerDto;
   @ApiProperty()
-  @IsNotEmpty()
-  addressId: string;
+  @IsObject()
+  address: ShippingAddressDto;
   @ApiProperty()
   @IsArray()
   @IsNotEmpty()
@@ -34,9 +36,6 @@ export class OrderCreateDto {
   @IsNumber()
   @Min(0)
   total: number;
-  @ApiProperty()
-  @IsArray()
-  statuses: StatusDto[];
   @ApiProperty()
   @IsNotEmpty()
   createdBy: string;

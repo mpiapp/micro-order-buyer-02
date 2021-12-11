@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { OrderCreateDto } from './../../../../config/dto/order-create.dto';
 import { ICreatePurchaseRequest } from './../interfaces/services/CreatePurchaseRequest.intreface';
 import { IDeletePurchaseRequest } from './../interfaces/services/isDeletePurchaseRequest.interface';
 import { ISearchPurchaseRequest } from './../interfaces/services/SearchPurchaseRequest.interface';
@@ -13,6 +12,7 @@ import {
 import { OrderUpdateDto } from './../../../../config/dto/order-update.dto';
 import { ApprovalDto } from './../dto/Approval.dto';
 import { TBasePaginate } from 'src/config/type/BasePaginate.type';
+import { CreatePurchaseRequest } from '../interfaces/type/CreatePurchaseRequest.type';
 
 @Injectable()
 export class PurchaseRequestService
@@ -26,7 +26,7 @@ export class PurchaseRequestService
     @InjectModel(Order.name) private readonly model: Model<OrderDocument>,
   ) {}
 
-  async createPurchaseRequest(params: OrderCreateDto): Promise<Order> {
+  async createPurchaseRequest(params: CreatePurchaseRequest): Promise<Order> {
     return this.model.create(params);
   }
 
@@ -64,10 +64,11 @@ export class PurchaseRequestService
     return this.model.aggregate([
       {
         $match: {
-          buyerId: buyer,
+          'buyer._id': buyer,
           isDeleted: false,
         },
       },
+      { $sort: { createdAt: -1 } },
       {
         $addFields: {
           lastStatus: {
@@ -91,11 +92,12 @@ export class PurchaseRequestService
     return this.model.aggregate([
       {
         $match: {
-          buyerId: keyId,
+          'buyer._id': keyId,
           isDeleted: false,
           'approval.name': { $exists: true },
         },
       },
+      { $sort: { createdAt: -1 } },
       {
         $facet: {
           metadata: [

@@ -1,6 +1,9 @@
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
-import { SampleCreate } from './../../../../../../test/mocks/sample/Purchase-Request/sample.data.create.mock';
+import {
+  SampleCreate,
+  SampleCreateService,
+} from './../../../../../../test/mocks/sample/Purchase-Request/sample.data.create.mock';
 import { SampleUpdate } from './../../../../../../test/mocks/sample/Purchase-Request/sample.data.update.mock';
 import { mockPurchaseRequest } from './../../../../../../test/mocks/services/PR.mocks';
 import { PurchaseRequestService } from './../purchase-request.service';
@@ -27,8 +30,8 @@ describe('PurchaseRequestService', () => {
     expect(service).toBeDefined();
   });
   it('should be create purchase request', async () => {
-    expect(await service.createPurchaseRequest(SampleCreate)).toEqual(
-      SampleCreate,
+    expect(await service.createPurchaseRequest(SampleCreateService)).toEqual(
+      SampleCreateService,
     );
   });
 
@@ -47,11 +50,9 @@ describe('PurchaseRequestService', () => {
   });
 
   it('should be update purchase request', async () => {
-    mockPurchaseRequest.findByIdAndUpdate.mockImplementation(() => {
-      return {
-        ...SampleCreate,
-        ...SampleUpdate,
-      };
+    mockPurchaseRequest.findByIdAndUpdate.mockReturnValue({
+      ...SampleCreate,
+      ...SampleUpdate,
     });
 
     expect(

@@ -1,13 +1,14 @@
 import { OrderUpdateDto } from 'src/config/dto/order-update.dto';
+import { sampleAddress, sampleVendor } from '../Delivery-Note/sample.mock';
 import { sampleItem } from '../Products/sample.item.mock';
 
 export const SampleUpdate: OrderUpdateDto = {
   id: expect.any(String),
-  addressId: '617364617364617364617344',
+  address: sampleAddress,
   vendors: [
     {
       code_po: 'KPJ-12-10-00001-001',
-      vendorId: expect.any(String),
+      vendor: sampleVendor,
       packages: [
         {
           code_package: 'KPJ-12-10-00001-001-001',
@@ -26,11 +27,4 @@ export const SampleUpdate: OrderUpdateDto = {
     },
   ],
   total: 0,
-  statuses: [
-    {
-      id: expect.any(String),
-      name: 'Open',
-      timestamp: new Date('2021-10-10 20:00'),
-    },
-  ],
 };

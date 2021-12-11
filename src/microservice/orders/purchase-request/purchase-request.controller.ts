@@ -15,13 +15,11 @@ import { OrderUpdateDto } from './../../../config/dto/order-update.dto';
 import { IncomingMessage } from './../../../config/interfaces/Income.interface';
 import { BaseResponse } from './../../../config/interfaces/response.base.interface';
 import { ApprovalDto } from './dto/Approval.dto';
-import { StatusDto } from './dto/Status.dto';
 import { IPurchaseRequestsResponse } from './interfaces/response/Many.interface';
 import { IPurchaseRequestPaginateResponse } from './interfaces/response/Paginate.interface';
 import { IPurchaseRequestResponse } from './interfaces/response/Single.interface';
 import { GenerateService } from './services/generate.service';
 import { PurchaseRequestService } from './services/purchase-request.service';
-import { UpdateStatusService } from './services/update-status.service';
 
 @ApiTags('Purchase Request')
 @Controller('PurchaseRequest')
@@ -29,20 +27,21 @@ export class PurchaseRequestController {
   constructor(
     private readonly PRMaster: PurchaseRequestService,
     private readonly Generate: GenerateService,
-    private readonly Status: UpdateStatusService,
     private readonly Config: ConfigService,
     private readonly HelperService: Helper,
   ) {}
 
   @MessagePattern('purchase.request.save')
-  async PRCreate(
+  async create(
     @Body() message: IncomingMessage<OrderCreateDto>,
   ): Promise<IPurchaseRequestResponse> {
     try {
-      const { value } = message;
-      const generateCodePR = await this.Generate.generateCode(value.code_pr);
-      value.code_pr = generateCodePR.code;
-      const create = await this.PRMaster.createPurchaseRequest(value);
+      const { code, ...params } = message.value;
+      const generate = await this.Generate.generateCode(code);
+      const create = await this.PRMaster.createPurchaseRequest({
+        ...params,
+        code_pr: generate.code,
+      });
       return {
         status: HttpStatus.CREATED,
         message: this.Config.get<string>(
@@ -64,7 +63,7 @@ export class PurchaseRequestController {
   }
 
   @MessagePattern('purchase.request.update')
-  async PRUpdate(
+  async update(
     @Body() message: IncomingMessage<OrderUpdateDto>,
   ): Promise<IPurchaseRequestResponse> {
     try {
@@ -91,7 +90,7 @@ export class PurchaseRequestController {
   }
 
   @MessagePattern('purchase.request.delete')
-  async PRDelete(
+  async delete(
     @Body() message: IncomingMessage<string>,
   ): Promise<BaseResponse> {
     try {
@@ -116,7 +115,7 @@ export class PurchaseRequestController {
 
   @UseInterceptors(CacheInterceptor)
   @MessagePattern('purchase.request.get.all')
-  async PRList(
+  async getAll(
     @Body() message: IncomingMessage<string>,
   ): Promise<IPurchaseRequestsResponse> {
     try {
@@ -143,7 +142,7 @@ export class PurchaseRequestController {
 
   @UseInterceptors(CacheInterceptor)
   @MessagePattern('purchase.request.get.by.id')
-  async PRById(
+  async getById(
     @Body() message: IncomingMessage<string>,
   ): Promise<IPurchaseRequestResponse> {
     try {
@@ -170,7 +169,7 @@ export class PurchaseRequestController {
 
   @UseInterceptors(CacheInterceptor)
   @MessagePattern('purchase.request.search')
-  async PRSearch(
+  async search(
     @Body() message: IncomingMessage<string>,
   ): Promise<IPurchaseRequestsResponse> {
     try {
@@ -196,7 +195,7 @@ export class PurchaseRequestController {
   }
 
   @MessagePattern('purchase.request.paginate')
-  async getPurchaseRequestPaginate(
+  async paginate(
     @Body() message: IncomingMessage<POPaginateDto>,
   ): Promise<IPurchaseRequestPaginateResponse> {
     const { skip, limit } = message.value;
@@ -220,11 +219,6 @@ export class PurchaseRequestController {
       limit: Number(limit),
       data: data,
     };
-  }
-
-  @MessagePattern('purchase.request.add.status')
-  async PRaddStatus(@Body() message: IncomingMessage<StatusDto>): Promise<any> {
-    return this.Status.addStatus(message.value);
   }
 
   @EventPattern('purchase.request.approval')

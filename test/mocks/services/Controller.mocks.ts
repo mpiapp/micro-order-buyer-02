@@ -1,11 +1,14 @@
 import { sampleDataCreatePO } from '../sample/Purchase-Order/sample.data.search.mock';
-import { SampleCreate } from '../sample/Purchase-Request/sample.data.create.mock';
+import {
+  SampleCreate,
+  SampleCreateService,
+} from '../sample/Purchase-Request/sample.data.create.mock';
 import { SampleTemplateCreate } from '../sample/Template/Sample.mocks';
 import { mockGRNService } from './GRN.mocks';
 
 export const mockControllerPurchaseRequest = {
   findByIdAndUpdate: jest.fn().mockImplementation(() => {
-    return SampleCreate;
+    return SampleCreateService;
   }),
   updateOne: jest.fn().mockImplementation(() => {
     return {
