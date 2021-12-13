@@ -1,3 +1,4 @@
+import { sampleVendor } from '../Delivery-Note/sample.mock';
 import { sampleItem } from '../Products/sample.item.mock';
 
 export const SampleTemplateCreateOld = {
@@ -18,7 +19,7 @@ export const SampleTemplateUpdate = {
   id: expect.any(String),
   vendors: [
     {
-      vendorId: expect.any(String),
+      vendor: sampleVendor,
       packages: [
         {
           items: [sampleItem, sampleItem],
@@ -35,7 +36,7 @@ export const SampleTemplateCreate = {
   buyerId: '617364617364617364617344',
   vendors: [
     {
-      vendorId: expect.any(String),
+      vendor: sampleVendor,
       packages: [
         {
           items: [sampleItem, sampleItem],

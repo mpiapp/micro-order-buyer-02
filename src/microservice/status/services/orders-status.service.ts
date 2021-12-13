@@ -13,12 +13,12 @@ export class OrdersStatusService {
   constructor(@InjectModel(Order.name) private model: Model<OrderDocument>) {}
 
   async pushStatusOrder(params: TStatusDefault): Promise<Order> {
-    const { id, ...update } = params;
-    return this.model.findByIdAndUpdate(id, { $push: { statuses: update } });
+    const { id, status } = params;
+    return this.model.findByIdAndUpdate(id, { $push: { statuses: status } });
   }
 
   async pushStatusVendor(params: TStatusVendorLevel): Promise<Order> {
-    const { vendorId, ...update } = params;
+    const { vendorId, status } = params;
     return this.model.findOneAndUpdate(
       {
         $and: [
@@ -29,7 +29,7 @@ export class OrdersStatusService {
       },
       {
         $push: {
-          'vendors.$[arrayVendor].statuses': update,
+          'vendors.$[arrayVendor].statuses': status,
         },
       },
       {

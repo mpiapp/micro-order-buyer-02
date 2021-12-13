@@ -124,11 +124,21 @@ class Package {
 }
 
 @Schema()
+class Vendor {
+  @Prop()
+  _id: string;
+  @Prop()
+  name: string;
+  @Prop()
+  address: string;
+  @Prop()
+  phone: string;
+}
+
+@Schema()
 class Vendors {
   @Prop()
-  vendorId: string;
-  @Prop()
-  vendor_name: string;
+  vendor: Vendor;
   @Prop([Package])
   packages: [Package];
 }
