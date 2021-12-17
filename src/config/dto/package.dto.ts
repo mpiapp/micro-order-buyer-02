@@ -9,7 +9,7 @@ import {
   Min,
 } from 'class-validator';
 import { Items } from 'src/microservice/product/items/dto/Items.dto';
-import { StatusDto } from './Status.dto';
+import { StatusDto } from './status.dto';
 
 export class PackageDto {
   @ApiProperty()
