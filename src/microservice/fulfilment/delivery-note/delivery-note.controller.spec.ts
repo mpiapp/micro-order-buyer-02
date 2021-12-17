@@ -62,7 +62,7 @@ describe('DeliveryNoteController', () => {
     expect(
       await controller.DeliveryNoteCreate({
         ...MessageSample,
-        value: { create: sampleDeliveryNoteControllerNew },
+        value: sampleDeliveryNoteControllerNew,
       }),
     ).toEqual({
       errors: null,
@@ -77,7 +77,7 @@ describe('DeliveryNoteController', () => {
     try {
       await controller.DeliveryNoteCreate({
         ...MessageSample,
-        value: { create: sampleDeliveryNoteControllerNew },
+        value: sampleDeliveryNoteControllerNew,
       });
     } catch (error) {
       expect(error).toEqual({

@@ -188,7 +188,22 @@ export class PurchaseOrderController {
     @Payload() message: IncomingMessage<TChangeItems>,
   ): Promise<BaseResponse> {
     try {
-      await this.Items.changeRejected(message.value);
+      const items = await this.Items.getItems(message.value.itemsId);
+      if (!items) {
+        return {
+          status: HttpStatus.PRECONDITION_FAILED,
+          message: this.Config.get<string>(
+            'messageBase.PurchaseOrder.rejected.Failed',
+          ),
+          errors: items,
+        };
+      }
+
+      await this.Items.changeRejected(message.value, {
+        sub_total_original: items[0].sub_total_original,
+        quantity_original: items[0].quantity_original,
+        retail_price_original: items[0].retail_price_original,
+      });
       return {
         status: HttpStatus.OK,
         message: this.Config.get<string>(

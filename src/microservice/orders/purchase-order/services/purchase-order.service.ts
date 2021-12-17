@@ -30,7 +30,7 @@ export class PurchaseOrderService implements IDeletePurchaseOrder {
     return this.model.aggregate([
       {
         $match: {
-          buyerId: id,
+          'buyer._id': id,
           isDeleted: false,
           'approval.name': { $exists: true },
         },
@@ -43,8 +43,8 @@ export class PurchaseOrderService implements IDeletePurchaseOrder {
           newRoot: {
             $mergeObjects: [
               {
-                buyerId: '$buyerId',
-                addressId: '$addressId',
+                buyer: '$buyer',
+                address: '$address',
                 vendor_name: '$vendor_name',
                 date: '$date',
               },
@@ -68,11 +68,13 @@ export class PurchaseOrderService implements IDeletePurchaseOrder {
                 statuses: '$$row.statuses',
                 total: '$$row.total',
                 payment_terms: '$$row.payment_terms',
+                code_package: '$$row.code_package',
                 code_pick: '$$row.code_pick',
                 code_pack: '$$row.code_pack',
                 lastStatus: {
                   $last: '$$row.statuses.name',
                 },
+                updated: false,
               },
             },
           },
@@ -93,7 +95,7 @@ export class PurchaseOrderService implements IDeletePurchaseOrder {
     return this.model.aggregate([
       {
         $match: {
-          buyerId: keyId,
+          'buyer._id': keyId,
           isDeleted: false,
           'approval.name': { $exists: true },
         },
@@ -106,8 +108,8 @@ export class PurchaseOrderService implements IDeletePurchaseOrder {
           newRoot: {
             $mergeObjects: [
               {
-                buyerId: '$buyerId',
-                addressId: '$addressId',
+                buyer: '$buyer',
+                address: '$address',
                 vendor_name: '$vendor_name',
                 date: '$date',
               },
@@ -136,6 +138,7 @@ export class PurchaseOrderService implements IDeletePurchaseOrder {
                 lastStatus: {
                   $last: '$$row.statuses.name',
                 },
+                updated: false,
               },
             },
           },

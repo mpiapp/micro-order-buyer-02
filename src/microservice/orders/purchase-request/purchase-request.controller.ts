@@ -141,6 +141,33 @@ export class PurchaseRequestController {
   }
 
   @UseInterceptors(CacheInterceptor)
+  @MessagePattern('purchase.request.get.items')
+  async getItems(
+    @Body() message: IncomingMessage<string>,
+  ): Promise<IPurchaseRequestsResponse> {
+    try {
+      const getAll = await this.PRMaster.getItems(message.value);
+      return {
+        status: HttpStatus.OK,
+        message: this.Config.get<string>(
+          'messageBase.PurchaseRequest.All.Success',
+        ),
+        data: getAll,
+        errors: null,
+      };
+    } catch (error) {
+      return {
+        status: HttpStatus.PRECONDITION_FAILED,
+        message: this.Config.get<string>(
+          'messageBase.PurchaseRequest.All.Failed',
+        ),
+        data: null,
+        errors: error,
+      };
+    }
+  }
+
+  @UseInterceptors(CacheInterceptor)
   @MessagePattern('purchase.request.get.by.id')
   async getById(
     @Body() message: IncomingMessage<string>,
@@ -239,34 +266,23 @@ export class PurchaseRequestController {
       const pack = await this.HelperService.group(
         rows.packages,
         rows.code_po,
-        'Open',
+        'New',
       );
 
       let status;
       /* istanbul ignore next */
       if (rows.down_payment !== null) {
         status = {
-          ...rows.statuses,
-          ...[
-            {
-              name: 'Waiting Down Payment',
-              timestamp: new Date(Date.now()),
-            },
-          ],
+          name: 'Waiting Down Payment',
+          timestamp: new Date(Date.now()),
         };
       } else {
         status = {
-          ...rows.statuses,
-          ...[
-            {
-              name: 'Active',
-              timestamp: new Date(Date.now()),
-            },
-          ],
+          name: 'Active',
+          timestamp: new Date(Date.now()),
         };
       }
-
-      rows.statuses = status;
+      rows.statuses.push(status);
 
       rows.packages = pack;
     }

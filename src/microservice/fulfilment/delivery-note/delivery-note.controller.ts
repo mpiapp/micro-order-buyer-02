@@ -103,23 +103,23 @@ export class DeliveryNoteController {
 
   @MessagePattern('delivery.note.save')
   async DeliveryNoteCreate(
-    @Body() message: IncomingMessage<{ create: DeliveryNoteCreateDto }>,
+    @Body() message: IncomingMessage<DeliveryNoteCreateDto>,
   ): Promise<BaseResponse> {
     try {
-      const { code_po, delivery } = message.value.create;
+      const { delivery, reference_doc } = message.value;
       const searchCode = `${this.Config.get(
         'initialCode.DeliveryNote.code',
-      )}-${code_po.slice(-3)}`;
+      )}-${reference_doc.code_po.slice(-3)}`;
       const countingNumber: number = await this.dnService.getCount(searchCode);
-      const code = await this.helperService.generateCode({
+      delivery.code = await this.helperService.generateCode({
         code: searchCode,
         count: countingNumber + 1,
         digits: this.Config.get('DIGITS_NUMBER_PICK'),
       });
 
       await this.dnService.create({
-        ...message.value.create,
-        ...{ ...delivery, code: code },
+        ...message.value,
+        delivery,
       });
 
       return {

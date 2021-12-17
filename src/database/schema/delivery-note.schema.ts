@@ -83,12 +83,12 @@ class Delivery {
 
 @Schema()
 class Received {
-  @Prop({ unique: true, required: true, index: true, type: String })
-  code: string;
+  @Prop({ type: String })
+  code?: string;
   @Prop()
-  date: Date;
+  date?: Date;
   @Prop()
-  name: string;
+  name?: string;
 }
 
 @Schema()

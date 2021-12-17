@@ -27,7 +27,7 @@ describe('UpdateStatusServiceService', () => {
   });
 
   it('should be add status', async () => {
-    mockPurchaseRequest.findByIdAndUpdate.mockReturnValue(sampleStatus);
+    mockPurchaseRequest.findOneAndUpdate.mockReturnValue(sampleStatus);
     expect(await service.addStatus(sampleStatus)).toEqual({
       ...sampleStatus,
     });

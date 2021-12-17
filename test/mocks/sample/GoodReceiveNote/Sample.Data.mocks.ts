@@ -1,3 +1,4 @@
+import { sampleReference, sampleVendor } from '../Delivery-Note/sample.mock';
 import { sampleItem } from '../Products/sample.item.mock';
 
 export const sampleGRN = {
@@ -6,6 +7,8 @@ export const sampleGRN = {
     date: new Date(),
     name: '1231212312412412312',
   },
+  reference_doc: sampleReference,
+  vendor: sampleVendor,
   items: [
     {
       ...sampleItem,

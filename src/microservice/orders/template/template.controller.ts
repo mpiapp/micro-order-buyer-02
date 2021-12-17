@@ -126,6 +126,28 @@ export class TemplateController {
     }
   }
 
+  @MessagePattern('template.get.items')
+  async TemplateItems(
+    @Body() message: IncomingMessage<string>,
+  ): Promise<ITemplateCreateAndUpdateResponse> {
+    try {
+      const getById = await this.TemplateMaster.getItems(message.value);
+      return {
+        status: HttpStatus.OK,
+        message: this.Config.get<string>('messageBase.Template.One.Success'),
+        data: getById,
+        errors: null,
+      };
+    } catch (error) {
+      return {
+        status: HttpStatus.PRECONDITION_FAILED,
+        message: this.Config.get<string>('messageBase.Template.One.Failed'),
+        data: null,
+        errors: error,
+      };
+    }
+  }
+
   @MessagePattern('template.search')
   async TemplateSearch(
     @Body() message: IncomingMessage<string>,

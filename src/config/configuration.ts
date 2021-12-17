@@ -117,7 +117,7 @@ export default () => ({
       },
       rejected: {
         Success: 'Change Items Rejected Success',
-        Failed: 'Change Items Rejected Success',
+        Failed: 'Change Items Rejected Failed',
       },
     },
     Template: {

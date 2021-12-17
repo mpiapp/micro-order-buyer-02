@@ -121,4 +121,8 @@ describe('PurchaseRequestService', () => {
       }),
     ).toEqual([SampleCreate]);
   });
+
+  it('should get data items', async () => {
+    expect(await service.getItems(expect.any(String))).toEqual([SampleCreate]);
+  });
 });

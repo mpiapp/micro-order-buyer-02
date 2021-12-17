@@ -39,6 +39,8 @@ class Status {
   timestamp: Date;
   @Prop()
   note?: string;
+  @Prop()
+  user?: string;
 }
 
 @Schema()
@@ -151,6 +153,20 @@ class Item {
   discount: number;
   @Prop()
   sub_total: number;
+  @Prop()
+  quantity_original?: number;
+  @Prop()
+  retail_price_original?: number;
+  @Prop()
+  sub_total_original?: number;
+  @Prop()
+  discount_price_original?: number;
+  @Prop()
+  note?: string;
+  @Prop([Status])
+  statuses: [Status];
+  @Prop()
+  updated?: boolean;
 }
 
 @Schema()

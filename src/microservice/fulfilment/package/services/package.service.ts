@@ -109,6 +109,11 @@ export class PackageService {
   async getPackageById(id: string): Promise<any> {
     return this.model.aggregate([
       {
+        $match: {
+          isDeleted: false,
+        },
+      },
+      {
         $unwind: '$vendors',
       },
       {
@@ -116,8 +121,8 @@ export class PackageService {
           newRoot: {
             $mergeObjects: [
               {
-                buyerId: '$buyerId',
-                addressId: '$addressId',
+                buyer: '$buyer',
+                address: '$address',
                 date: '$date',
                 code_po: '$code_po',
                 vendor_name: '$vendor_name',
@@ -147,9 +152,9 @@ export class PackageService {
           newRoot: {
             $mergeObjects: [
               {
-                buyerId: '$buyerId',
-                addressId: '$addressId',
-                vendorId: '$vendorId',
+                buyer: '$buyer',
+                address: '$address',
+                vendor: '$vendor',
                 date: '$date',
                 code_po: '$code_po',
                 vendor_name: '$vendor_name',
@@ -181,6 +186,11 @@ export class PackageService {
   async getPackages(vendorId: string, status: string): Promise<any[]> {
     return this.model.aggregate([
       {
+        $match: {
+          isDeleted: false,
+        },
+      },
+      {
         $unwind: '$vendors',
       },
       {
@@ -188,8 +198,8 @@ export class PackageService {
           newRoot: {
             $mergeObjects: [
               {
-                buyerId: '$buyerId',
-                addressId: '$addressId',
+                buyer: '$buyer',
+                address: '$address',
                 date: '$date',
                 code_po: '$code_po',
                 vendor_name: '$vendor_name',
@@ -208,7 +218,7 @@ export class PackageService {
       },
       {
         $match: {
-          vendorId: vendorId,
+          'vendor._id': vendorId,
           paymentStatus: { $not: { $eq: 'Waiting Down Payment' } },
         },
       },
@@ -220,9 +230,9 @@ export class PackageService {
           newRoot: {
             $mergeObjects: [
               {
-                buyerId: '$buyerId',
-                addressId: '$addressId',
-                vendorId: '$vendorId',
+                buyer: '$buyer',
+                address: '$address',
+                vendor: '$vendor',
                 date: '$date',
                 code_po: '$code_po',
                 vendor_name: '$vendor_name',

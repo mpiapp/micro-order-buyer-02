@@ -11,6 +11,7 @@ import { IDeleteTemplate } from './../interfaces/services/DeleteTemplate.interfa
 import moment = require('moment');
 import { TemplateUpdateDto } from '../dto/UpdateTemplate.dto';
 import { TBasePaginate } from './../../../../config/type/BasePaginate.type';
+import * as mongoose from 'mongoose';
 
 @Injectable()
 export class TemplateService implements ICreateTemplate, IDeleteTemplate {
@@ -84,6 +85,56 @@ export class TemplateService implements ICreateTemplate, IDeleteTemplate {
         $addFields: {
           lastStatus: {
             $last: '$statuses.name',
+          },
+        },
+      },
+    ]);
+  }
+
+  async getItems(id: string): Promise<any> {
+    return this.model.aggregate([
+      {
+        $match: {
+          _id: new mongoose.Types.ObjectId(id),
+        },
+      },
+      {
+        $unwind: '$vendors',
+      },
+      {
+        $replaceRoot: {
+          newRoot: {
+            $mergeObjects: ['$vendors'],
+          },
+        },
+      },
+      {
+        $unwind: '$packages',
+      },
+      {
+        $replaceRoot: {
+          newRoot: {
+            $mergeObjects: [
+              {
+                vendor: '$vendor',
+              },
+              '$packages',
+            ],
+          },
+        },
+      },
+      {
+        $unwind: '$items',
+      },
+      {
+        $replaceRoot: {
+          newRoot: {
+            $mergeObjects: [
+              {
+                vendor: '$vendor',
+              },
+              '$items',
+            ],
           },
         },
       },

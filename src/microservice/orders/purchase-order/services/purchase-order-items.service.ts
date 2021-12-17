@@ -7,6 +7,7 @@ import {
 } from './../../../../database/schema/orders.schema';
 import * as mongoose from 'mongoose';
 import { TChangeItems } from './../interfaces/type/TChangeItems.type';
+import { ItemChangeRejectDto } from '../dto/ItemChangeReject.dto';
 
 @Injectable()
 export class PurchaseOrderItemsService {
@@ -39,7 +40,50 @@ export class PurchaseOrderItemsService {
     );
   }
 
-  async changeRejected(params: TChangeItems): Promise<any> {
+  async getItems(id: string): Promise<any> {
+    return this.POmodel.aggregate([
+      {
+        $unwind: '$vendors',
+      },
+      {
+        $replaceRoot: {
+          newRoot: {
+            $mergeObjects: ['$vendors'],
+          },
+        },
+      },
+      {
+        $unwind: '$packages',
+      },
+      {
+        $replaceRoot: {
+          newRoot: {
+            $mergeObjects: ['$packages'],
+          },
+        },
+      },
+      {
+        $unwind: '$items',
+      },
+      {
+        $replaceRoot: {
+          newRoot: {
+            $mergeObjects: ['$items'],
+          },
+        },
+      },
+      {
+        $match: {
+          _id: new mongoose.Types.ObjectId(id),
+        },
+      },
+    ]);
+  }
+
+  async changeRejected(
+    params: TChangeItems,
+    items: ItemChangeRejectDto,
+  ): Promise<any> {
     return this.POmodel.findOneAndUpdate(
       {
         'vendors.packages.items._id': new mongoose.Types.ObjectId(
@@ -48,19 +92,28 @@ export class PurchaseOrderItemsService {
       },
       {
         $push: {
-          'vendors.$[arrayVendor].packages.$[arrayPackage].items.$[arrayItem].status':
+          'vendors.$[arrayVendor].packages.$[arrayPackage].items.$[arrayItem].statuses':
             {
               name: 'Rejected',
               timestamp: new Date(Date.now()),
             },
         },
+        $set: {
+          'vendors.$[arrayVendor].packages.$[arrayPackage].items.$[arrayItem].sub_total':
+            items.sub_total_original,
+          'vendors.$[arrayVendor].packages.$[arrayPackage].items.$[arrayItem].quantity':
+            items.quantity_original,
+          'vendors.$[arrayVendor].packages.$[arrayPackage].items.$[arrayItem].retail_price':
+            items.retail_price_original,
+        },
       },
       {
         arrayFilters: [
-          { 'arrayVendor.vendorId': params.vendorId },
+          { 'arrayVendor.vendor._id': params.vendorId },
           { 'arrayPackage._id': new mongoose.Types.ObjectId(params.packageId) },
           { 'arrayItem._id': new mongoose.Types.ObjectId(params.itemsId) },
         ],
+        returnNewDocument: true,
       },
     );
   }
@@ -74,24 +127,16 @@ export class PurchaseOrderItemsService {
       },
       {
         $push: {
-          'vendors.$[arrayVendor].packages.$[arrayPackage].items.$[arrayItem].status':
+          'vendors.$[arrayVendor].packages.$[arrayPackage].items.$[arrayItem].statuses':
             {
               name: 'Approved',
               timestamp: new Date(Date.now()),
             },
         },
-        $set: {
-          'vendors.$[arrayVendor].packages.$[arrayPackage].items.$[arrayItem].sub_price':
-            '$suggest_sub_price',
-          'vendors.$[arrayVendor].packages.$[arrayPackage].items.$[arrayItem].quantity':
-            '$suggest_quantity',
-          'vendors.$[arrayVendor].packages.$[arrayPackage].items.$[arrayItem].updated':
-            false,
-        },
       },
       {
         arrayFilters: [
-          { 'arrayVendor.vendorId': params.vendorId },
+          { 'arrayVendor.vendor._id': params.vendorId },
           { 'arrayPackage._id': new mongoose.Types.ObjectId(params.packageId) },
           { 'arrayItem._id': new mongoose.Types.ObjectId(params.itemsId) },
         ],

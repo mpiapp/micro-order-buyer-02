@@ -57,7 +57,7 @@ describe('PurchaseRequestController', () => {
       errors: null,
       status: 201,
       message: config.get<string>('messageBase.PurchaseRequest.save.Success'),
-      data: { ...SampleCreateService, code_pr: 'KPJ-12-10-00002' },
+      data: { ...SampleCreateService, code_pr: 'KPJ-12-10' },
     });
   });
 
@@ -266,6 +266,35 @@ describe('PurchaseRequestController', () => {
     });
   });
 
+  it('should be get items', async () => {
+    mockControllerPurchaseRequest.aggregate.mockReturnValue([SampleCreate]);
+
+    expect(
+      await controller.getItems({
+        ...MessageSample,
+        value: expect.any(String),
+      }),
+    ).toEqual({
+      errors: null,
+      status: 200,
+      data: [SampleCreate],
+      message: config.get<string>('messageBase.PurchaseRequest.All.Success'),
+    });
+  });
+
+  it('should be get items failed', async () => {
+    mockControllerPurchaseRequest.aggregate.mockRejectedValue(false);
+
+    try {
+      await controller.getItems({
+        ...MessageSample,
+        value: expect.any(String),
+      });
+    } catch (error) {
+      expect(error).toBe(error);
+    }
+  });
+
   it('should create PR generate null Success', async () => {
     mockControllerPurchaseRequest.find.mockReturnValue(null);
 
@@ -275,7 +304,7 @@ describe('PurchaseRequestController', () => {
       errors: null,
       status: 201,
       message: config.get<string>('messageBase.PurchaseRequest.save.Success'),
-      data: { ...SampleCreateService, code_pr: 'KPJ-12-10-00001' },
+      data: { ...SampleCreateService, code_pr: 'KPJ-12-10' },
     });
   });
 
@@ -302,12 +331,13 @@ describe('PurchaseRequestController', () => {
     }
   });
 
-  it('should add Status Master PR', async () => {
+  it('should add Approval Master PR', async () => {
     mockControllerPurchaseRequest.findById.mockImplementation(() => {
-      return SampleCreate;
+      return SampleCreateService;
     });
+
     mockControllerPurchaseRequest.findByIdAndUpdate.mockImplementation(() => {
-      return SampleCreate;
+      return SampleCreateService;
     });
 
     expect(
@@ -320,6 +350,6 @@ describe('PurchaseRequestController', () => {
           timestamp: new Date(),
         },
       }),
-    ).toEqual(SampleCreate);
+    ).toEqual(SampleCreateService);
   });
 });

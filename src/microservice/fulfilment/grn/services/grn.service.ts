@@ -57,9 +57,25 @@ export class GrnService {
   }
 
   async updateGRN(id: string, params: TGrnUpdate): Promise<DeliveryNote> {
-    return this.grnModel.findByIdAndUpdate(id, {
-      $set: params,
-    });
+    const { received, items, vendor } = params;
+    return this.grnModel.findOneAndUpdate(
+      {
+        $and: [
+          {
+            'reference_doc.packageId': id,
+          },
+          {
+            'vendor._id': vendor._id,
+          },
+        ],
+      },
+      {
+        $set: {
+          received: received,
+          items: items,
+        },
+      },
+    );
   }
 
   async getCount(SearchCode: string): Promise<number> {

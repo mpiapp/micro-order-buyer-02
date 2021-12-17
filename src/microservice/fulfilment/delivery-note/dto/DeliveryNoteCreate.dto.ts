@@ -7,33 +7,27 @@ import {
   IsObject,
   IsString,
 } from 'class-validator';
-import { ItemPRDto } from 'src/microservice/orders/purchase-request/dto/Items.dto';
-import { IStatus } from 'src/microservice/orders/purchase-request/interfaces/type/IStatus.interface';
-import {
-  DNBuyer,
-  DNDelivery,
-  DNReference,
-  DNVendor,
-  IDnCreate,
-} from '../interfaces/type/dn-create.type';
+import { BuyerDto } from './../../../../config/dto/buyer.dto';
+import { VendorDto } from './../../../../config/dto/vendor.dto';
+import { ItemPRDto } from './../../../../microservice/orders/purchase-request/dto/Items.dto';
+import { IStatus } from './../../../orders/purchase-request/interfaces/type/IStatus.interface';
+import { IDnCreate } from '../interfaces/type/dn-create.type';
+import { DeliveryShippingDto } from './Delivery.dto';
+import { ReferenceDto } from './Reference.dto';
 
 export class DeliveryNoteCreateDto implements IDnCreate {
   @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
-  code_po: string;
+  @IsObject()
+  buyer: BuyerDto;
   @ApiProperty()
   @IsObject()
-  buyer: DNBuyer;
+  delivery: DeliveryShippingDto;
   @ApiProperty()
   @IsObject()
-  delivery: DNDelivery;
+  vendor: VendorDto;
   @ApiProperty()
   @IsObject()
-  vendor: DNVendor;
-  @ApiProperty()
-  @IsObject()
-  reference_doc: DNReference;
+  reference_doc: ReferenceDto;
   @ApiProperty()
   @IsDate()
   @Type(() => Date)

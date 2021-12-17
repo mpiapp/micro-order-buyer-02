@@ -25,8 +25,8 @@ export class PaginatePackageService {
           newRoot: {
             $mergeObjects: [
               {
-                buyerId: '$buyerId',
-                addressId: '$addressId',
+                buyer: '$buyer',
+                address: '$address',
                 vendor_name: '$vendor_name',
                 date: '$date',
                 code_po: '$code_po',
@@ -44,9 +44,9 @@ export class PaginatePackageService {
           newRoot: {
             $mergeObjects: [
               {
-                buyerId: '$buyerId',
-                addressId: '$addressId',
-                vendorId: '$vendorId',
+                buyer: '$buyer',
+                address: '$address',
+                vendor: '$vendor',
                 vendor_name: '$vendor_name',
                 date: '$date',
                 code_po: '$code_po',
@@ -68,7 +68,7 @@ export class PaginatePackageService {
       },
       {
         $match: {
-          vendorId: vendorId,
+          'vendor._id': vendorId,
           lastStatus: status,
         },
       },

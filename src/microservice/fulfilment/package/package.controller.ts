@@ -145,7 +145,7 @@ export class PackageController {
     @Body() message: IncomingMessage<pickPackPackageDto>,
   ): Promise<BaseResponse> {
     try {
-      const { id, code_po, items, statuses, vendorId } = message.value;
+      const { id, code_po, items, statuses, vendor } = message.value;
       const validate = await this.paymentService.checking(id);
       if (!validate) {
         return {
@@ -164,7 +164,7 @@ export class PackageController {
       const total = this.helpService.SubTotal(items);
       await this.pickPackService.pickPackage({
         id: id,
-        vendorId: vendorId,
+        vendor: vendor,
         code: code,
         items: items,
         total: total,
@@ -189,7 +189,7 @@ export class PackageController {
     @Body() message: IncomingMessage<pickPackPackageDto>,
   ): Promise<BaseResponse> {
     try {
-      const { id, code_po, items, statuses, vendorId } = message.value;
+      const { id, code_po, items, statuses, vendor } = message.value;
       const code = await this.helpService.generateCode({
         code: `${this.Config.get('initialCode.Pack.code')}-${code_po.slice(
           -3,
@@ -201,7 +201,7 @@ export class PackageController {
       await this.pickPackService.packPackage({
         id: id,
         code: code,
-        vendorId: vendorId,
+        vendor: vendor,
         items: items,
         total: total,
         statuses: statuses,

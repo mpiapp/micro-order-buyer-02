@@ -234,6 +234,18 @@ describe('PurchaseOrderController', () => {
     }
   });
 
+  it('should Rejected PO Failed Item Not Found', async () => {
+    mockControllerPurchaseOrder.aggregate.mockReturnValue(false);
+    try {
+      await controller.POItemReject({
+        ...MessageSample,
+        value: expect.any(String),
+      });
+    } catch (error) {
+      expect(error).toBe(error);
+    }
+  });
+
   it('should Approved PO Failed', async () => {
     mockControllerPurchaseOrder.findOneAndUpdate.mockRejectedValue(
       new Error('error'),
@@ -249,6 +261,7 @@ describe('PurchaseOrderController', () => {
   });
 
   it('should Rejected PO Failed', async () => {
+    mockControllerPurchaseOrder.aggregate.mockRejectedValue(new Error('error'));
     try {
       await controller.POItemReject({
         ...MessageSample,

@@ -13,6 +13,7 @@ import { OrderUpdateDto } from './../../../../config/dto/order-update.dto';
 import { ApprovalDto } from './../dto/Approval.dto';
 import { TBasePaginate } from 'src/config/type/BasePaginate.type';
 import { CreatePurchaseRequest } from '../interfaces/type/CreatePurchaseRequest.type';
+import * as mongoose from 'mongoose';
 
 @Injectable()
 export class PurchaseRequestService
@@ -94,7 +95,7 @@ export class PurchaseRequestService
         $match: {
           'buyer._id': keyId,
           isDeleted: false,
-          'approval.name': { $exists: true },
+          'approval.name': { $exists: false },
         },
       },
       { $sort: { createdAt: -1 } },
@@ -119,6 +120,56 @@ export class PurchaseRequestService
         $addFields: {
           lastStatus: {
             $last: '$statuses.name',
+          },
+        },
+      },
+    ]);
+  }
+
+  async getItems(id: string): Promise<any> {
+    return this.model.aggregate([
+      {
+        $match: {
+          _id: new mongoose.Types.ObjectId(id),
+        },
+      },
+      {
+        $unwind: '$vendors',
+      },
+      {
+        $replaceRoot: {
+          newRoot: {
+            $mergeObjects: ['$vendors'],
+          },
+        },
+      },
+      {
+        $unwind: '$packages',
+      },
+      {
+        $replaceRoot: {
+          newRoot: {
+            $mergeObjects: [
+              {
+                vendor: '$vendor',
+              },
+              '$packages',
+            ],
+          },
+        },
+      },
+      {
+        $unwind: '$items',
+      },
+      {
+        $replaceRoot: {
+          newRoot: {
+            $mergeObjects: [
+              {
+                vendor: '$vendor',
+              },
+              '$items',
+            ],
           },
         },
       },

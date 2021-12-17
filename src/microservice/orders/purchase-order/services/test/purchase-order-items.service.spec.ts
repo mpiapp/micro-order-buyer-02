@@ -70,7 +70,9 @@ describe('PurchaseOrderItemsService', () => {
       ],
     });
 
-    expect(await service.changeRejected(expect.any(String))).toEqual({
+    expect(
+      await service.changeRejected(expect.any(String), expect.any(String)),
+    ).toEqual({
       ...sampleItemBaseChange,
       statuses: [
         {

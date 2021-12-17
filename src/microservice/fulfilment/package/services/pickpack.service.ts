@@ -15,7 +15,7 @@ export class PickPackService {
   ) {}
 
   async pickPackage(params: IPickPackPackage): Promise<any> {
-    const { id, code, items, statuses, total, vendorId } = params;
+    const { id, code, items, statuses, total, vendor } = params;
     return this.model.findOneAndUpdate(
       {
         $and: [
@@ -36,7 +36,7 @@ export class PickPackService {
       },
       {
         arrayFilters: [
-          { 'arrayVendor.vendorId': vendorId },
+          { 'arrayVendor.vendor._id': vendor._id },
           { 'arrayPackage._id': new mongoose.Types.ObjectId(id) },
         ],
       },
@@ -44,7 +44,7 @@ export class PickPackService {
   }
 
   async packPackage(params: IPickPackPackage): Promise<any> {
-    const { id, code, items, statuses, vendorId } = params;
+    const { id, code, items, statuses, vendor } = params;
 
     return this.model.findOneAndUpdate(
       {
@@ -65,7 +65,7 @@ export class PickPackService {
       },
       {
         arrayFilters: [
-          { 'arrayVendor.vendorId': vendorId },
+          { 'arrayVendor.vendor._id': vendor._id },
           { 'arrayPackage._id': new mongoose.Types.ObjectId(id) },
         ],
       },

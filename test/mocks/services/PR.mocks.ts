@@ -12,6 +12,14 @@ export const mockPurchaseRequest = {
         id,
       };
     }),
+  findOneAndUpdate: jest
+    .fn()
+    .mockImplementation((id: string, param: OrderUpdateDto) => {
+      return {
+        ...param,
+        id,
+      };
+    }),
   delete: jest.fn().mockImplementation((id: string) => {
     return { id };
   }),

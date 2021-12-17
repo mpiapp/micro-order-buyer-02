@@ -29,8 +29,8 @@ export class OrdersService implements IOrderService {
           newRoot: {
             $mergeObjects: [
               {
-                buyerId: '$buyerId',
-                addressId: '$addressId',
+                buyer: '$buyer',
+                address: '$address',
                 date: '$date',
               },
               '$vendors',
@@ -71,8 +71,8 @@ export class OrdersService implements IOrderService {
           newRoot: {
             $mergeObjects: [
               {
-                buyerId: '$buyerId',
-                addressId: '$addressId',
+                buyer: '$buyer',
+                address: '$address',
                 vendor_name: '$vendor_name',
                 date: '$date',
               },
@@ -94,7 +94,7 @@ export class OrdersService implements IOrderService {
       },
       {
         $match: {
-          vendorId: vendorId,
+          'vendor._id': vendorId,
           lastStatus: 'Waiting Down Payment',
         },
       },

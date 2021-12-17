@@ -2,6 +2,7 @@ import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PickPackService } from './../pickpack.service';
 import { Order } from '../../../../../database/schema/orders.schema';
+import { sampleVendor } from './../../../../../../test/mocks/sample/Delivery-Note/sample.mock';
 
 const mockpickPack = {
   updateOne: jest.fn().mockImplementation(() => {
@@ -44,7 +45,7 @@ describe('pickPackService', () => {
     expect(
       await service.pickPackage({
         id: expect.any(String),
-        vendorId: expect.any(String),
+        vendor: sampleVendor,
         code: 'PICK-XXX-001',
         items: [],
         total: 10000,
@@ -64,7 +65,7 @@ describe('pickPackService', () => {
     expect(
       await service.packPackage({
         id: expect.any(String),
-        vendorId: expect.any(String),
+        vendor: sampleVendor,
         code: 'PACK-XXX-001',
         items: [],
         total: 10000,

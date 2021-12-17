@@ -18,7 +18,7 @@ export const mockControllerPurchaseRequest = {
     };
   }),
   create: jest.fn().mockImplementation((SampleCreate) => {
-    return SampleCreate;
+    return SampleCreateService;
   }),
   findOne: jest.fn().mockImplementation(() => {
     return false;
@@ -26,7 +26,7 @@ export const mockControllerPurchaseRequest = {
   findById: jest.fn().mockReturnValue(SampleCreate),
   find: jest.fn().mockReturnValue([SampleCreate]),
   aggregate: jest.fn().mockReturnValue([SampleCreate]),
-  push: jest.fn().mockReturnValue(null),
+  push: jest.fn().mockReturnValue(SampleCreate),
 };
 
 export const mockControllerTemplate = {

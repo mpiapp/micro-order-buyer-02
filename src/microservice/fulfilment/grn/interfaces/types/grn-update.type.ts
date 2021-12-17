@@ -1,5 +1,12 @@
+import {
+  DNReference,
+  DNVendor,
+} from './../../../delivery-note/interfaces/type/dn-create.type';
+
 export type TGrnUpdate = {
+  vendor: DNVendor;
   received: GRNReceived;
+  reference_doc: DNReference;
   items: {
     productId: string;
     quantity: number;

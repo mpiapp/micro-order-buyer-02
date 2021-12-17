@@ -51,6 +51,19 @@ describe('GrnController', () => {
     ).toEqual('GRN-001-002');
   });
 
+  it('should be update Good Receive Note', async () => {
+    expect(
+      await controller.GRNUpdate({
+        ...MessageSample,
+        value: { id: expect.any(String), params: sampleGRN },
+      }),
+    ).toEqual({
+      errors: null,
+      status: 200,
+      message: config.get<string>('messageBase.GRN.save.Success'),
+    });
+  });
+
   it('should be getOne Good Receive note', async () => {
     expect(
       await controller.GRNGetById({
@@ -127,6 +140,21 @@ describe('GrnController', () => {
     });
   });
 
+  it('should be getAll Good Receive note failed', async () => {
+    mockGrnController.find.mockRejectedValue(new Error());
+
+    try {
+      await controller.GRNList({ ...MessageSample, value: expect.any(String) });
+    } catch (error) {
+      expect(error).toEqual({
+        errors: error,
+        status: 400,
+        data: null,
+        message: config.get<string>('messageBase.GRN.All.Failed'),
+      });
+    }
+  });
+
   it('should be get Paginate Good Receive failed', async () => {
     mockGrnController.aggregate.mockReturnValue(false);
 
@@ -144,35 +172,6 @@ describe('GrnController', () => {
       page: 0,
       limit: 10,
       data: null,
-    });
-  });
-
-  it('should be getAll Good Receive note failed', async () => {
-    mockGrnController.find.mockRejectedValue(new Error());
-
-    try {
-      await controller.GRNList({ ...MessageSample, value: expect.any(String) });
-    } catch (error) {
-      expect(error).toEqual({
-        errors: error,
-        status: 400,
-        data: null,
-        message: config.get<string>('messageBase.GRN.All.Failed'),
-      });
-    }
-  });
-
-  it('should be update Good Receive Note', async () => {
-    expect(
-      await controller.GRNUpdate({
-        ...MessageSample,
-        value: { id: expect.any(String), params: sampleGRN },
-      }),
-    ).toEqual({
-      errors: null,
-      status: 200,
-      data: sampleGRN,
-      message: config.get<string>('messageBase.GRN.save.Success'),
     });
   });
 
@@ -197,7 +196,7 @@ describe('GrnController', () => {
   });
 
   it('should be getAll Good Receive note failed', async () => {
-    mockGrnController.findByIdAndUpdate.mockRejectedValue(new Error());
+    mockGrnController.findOneAndUpdate.mockRejectedValue(new Error());
 
     try {
       await controller.GRNUpdate({
@@ -208,7 +207,6 @@ describe('GrnController', () => {
       expect(error).toEqual({
         errors: error,
         status: 400,
-        data: null,
         message: config.get<string>('messageBase.GRN.save.Failed'),
       });
     }

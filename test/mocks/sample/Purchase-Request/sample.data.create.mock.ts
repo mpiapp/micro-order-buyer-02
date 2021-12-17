@@ -61,6 +61,12 @@ export const SampleCreateService = {
           ],
         },
       ],
+      statuses: [
+        {
+          name: 'Open',
+          timestamp: new Date('2021-10-10 20:00'),
+        },
+      ],
     },
   ],
   total: 0,

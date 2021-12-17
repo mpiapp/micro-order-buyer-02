@@ -31,8 +31,8 @@ export class OrderPaginateService implements IOrderPaginateService {
           newRoot: {
             $mergeObjects: [
               {
-                buyerId: '$buyerId',
-                addressId: '$addressId',
+                buyer: '$buyer',
+                address: '$address',
                 date: '$date',
               },
               '$vendors',
@@ -49,7 +49,7 @@ export class OrderPaginateService implements IOrderPaginateService {
       },
       {
         $match: {
-          vendorId: vendorId,
+          'vendor._id': vendorId,
           lastStatus: status,
         },
       },

@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { MessagePattern } from '@nestjs/microservices';
+import { BaseResponse } from 'src/config/interfaces/response.base.interface';
 import { StatusDto } from './../../../config/dto/Status.dto';
 import { IncomingMessage } from './../../../config/interfaces/Income.interface';
 import { Helper } from './../../../utils/helper.utils';
@@ -112,21 +113,29 @@ export class GrnController {
   @MessagePattern('good.receive.note.save')
   async GRNUpdate(
     @Body() message: IncomingMessage<{ id: string; params: GRNUpdateDto }>,
-  ): Promise<IDeliveryNoteResponse> {
+  ): Promise<BaseResponse> {
     try {
       const { id, params } = message.value;
-      const save = await this.grnService.updateGRN(id, params);
+
+      const code = params.reference_doc.code_po;
+      const searchCode = `GRN-${code.slice(-3)}`;
+      const countingNumber: number = await this.grnService.getCount(searchCode);
+      params.received.code = await this.helperService.generateCode({
+        code: searchCode,
+        count: countingNumber + 1,
+        digits: this.Config.get('DIGITS_NUMBER_GRN'),
+      });
+
+      await this.grnService.updateGRN(id, params);
       return {
         status: HttpStatus.OK,
         message: this.Config.get<string>('messageBase.GRN.save.Success'),
-        data: save,
         errors: null,
       };
     } catch (error) {
       return {
         status: HttpStatus.PRECONDITION_FAILED,
         message: this.Config.get<string>('messageBase.GRN.save.Failed'),
-        data: null,
         errors: error,
       };
     }

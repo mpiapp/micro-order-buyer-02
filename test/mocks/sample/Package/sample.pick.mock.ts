@@ -1,3 +1,5 @@
+import { sampleVendor } from '../Delivery-Note/sample.mock';
+
 const sampleItemPackage = {
   productId: expect.any(String),
   vendorId: expect.any(String),
@@ -50,7 +52,7 @@ const sampleItemPackage = {
 
 export const samplePickPackPackage = {
   id: expect.any(String),
-  vendorId: expect.any(String),
+  vendor: sampleVendor,
   code_po: 'KPJ-12-10-00001-001',
   items: [sampleItemPackage, sampleItemPackage],
   statuses: {
