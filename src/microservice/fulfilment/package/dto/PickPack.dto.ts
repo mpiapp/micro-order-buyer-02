@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsNotEmpty, IsObject, IsString } from 'class-validator';
 import { VendorDto } from './../../../../config/dto/vendor.dto';
-import { StatusDto } from './../../../../config/dto/Status.dto';
+import { StatusDto } from './../../../../config/dto/status.dto';
 import { ItemPackageDto } from './PIckItems.dto';
 
 export class pickPackPackageDto {

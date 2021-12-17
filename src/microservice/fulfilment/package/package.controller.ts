@@ -8,7 +8,7 @@ import { Helper } from './../../../utils/helper.utils';
 import { ApprovalOfPaymentDto } from './dto/Approval.Payment.dto';
 import { PackageStatusDto } from './dto/PackageSattus.dto';
 import { PaginateDto } from './dto/Paginate.dto';
-import { pickPackPackageDto } from './dto/pickPack.dto';
+import { pickPackPackageDto } from './dto/PickPack.dto';
 import { ProofOfPaymentDto } from './dto/Proof.Payment.dto';
 import { IPackagesResponse } from './interfaces/response/Many.interface';
 import { IPackagesPaginateResponse } from './interfaces/response/Paginate.interface';
