@@ -95,7 +95,8 @@
       ".utils.ts",
       ".dto.ts",
       "main.ts",
-      "index.ts"
+      "index.ts",
+      "Item.service.ts"
     ]
   }
 }

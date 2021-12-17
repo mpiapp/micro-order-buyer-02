@@ -235,6 +235,20 @@ describe('TemplateController', () => {
     }
   });
 
+  it('should Search Template Items Success', async () => {
+    expect(
+      await controller.TemplateItems({
+        ...MessageSample,
+        value: expect.any(String),
+      }),
+    ).toEqual({
+      errors: null,
+      status: 200,
+      message: config.get('messageBase.Template.One.Success'),
+      data: SampleTemplateCreate,
+    });
+  });
+
   it('should be paginate Template', async () => {
     mockControllerTemplate.aggregate.mockReturnValue([
       { data: [SampleTemplateCreate], metadata: [{ total: 1 }] },
@@ -297,5 +311,22 @@ describe('TemplateController', () => {
       limit: 10,
       data: null,
     });
+  });
+
+  it('should Search Template Items Failed', async () => {
+    mockControllerTemplate.aggregate.mockRejectedValue(new Error());
+    try {
+      await controller.TemplateItems({
+        ...MessageSample,
+        value: expect.any(String),
+      });
+    } catch (error) {
+      expect(error).toBe({
+        errors: error,
+        status: 400,
+        message: config.get('messageBase.Template.One.Failed'),
+        data: null,
+      });
+    }
   });
 });
