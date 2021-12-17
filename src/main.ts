@@ -11,10 +11,10 @@ async function bootstrap() {
       transport: Transport.KAFKA,
       options: {
         client: {
-          brokers: [process.env.KAFKA],
+          brokers: process.env.KAFKA.split(','),
         },
         consumer: {
-          groupId: 'order-service',
+          groupId: 'dev-orders-service',
         },
       },
     },

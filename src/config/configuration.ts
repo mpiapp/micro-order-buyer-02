@@ -111,6 +111,14 @@ export default () => ({
         Success: 'Delete Purchase Order Success',
         Failed: 'Delete Purchase Order Failed',
       },
+      approved: {
+        Success: 'Change Items Approved Success',
+        Failed: 'Change Items Approved Failed',
+      },
+      rejected: {
+        Success: 'Change Items Rejected Success',
+        Failed: 'Change Items Rejected Failed',
+      },
     },
     Template: {
       All: {
@@ -166,6 +174,17 @@ export default () => ({
       pack: {
         Success: 'Save Pack Package Success',
         Failed: 'Save Pack Package Failed',
+      },
+      approval: {
+        Success: 'Approval Down Payment Success',
+        Failed: 'Approval Down Payment Failed',
+      },
+      upload: {
+        Success: 'Upload File Success',
+        Failed: 'Upload File Failed',
+      },
+      check: {
+        Success: 'Sorry Package Freez, Please Approving Down Payment',
       },
     },
     Items: {

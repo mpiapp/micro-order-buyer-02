@@ -7,23 +7,18 @@ import {
 } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { PurchaseRequestModule } from './purchase-request/purchase-request.module';
-import { TemplateModule } from './template/template.module';
-import { PurchaseOrderModule } from './purchase-order/purchase-order.module';
-import { PackageModule } from './package/package.module';
-import { OrdersModule } from './orders/orders.module';
-import { DeliveryNoteModule } from './delivery-note/delivery-note.module';
-import { GrnModule } from './grn/grn.module';
 import { LoggerMiddleware } from './middleware/logs.middleware';
 import { LoggerModule } from 'nestjs-pino';
 import { BugsnagModule } from '@nkaurelien/nest-bugsnag';
 import bugsnagPluginExpress from '@bugsnag/plugin-express';
+import { OrdersModules } from './microservice/orders';
+import { FulfillmentModules } from './microservice/fulfilment';
+import { StatusModule } from './microservice/status/status.module';
 
 @Global()
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    PurchaseRequestModule,
     MongooseModule.forRootAsync({
       useFactory: () => ({
         uri: process.env.MONGOS_URI,
@@ -37,12 +32,9 @@ import bugsnagPluginExpress from '@bugsnag/plugin-express';
       plugins: [bugsnagPluginExpress],
     }),
     LoggerModule.forRoot(),
-    TemplateModule,
-    PurchaseOrderModule,
-    PackageModule,
-    OrdersModule,
-    DeliveryNoteModule,
-    GrnModule,
+    ...OrdersModules,
+    ...FulfillmentModules,
+    StatusModule,
   ],
   controllers: [],
   providers: [],

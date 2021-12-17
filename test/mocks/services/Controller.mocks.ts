@@ -1,13 +1,14 @@
-import { sampleItem } from '../sample/Products/sample.item.mock';
 import { sampleDataCreatePO } from '../sample/Purchase-Order/sample.data.search.mock';
-import { SampleCreate } from '../sample/Purchase-Request/sample.data.create.mock';
+import {
+  SampleCreate,
+  SampleCreateService,
+} from '../sample/Purchase-Request/sample.data.create.mock';
 import { SampleTemplateCreate } from '../sample/Template/Sample.mocks';
 import { mockGRNService } from './GRN.mocks';
 
 export const mockControllerPurchaseRequest = {
   findByIdAndUpdate: jest.fn().mockImplementation(() => {
-    SampleCreate.items.push(sampleItem);
-    return SampleCreate;
+    return SampleCreateService;
   }),
   updateOne: jest.fn().mockImplementation(() => {
     return {
@@ -17,13 +18,15 @@ export const mockControllerPurchaseRequest = {
     };
   }),
   create: jest.fn().mockImplementation((SampleCreate) => {
-    return SampleCreate;
+    return SampleCreateService;
   }),
   findOne: jest.fn().mockImplementation(() => {
     return false;
   }),
   findById: jest.fn().mockReturnValue(SampleCreate),
   find: jest.fn().mockReturnValue([SampleCreate]),
+  aggregate: jest.fn().mockReturnValue([SampleCreate]),
+  push: jest.fn().mockReturnValue(SampleCreate),
 };
 
 export const mockControllerTemplate = {
@@ -36,8 +39,11 @@ export const mockControllerTemplate = {
   updateOne: jest.fn().mockImplementation(() => {
     return true;
   }),
-  find: jest.fn().mockReturnValue([SampleTemplateCreate]),
+  find: jest.fn(() => ({
+    sort: jest.fn(() => [SampleTemplateCreate]),
+  })),
   findById: jest.fn().mockReturnValue(SampleTemplateCreate),
+  aggregate: jest.fn().mockReturnValue(SampleTemplateCreate),
 };
 
 export const mockControllerPurchaseOrder = {
@@ -45,12 +51,12 @@ export const mockControllerPurchaseOrder = {
     return sampleDataCreatePO;
   }),
   findByIdAndUpdate: jest.fn().mockImplementation(() => {
-    SampleCreate.items.push(sampleItem);
     return SampleCreate;
   }),
   findById: jest.fn().mockReturnValue(sampleDataCreatePO),
   find: jest.fn().mockReturnValue([sampleDataCreatePO]),
-  aggregate: jest.fn().mockReturnValue(sampleDataCreatePO),
+  aggregate: jest.fn().mockReturnValue([sampleDataCreatePO]),
+  findOneAndUpdate: jest.fn().mockReturnValue(sampleDataCreatePO),
 };
 
 export const mockGrnController = {
