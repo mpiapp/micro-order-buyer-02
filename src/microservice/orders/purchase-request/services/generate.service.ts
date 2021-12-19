@@ -27,7 +27,11 @@ export class GenerateService implements IGenerateCodeService {
       { sort: { createdAt: -1 } },
     );
 
+    console.log('masuk generate', docs);
+
     const digits = this.config.get('DIGITS_NUMBER_PR');
+
+    console.log('get env', digits);
 
     if (!docs) {
       return {
@@ -36,6 +40,8 @@ export class GenerateService implements IGenerateCodeService {
     }
 
     const count = docs.length + 1;
+
+    console.log('hasil code', count);
 
     return {
       code: `${_param}-${this.HelperService.padNumber(
