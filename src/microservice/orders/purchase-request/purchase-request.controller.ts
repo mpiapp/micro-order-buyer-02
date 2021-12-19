@@ -36,12 +36,15 @@ export class PurchaseRequestController {
     @Body() message: IncomingMessage<OrderCreateDto>,
   ): Promise<IPurchaseRequestResponse> {
     try {
+      console.log('gateway', message.value);
       const { code, ...params } = message.value;
       const generate = await this.Generate.generateCode(code);
+      console.log('generate', generate);
       const create = await this.PRMaster.createPurchaseRequest({
         ...params,
         code_pr: generate.code,
       });
+      console.log('create', create);
       return {
         status: HttpStatus.CREATED,
         message: this.Config.get<string>(
