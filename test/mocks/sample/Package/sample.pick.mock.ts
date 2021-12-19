@@ -10,9 +10,9 @@ const sampleItemPackage = {
   brand: 'Wine',
   images_product: 'https://agweasfasd.com',
   storage: {
-    rack: 2,
-    bin: 3,
-    level: 4,
+    rack: 'string',
+    bin: 'string',
+    level: 'string',
   },
   dimension: {
     width: 23,

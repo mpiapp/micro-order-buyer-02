@@ -48,7 +48,7 @@ export interface IDimension {
 }
 
 export interface IStorage {
-  rack: number;
-  bin: number;
-  level: number;
+  rack: string;
+  bin: string;
+  level: string;
 }

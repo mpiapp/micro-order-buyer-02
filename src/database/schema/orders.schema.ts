@@ -68,16 +68,16 @@ class Item {
   @Prop({
     type: [
       {
-        rack: { type: Number },
-        bin: { type: Number },
-        level: { type: Number },
+        rack: { type: String },
+        bin: { type: String },
+        level: { type: String },
       },
     ],
   })
   storage: {
-    rack: number;
-    bin: number;
-    level: number;
+    rack: string;
+    bin: string;
+    level: string;
   };
   @Prop({
     type: [
